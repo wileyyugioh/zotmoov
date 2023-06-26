@@ -1,0 +1,22 @@
+// ZotMoov
+// updates.json
+// Written by Wiley Yu
+
+{
+  "addons": {
+    "zotmoov@wileyy.com": {
+      "updates": [
+        {
+          "version": "0.0.1b",
+          "update_link": "",
+          "update_hash": "",
+          "applications": {
+            "zotero": {
+              "strict_min_version": "6.999"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
