@@ -30,8 +30,9 @@ ZotMoov_Menus = {
 
         // Menu item
         let move_selected_item = doc.createElementNS(XUL_NS, 'menuitem');
+        move_selected_item.id = 'zotmoov-context-move-selected';
         move_selected_item.setAttribute('data-l10n-id', 'zotmoov-context-move-selected');
-        move_selected_item.onclick = 'Zotero.ZotMoov.moveSelectedItems();';
+        move_selected_item.onclick = Zotero.ZotMoov.moveSelectedItems();
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
         zotero_itemmenu.appendChild(menuseparator);
