@@ -14,6 +14,7 @@ Zotero.ZotMoov =
     initialized: false,
 
     _track_add: null,
+    _notifierID: null,
 
     init({ id, version, rootURI })
     {
@@ -23,9 +24,7 @@ Zotero.ZotMoov =
         this.version = version;
         this.rootURI = rootURI;
         this.initialized = true;
-        this._track_add = new Set();
-
-        let notifierID = Zotero.Notifier.registerObserver(this.notifyCallback, ['item'], 'zotmoov');
+        this._notifierID = Zotero.Notifier.registerObserver(this.notifyCallback, ['item'], 'zotmoov', 99);
 
         var window = null;
         var enumerator = Services.wm.getEnumerator("navigator:browser");
@@ -37,87 +36,84 @@ Zotero.ZotMoov =
 
         // Unregister callback when the window closes (important to avoid a memory leak)
         window.addEventListener('unload', function(e) {
-                Zotero.Notifier.unregisterObserver(notifierID);
+                Zotero.Notifier.unregisterObserver(this._notifierID);
         }, false);
     },
 
-    async _copyFile(file_path, dst_path)
+    destroy()
     {
-        // Check to make sure file exists
-        Zotero.log(dst_path)
-        Zotero.log(file_path);
-        if (!(await IOUtils.exists(file_path))) throw("ZotMoov: File does not exist");
-        IOUtils.copy(file_path, dst_path); // Just overwrite the file if it exists
+        Zotero.Notifier.unregisterObserver(this._notifierID);
     },
 
-    async _copyAndLink(ref_item, att_item, file_path, dst_path, filename)
+    move: async function(items, options = { ignore_linked: true })
     {
-        await this._copyFile(file_path, dst_path)
+        let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', '');
+        if (dst_path == '') return;
 
-        var att = new Zotero.Item('attachment');
+        for (let item of items)
+        {
+            if (item.isRegularItem()) continue;
+            if (options.ignore_linked && (item.attachmentLinkMode != Zotero.Attachments.LINK_MODE_IMPORTED_FILE)) continue;
 
-        att.title = filename;
-        att.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
-        att.attachmentPath = dst_path;
-        att.attachmentContentType = att_item.attachmentContentType;
-        att.parentID = ref_item.id;
-        att.saveTx();
+            let file_path = item.getFilePath();
+            let file_name = file_path.split(/[\\/]/).pop();
+            let copy_path = PathUtils.join(dst_path, file_name);
+
+            // Have to check since later adding an entry triggers the
+            // handler again
+            if (file_path == copy_path) continue;
+
+            if (options.ignore_linked)
+            {
+                // If dragged and dropped from 
+                item.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
+                item.attachmentPath = copy_path;
+            } else 
+            {
+                // If later transfered via menus/etc.
+                let clone = item.clone()
+                clone.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
+                clone.attachmentPath = copy_path;
+
+                item.deleted = true;
+            }
+
+            // Just overwrite the file if it exists
+            IOUtils.move(file_path, copy_path).then(function()
+            {
+                if(clone) clone.saveTx();
+                item.saveTx(); // Only save after copied
+            });
+        }
+    },
+
+    moveSelectedItems: async function()
+    {
+        let items = Zotero.getActiveZoteroPane().getSelectedItems();
+        let att_ids = [];
+        for (let item of items)
+        {
+            if (!item.isRegularItem()) continue;
+            att_ids.push(...item.getAttachments());
+        }
+
+        items.push(...Zotero.Items.get(att_ids));
+
+        Zotero.log(items);
+        return this.move(items, { ignore_linked: false });
     },
 
     notifyCallback:
     {
-         addCallback: async function(event, ids, extraData)
+        addCallback: async function(event, ids, extraData)
         {
             let items = Zotero.Items.get(ids);
-            for (let item of items)
-            {
-                Zotero.log(JSON.stringify(Zotero.ZotMoov._track_ignore));
-                if (item.isRegularItem()) continue;
-
-                Zotero.log('Add');
-                Zotero.ZotMoov._track_add.add(item.id);
-            }
-        },
-
-        modifyCallback: async function(event, ids, extraData)
-        {
-            let items = Zotero.Items.get(ids);
-            for (let item of items)
-            {
-                if (item.isRegularItem()) continue;
-                if (!item.parentID) continue;
-                if (!Zotero.ZotMoov._track_add.delete(item.id)) continue;
-
-                // We found an id that has been added and is an attachment and has a reference
-
-                let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', '')
-                if (dst_path == '') continue;
-                if (item.attachmentContentType != 'application/pdf'
-                    && item.attachmentContentType != 'text/html') continue;
-
-                let ref_item = Zotero.Items.get(item.parentID);
-
-                let file_path = item.getFilePath();
-                let file_name = file_path.split(/[\\/]/).pop();
-                let copy_path = PathUtils.join(dst_path, file_name);
-
-                if (file_path == copy_path) continue;
-
-                await Zotero.ZotMoov._copyAndLink(ref_item, item, file_path, copy_path, file_name);
-
-                item.deleted = true;
-                await item.saveTx();
-            }
+            Zotero.ZotMoov.move(items);
         },
 
         notify: async function(event, type, ids, extraData)
         {
-            Zotero.log("Notified");
-            Zotero.log(event);
-            Zotero.log(ids);
-            Zotero.log(JSON.stringify(extraData));
             if (event == 'add') this.addCallback(event, ids, extraData);
-            if (event == 'modify') this.modifyCallback(event, ids, extraData);
         },
     },
-}
+};
