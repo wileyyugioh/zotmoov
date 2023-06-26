@@ -11,7 +11,7 @@
   "applications": {
     "zotero": {
       "id": "zotmoov@wileyy.com",
-      "update_url": "https://raw.githubusercontent.com/wileyyugioh/zotfile/master/updates.json",
+      "update_url": "https://raw.githubusercontent.com/wileyyugioh/zotmoov/master/updates.json",
       "strict_min_version": "6.999",
       "strict_max_version": "7.0.*"
     }
