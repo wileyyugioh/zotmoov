@@ -8,8 +8,8 @@
       "updates": [
         {
           "version": "0.0.1b",
-          "update_link": "",
-          "update_hash": "",
+          "update_link": "https://github.com/wileyyugioh/ZotMoov/releases/download/0.0.1b/zotmoov-0.0.1b-fx.xpi",
+          "update_hash": "412a7cd9b0747007b1e25dac0dcbcaecdbc58652370244aea472dcaca9defb9f",
           "applications": {
             "zotero": {
               "strict_min_version": "6.999"
