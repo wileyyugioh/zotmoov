@@ -63,6 +63,7 @@ Zotero.ZotMoov =
             // handler again
             if (file_path == copy_path) continue;
 
+            let clone = null;
             if (options.ignore_linked)
             {
                 // If dragged and dropped from 
@@ -71,7 +72,7 @@ Zotero.ZotMoov =
             } else 
             {
                 // If later transfered via menus/etc.
-                let clone = item.clone()
+                clone = item.clone()
                 clone.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
                 clone.attachmentPath = copy_path;
 

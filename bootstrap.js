@@ -35,6 +35,9 @@ function shutdown() {
     log('ZotMoov: Shutting down');
     Zotero.ZotMoov.destroy();
     ZotMoov_Menus.destroy();
+
+    Zotero.ZotMoov = null;
+    ZotMoov_Menus = null;
 }
 
 function uninstall() {    
