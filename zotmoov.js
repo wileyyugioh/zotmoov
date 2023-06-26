@@ -75,6 +75,7 @@ Zotero.ZotMoov =
                 clone = item.clone()
                 clone.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
                 clone.attachmentPath = copy_path;
+                clone.setCollections(item.getCollections()); // This isn't cloned
 
                 item.deleted = true;
             }
@@ -92,16 +93,22 @@ Zotero.ZotMoov =
     {
         let items = Zotero.getActiveZoteroPane().getSelectedItems();
         let att_ids = [];
+        let atts = new Set();
         for (let item of items)
         {
-            if (!item.isRegularItem()) continue;
+            if (!item.isRegularItem())
+            {
+                atts.add(item);
+                continue;
+            }
+
             att_ids.push(...item.getAttachments());
         }
 
-        items.push(...Zotero.Items.get(att_ids));
+        let new_atts = Zotero.Items.get(att_ids);
+        new_atts.forEach(att => atts.add(att));
 
-        Zotero.log(items);
-        return this.move(items, { ignore_linked: false });
+        return this.move(atts, { ignore_linked: false });
     },
 
     notifyCallback:

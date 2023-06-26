@@ -18,8 +18,8 @@ async function install() {
 }
 
 async function startup({ id, version, resourceURI, rootURI = resourceURI.spec }) {
-    Services.scriptloader.loadSubScript(rootURI + 'zotmoov_menus.js');
     Services.scriptloader.loadSubScript(rootURI + 'zotmoov.js');
+    Services.scriptloader.loadSubScript(rootURI + 'zotmoov_menus.js');
 
     Zotero.PreferencePanes.register({
         pluginID: 'zotmoov@wileyy.com',
@@ -27,8 +27,8 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
         scripts: [rootURI + 'zotmoov_prefs.js']
     });
 
-    ZotMoov_Menus.init();
     Zotero.ZotMoov.init({ id, version, rootURI });
+    ZotMoov_Menus.init();
 }
 
 function shutdown() {
