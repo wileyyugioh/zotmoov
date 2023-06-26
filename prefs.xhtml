@@ -8,28 +8,20 @@
     <html:link rel="localization" href="zotmoov.ftl"/>
 </linkset>
 
-<vbox>
+<vbox onload="Zotero.ZotMoov_Prefs.init()">
     <label><html:h1 data-l10n-id='zotmoov-settings-title'></html:h1></label>
     <groupbox>
         <vbox>
             <label><html:h2 data-l10n-id='zotmoov-settings-filepath-intro'></html:h2></label>
             <hbox>
-                <html:input type="text" preference="extensions.zotmoov.dst_dir" readonly="readonly"/>
-                <button data-l10n-id='zotmoov-settings-filepath-button-label'/>
+                <html:input type="text" id="zotmoov-dst-dir" readonly="true" style="-moz-box-flex: 1;"/>
+                <button data-l10n-id='zotmoov-settings-filepath-button-label' onclick="Zotero.ZotMoov_Prefs.pickDirectory();" style="text-align: center;"/>
             </hbox>
         </vbox>
     </groupbox>
     <groupbox>
         <vbox>
             <label><html:h2 data-l10n-id='zotmoov-settings-other-settings'></html:h2></label>
-            <hbox>
-                <html:input type="checkbox" preference="extensions.zotmoov.enable_custom_filename"/>
-                <label data-l10n-id='zotmoov-settings-custom-filename-intro'></label>
-            </hbox>
-            <hbox>
-                <html:input type="checkbox" preference="extensions.zotmoov.delete_file_after_copy"/>
-                <label data-l10n-id='zotmoov-settings-delete-file-intro'></label>
-            </hbox>
         </vbox>
     </groupbox>
 </vbox>
