@@ -1,0 +1,19 @@
+// ZotMoov
+// manifest.json
+// Written by Wiley Yu
+
+{
+  "manifest_version": 2,
+  "name": "ZotMoov",
+  "version": "0.0.1b",
+  "description": "Mooves attachments and links them",
+  "author": "Wiley Yu",
+  "applications": {
+    "zotero": {
+      "id": "zotmoov@wileyy.com",
+      "update_url": "https://raw.githubusercontent.com/wileyyugioh/zotfile/master/updates.json",
+      "strict_min_version": "6.999",
+      "strict_max_version": "7.0.*"
+    }
+  }
+}
