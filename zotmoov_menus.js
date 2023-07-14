@@ -35,7 +35,7 @@ ZotMoov_Menus = {
         let move_selected_item_custom = doc.createXULElement('menuitem');
         move_selected_item_custom.id = 'zotmoov-context-move-selected-custom-dir';
         move_selected_item_custom.setAttribute('data-l10n-id', 'zotmoov-context-move-selected-custom-dir');
-        move_selected_item_custom.style.display = Zotero.Prefs.get('extensions.zotmoov.enable_custom_dir', true);
+        move_selected_item_custom.hidden = !Zotero.Prefs.get('extensions.zotmoov.enable_custom_dir', true);
         move_selected_item_custom.addEventListener('command', () => {
             Zotero.ZotMoov.moveSelectedItemsCustomDir();
         });
