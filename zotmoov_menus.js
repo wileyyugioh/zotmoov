@@ -48,8 +48,9 @@ ZotMoov_Menus = {
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
         zotero_itemmenu.addEventListener('popupshowing', () => {
-            move_selected_item.disabled = !ZotMoov_Menus._hasAttachments();
-            move_selected_item_custom.disabled = !ZotMoov_Menus._hasAttachments();
+            let should_disabled = !ZotMoov_Menus._hasAttachments();
+            move_selected_item.disabled = should_disabled;
+            move_selected_item_custom.disabled = should_disabled;
         });
 
         zotero_itemmenu.appendChild(menuseparator);
