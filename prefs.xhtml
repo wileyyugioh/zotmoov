@@ -8,13 +8,13 @@
     <html:link rel="localization" href="zotmoov.ftl"/>
 </linkset>
 
-<vbox onload="Zotero.ZotMoov_Prefs.init()">
+<vbox>
     <label><html:h1 data-l10n-id='zotmoov-settings-title'></html:h1></label>
     <groupbox>
         <vbox>
             <label><html:h2 data-l10n-id='zotmoov-settings-filepath-intro'></html:h2></label>
             <hbox>
-                <html:input type="text" id="zotmoov-dst-dir" readonly="true" style="-moz-box-flex: 1;"/>
+                <html:input type="text" id="zotmoov-dst-dir" readonly="true" preference='extensions.zotmoov.dst_dir' style="-moz-box-flex: 1;"/>
                 <button data-l10n-id='zotmoov-settings-filepath-button-label' onclick="Zotero.ZotMoov_Prefs.pickDirectory();" style="text-align: center;"/>
             </hbox>
         </vbox>

@@ -4,11 +4,6 @@
 
 Zotero.ZotMoov_Prefs =
 {
-    init()
-    {
-        document.getElementById('zotmoov-dst-dir').value = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
-    },
-
     async pickDirectory()
     {
         var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
