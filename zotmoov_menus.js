@@ -6,29 +6,34 @@ Components.utils.import("resource://gre/modules/Services.jsm");
 
 ZotMoov_Menus = {
     _store_added_elements: [],
+    _opt_disable_elements: [],
 
-    _window_listener =
+    _window_listener:
     {
-        onOpenWindow: function (a_window) {
+        onOpenWindow: function (a_window)
+        {
             let dom_window = a_window.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindow);
-            dom_window.addEventListener('load', function() {
+            dom_window.addEventListener('load', function()
+            {
                 dom_window.removeEventListener('load', arguments.callee, false);
                 if (dom_window.document.documentElement.getAttribute('windowtype') != 'navigator:browser') return;
                 ZotMoov_Menus._init();
             }, false);
-        },
+        }
     },
 
     _popupShowing()
     {
         let should_disabled = !ZotMoov_Menus._hasAttachments();
-        move_selected_item.disabled = should_disabled;
-        move_selected_item_custom.disabled = should_disabled;
+        for (let element of ZotMoov_Menus._opt_disable_elements)
+        {
+            element.disabled = should_disabled;
+        }
     },
 
     _getWindow()
     {
-        var enumerator = Services.wm.getEnumerator("navigator:browser");
+        var enumerator = Services.wm.getEnumerator('navigator:browser');
         while (enumerator.hasMoreElements()) {
             let win = enumerator.getNext();
             if (!win.ZoteroPane) continue;
@@ -45,6 +50,7 @@ ZotMoov_Menus = {
     init()
     {
         this._init();
+        Services.wm.addListener(this._window_listener);
     },
 
     _init()
@@ -80,6 +86,7 @@ ZotMoov_Menus = {
         zotero_itemmenu.appendChild(move_selected_item_custom);
 
         this._store_added_elements.push(menuseparator, move_selected_item, move_selected_item_custom);
+        this._opt_disable_elements.push(move_selected_item, move_selected_item_custom);
 
         // Enable localization
         win.MozXULElement.insertFTLIfNeeded('zotmoov.ftl');
