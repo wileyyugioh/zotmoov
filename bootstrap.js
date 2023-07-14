@@ -14,6 +14,14 @@ function log(msg) {
 
 async function install() {    
     log('ZotMoov: Installed');
+
+    // Fix for old version parity
+    let old_pref = Zotero.Prefs.get('extensions.zotmoov.dst_dir')
+    if (old_pref)
+    {
+        Zotero.Prefs.set('extensions.zotmoov.dst_dir', old_pref, true);
+        Zotero.Prefs.clear('extensions.zotmoov.dst_dir');
+    }
 }
 
 async function startup({ id, version, resourceURI, rootURI = resourceURI.spec }) {

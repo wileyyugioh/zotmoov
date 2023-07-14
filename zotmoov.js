@@ -114,7 +114,7 @@ Zotero.ZotMoov =
     {
         let atts = this._getSelectedItems();
 
-        let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', '');
+        let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
         return this.move(atts, dst_path, { ignore_linked: false });
     },
 
@@ -122,16 +122,19 @@ Zotero.ZotMoov =
     {
         let atts = this._getSelectedItems();
 
-        var FilePicker = require('zotero/modules/filePicker').default;
-        var fp = new FilePicker();
+        var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
         var wm = Services.wm;
         var win = wm.getMostRecentWindow('navigator:browser');
 
         fp.init(win, Zotero.getString('dataDir.selectDir'), fp.modeGetFolder);
         fp.appendFilters(fp.filterAll);
-        if (await fp.show() != fp.returnOK) return '';
+        var rv = await new Zotero.Promise(function (resolve)
+        {
+            fp.open((returnConstant) => resolve(returnConstant));
+        });
+        if (rv != fp.returnOK) return '';
 
-        return this.move(atts, fp.file, { ignore_linked: false });
+        return this.move(atts, fp.file.path, { ignore_linked: false });
     },
 
     notifyCallback:
@@ -142,7 +145,7 @@ Zotero.ZotMoov =
             if (!auto_move) return;
 
             let items = Zotero.Items.get(ids);
-            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', '');
+            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
             Zotero.ZotMoov.move(items, dst_path);
         },
 
