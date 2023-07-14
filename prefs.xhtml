@@ -22,14 +22,8 @@
     <groupbox>
         <vbox>
             <label><html:h2 data-l10n-id='zotmoov-settings-other-settings'></html:h2></label>
-            <hbox>
-                <html:input type="checkbox" preference="extensions.zotmoov.enable_automove"/>
-                <label data-l10n-id='zotmoov-settings-enable-automove-label'></label>
-            </hbox>
-            <hbox>
-                <html:input type="checkbox" preference="extensions.zotmoov.enable_custom_dir" onclick="Zotero.ZotMoov_Prefs.toggleShowCustomDir(this);"/>
-                <label data-l10n-id='zotmoov-settings-enable-custom-dir-label'></label>
-            </hbox>
+                <checkbox native="true" preference="extensions.zotmoov.enable_automove" data-l10n-id='zotmoov-settings-enable-automove-label'/>
+                <checkbox native="true" preference="extensions.zotmoov.enable_custom_dir" data-l10n-id='zotmoov-settings-enable-custom-dir-label' onclick="Zotero.ZotMoov_Prefs.onCustomDirClick(this);"/>
         </vbox>
     </groupbox>
 </vbox>
