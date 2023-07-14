@@ -6,7 +6,6 @@ if (typeof Zotero == 'undefined') {
     var Zotero;
 }
 
-var chromeHandle;
 var ZotMoov_Menus;
 
 function log(msg) {

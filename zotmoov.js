@@ -45,9 +45,8 @@ Zotero.ZotMoov =
         Zotero.Notifier.unregisterObserver(this._notifierID);
     },
 
-    move: async function(items, options = { ignore_linked: true })
+    move: async function(items, dst_path, options = { ignore_linked: true })
     {
-        let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', '');
         if (dst_path == '') return;
 
         for (let item of items)
@@ -89,7 +88,7 @@ Zotero.ZotMoov =
         }
     },
 
-    moveSelectedItems: async function()
+    _getSelectedItems: function()
     {
         let items = Zotero.getActiveZoteroPane().getSelectedItems();
         let att_ids = [];
@@ -108,15 +107,43 @@ Zotero.ZotMoov =
         let new_atts = Zotero.Items.get(att_ids);
         new_atts.forEach(att => atts.add(att));
 
-        return this.move(atts, { ignore_linked: false });
+        return atts
+    },
+
+    moveSelectedItems: async function()
+    {
+        let atts = this._getSelectedItems();
+
+        let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', '');
+        return this.move(atts, dst_path, { ignore_linked: false });
+    },
+
+    moveSelectedItemsCustomDir: async function()
+    {
+        let atts = this._getSelectedItems();
+
+        var FilePicker = require('zotero/modules/filePicker').default;
+        var fp = new FilePicker();
+        var wm = Services.wm;
+        var win = wm.getMostRecentWindow('navigator:browser');
+
+        fp.init(win, Zotero.getString('dataDir.selectDir'), fp.modeGetFolder);
+        fp.appendFilters(fp.filterAll);
+        if (await fp.show() != fp.returnOK) return '';
+
+        return this.move(atts, fp.file, { ignore_linked: false });
     },
 
     notifyCallback:
     {
         addCallback: async function(event, ids, extraData)
         {
+            let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
+            if (!auto_move) return;
+
             let items = Zotero.Items.get(ids);
-            Zotero.ZotMoov.move(items);
+            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', '');
+            Zotero.ZotMoov.move(items, dst_path);
         },
 
         notify: async function(event, type, ids, extraData)
