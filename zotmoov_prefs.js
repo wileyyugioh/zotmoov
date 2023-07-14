@@ -11,6 +11,8 @@ Zotero.ZotMoov_Prefs =
 
     async pickDirectory()
     {
+        var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
+
         fp.init(window, Zotero.getString('dataDir.selectDir'), fp.modeGetFolder);
         fp.appendFilters(fp.filterAll);
         var rv = await new Zotero.Promise(function (resolve)
