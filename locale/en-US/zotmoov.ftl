@@ -16,4 +16,4 @@ zotmoov-settings-enable-automove-label =
     .label = Automatically Move Files When Added
 
 zotmoov-settings-enable-custom-dir-label =
-    .label = Enable Menu Option To Move to Custom Directories
+    .label = Enable Menu Option to Move to Custom Directories
