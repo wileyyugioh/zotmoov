@@ -2,8 +2,29 @@
 // zotmoov_menus.js
 // Written by Wiley Yu
 
+Components.utils.import("resource://gre/modules/Services.jsm");
+
 ZotMoov_Menus = {
     _store_added_elements: [],
+
+    _window_listener =
+    {
+        onOpenWindow: function (a_window) {
+            let dom_window = a_window.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindow);
+            dom_window.addEventListener('load', function() {
+                dom_window.removeEventListener('load', arguments.callee, false);
+                if (dom_window.document.documentElement.getAttribute('windowtype') != 'navigator:browser') return;
+                ZotMoov_Menus._init();
+            }, false);
+        },
+    },
+
+    _popupShowing()
+    {
+        let should_disabled = !ZotMoov_Menus._hasAttachments();
+        move_selected_item.disabled = should_disabled;
+        move_selected_item_custom.disabled = should_disabled;
+    },
 
     _getWindow()
     {
@@ -22,6 +43,11 @@ ZotMoov_Menus = {
     },
 
     init()
+    {
+        this._init();
+    },
+
+    _init()
     {
         let win = this._getWindow();
         let doc = win.document;
@@ -47,11 +73,7 @@ ZotMoov_Menus = {
         });
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
-        zotero_itemmenu.addEventListener('popupshowing', () => {
-            let should_disabled = !ZotMoov_Menus._hasAttachments();
-            move_selected_item.disabled = should_disabled;
-            move_selected_item_custom.disabled = should_disabled;
-        });
+        zotero_itemmenu.addEventListener('popupshowing', this._popupShowing);
 
         zotero_itemmenu.appendChild(menuseparator);
         zotero_itemmenu.appendChild(move_selected_item);
@@ -65,11 +87,19 @@ ZotMoov_Menus = {
 
     destroy()
     {
+        this._destroy();
+    },
+
+    _destroy()
+    {
         let doc = this._getWindow().document;
         for (let element of this._store_added_elements)
         {
             if (element) element.remove();
         }
         doc.querySelector('[href="zotmoov.ftl"]').remove();
+
+        let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
+        zotero_itemmenu.removeEventListener('popupshowing', this._popupShowing);
     }
 }
