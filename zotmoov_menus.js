@@ -15,6 +15,12 @@ ZotMoov_Menus = {
         }
     },
 
+    _hasAttachments()
+    {
+        let items = Zotero.ZotMoov._getSelectedItems();
+        return (items.size != 0);
+    },
+
     init()
     {
         let win = this._getWindow();
@@ -41,6 +47,11 @@ ZotMoov_Menus = {
         });
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
+        zotero_itemmenu.addEventListener('popupshowing', () => {
+            move_selected_item.disabled = !ZotMoov_Menus._hasAttachments();
+            move_selected_item_custom.disabled = !ZotMoov_Menus._hasAttachments();
+        });
+
         zotero_itemmenu.appendChild(menuseparator);
         zotero_itemmenu.appendChild(move_selected_item);
         zotero_itemmenu.appendChild(move_selected_item_custom);
