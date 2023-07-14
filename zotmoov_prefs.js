@@ -22,5 +22,10 @@ Zotero.ZotMoov_Prefs =
 
         Zotero.Prefs.set('extensions.zotmoov.dst_dir', fp.file);
         document.getElementById('zotmoov-dst-dir').value = fp.file;
+    },
+
+    toggleShowCustomDir(cb)
+    {
+        document.getElementById('zotmoov-context-move-selected-custom-dir').style.display = cb.checked;
     }
 };
