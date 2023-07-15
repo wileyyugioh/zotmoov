@@ -17,8 +17,8 @@ ZotMoov_Menus = {
             {
                 dom_window.removeEventListener('load', arguments.callee, false);
                 if (dom_window.document.documentElement.getAttribute('windowtype') != 'navigator:browser') return;
-                _store_added_elements = []; // Clear tracked elements since destroyed by closed window
-                _opt_disable_elements = [];
+                ZotMoov_Menus._store_added_elements = []; // Clear tracked elements since destroyed by closed window
+                ZotMoov_Menus._opt_disable_elements = [];
                 ZotMoov_Menus._init();
             }, false);
         }
@@ -112,5 +112,8 @@ ZotMoov_Menus = {
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
         zotero_itemmenu.removeEventListener('popupshowing', this._popupShowing);
+
+        this._store_added_elements = [];
+        this._opt_disable_elements = [];
     }
 }
