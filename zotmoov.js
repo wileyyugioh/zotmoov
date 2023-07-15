@@ -27,7 +27,7 @@ Zotero.ZotMoov =
         this._notifierID = Zotero.Notifier.registerObserver(this.notifyCallback, ['item'], 'zotmoov', 99);
 
         var window = null;
-        var enumerator = Services.wm.getEnumerator("navigator:browser");
+        var enumerator = Services.wm.getEnumerator('navigator:browser');
         while (enumerator.hasMoreElements()) {
             let win = enumerator.getNext();
             if (!win.ZoteroPane) continue;
@@ -122,13 +122,13 @@ Zotero.ZotMoov =
     {
         let atts = this._getSelectedItems();
 
-        var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
+        var fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
         var wm = Services.wm;
         var win = wm.getMostRecentWindow('navigator:browser');
 
         fp.init(win, Zotero.getString('dataDir.selectDir'), fp.modeGetFolder);
         fp.appendFilters(fp.filterAll);
-        var rv = await new Zotero.Promise(function (resolve)
+        var rv = await new Zotero.Promise(function(resolve)
         {
             fp.open((returnConstant) => resolve(returnConstant));
         });

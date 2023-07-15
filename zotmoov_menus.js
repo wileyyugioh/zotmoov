@@ -2,7 +2,7 @@
 // zotmoov_menus.js
 // Written by Wiley Yu
 
-Components.utils.import("resource://gre/modules/Services.jsm");
+Components.utils.import('resource://gre/modules/Services.jsm');
 
 ZotMoov_Menus = {
     _store_added_elements: [],
@@ -10,13 +10,14 @@ ZotMoov_Menus = {
 
     _window_listener:
     {
-        onOpenWindow: function (a_window)
+        onOpenWindow: function(a_window)
         {
             let dom_window = a_window.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindow);
             dom_window.addEventListener('load', function()
             {
                 dom_window.removeEventListener('load', arguments.callee, false);
                 if (dom_window.document.documentElement.getAttribute('windowtype') != 'navigator:browser') return;
+                ZotMoov_Menus._destroy();
                 ZotMoov_Menus._init();
             }, false);
         }
@@ -65,7 +66,8 @@ ZotMoov_Menus = {
         let move_selected_item = doc.createXULElement('menuitem');
         move_selected_item.id = 'zotmoov-context-move-selected';
         move_selected_item.setAttribute('data-l10n-id', 'zotmoov-context-move-selected');
-        move_selected_item.addEventListener('command', () => {
+        move_selected_item.addEventListener('command', function()
+        {
             Zotero.ZotMoov.moveSelectedItems();
         });
 
@@ -74,7 +76,8 @@ ZotMoov_Menus = {
         move_selected_item_custom.id = 'zotmoov-context-move-selected-custom-dir';
         move_selected_item_custom.setAttribute('data-l10n-id', 'zotmoov-context-move-selected-custom-dir');
         move_selected_item_custom.hidden = !Zotero.Prefs.get('extensions.zotmoov.enable_custom_dir', true);
-        move_selected_item_custom.addEventListener('command', () => {
+        move_selected_item_custom.addEventListener('command', function()
+        {
             Zotero.ZotMoov.moveSelectedItemsCustomDir();
         });
 
