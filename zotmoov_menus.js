@@ -17,7 +17,8 @@ ZotMoov_Menus = {
             {
                 dom_window.removeEventListener('load', arguments.callee, false);
                 if (dom_window.document.documentElement.getAttribute('windowtype') != 'navigator:browser') return;
-                _opt_disable_elements = []; // Clear tracked elements since destroyed by closed window
+                _store_added_elements = []; // Clear tracked elements since destroyed by closed window
+                _opt_disable_elements = [];
                 ZotMoov_Menus._init();
             }, false);
         }
