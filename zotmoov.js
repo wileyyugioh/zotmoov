@@ -28,15 +28,17 @@ Zotero.ZotMoov =
 
         var window = null;
         var enumerator = Services.wm.getEnumerator('navigator:browser');
-        while (enumerator.hasMoreElements()) {
+        while (enumerator.hasMoreElements())
+        {
             let win = enumerator.getNext();
             if (!win.ZoteroPane) continue;
             window = win;
         }
 
         // Unregister callback when the window closes (important to avoid a memory leak)
-        window.addEventListener('unload', function(e) {
-                Zotero.Notifier.unregisterObserver(this._notifierID);
+        window.addEventListener('unload', function(e)
+        {
+            Zotero.Notifier.unregisterObserver(this._notifierID);
         }, false);
     },
 
