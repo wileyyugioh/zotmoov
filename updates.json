@@ -9,10 +9,20 @@
         {
           "version": "0.0.1b",
           "update_link": "https://github.com/wileyyugioh/ZotMoov/releases/download/0.0.1b/zotmoov-0.0.1b-fx.xpi",
-          "update_hash": "c77076901e8af7c48c67b0ec094ecc02b8796bf4bba6ff8ee85e5f4e8d0c12cc",
           "applications": {
             "zotero": {
-              "strict_min_version": "6.999"
+              "strict_min_version": "6.999",
+              "strict_max_version": "7.0.*"
+            }
+          }
+        },
+        {
+          "version": "0.0.2b3",
+          "update_link": "https://github.com/wileyyugioh/zotmoov/releases/download/0.0.2b3/zotmoov-0.0.2b3-fx.xpi",
+          "applications": {
+            "zotero": {
+              "strict_min_version": "6.999",
+              "strict_max_version": "7.0.*"
             }
           }
         }
