@@ -100,6 +100,7 @@ ZotMoov_Menus = {
     destroy()
     {
         this._destroy();
+        Services.wm.removeListener(this._window_listener);
     },
 
     _destroy()
