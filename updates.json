@@ -1,7 +1,3 @@
-// ZotMoov
-// updates.json
-// Written by Wiley Yu
-
 {
   "addons": {
     "zotmoov@wileyy.com": {
@@ -15,7 +11,7 @@
               "strict_max_version": "7.0.*"
             }
           }
-        },
+        }
       ]
     }
   }
