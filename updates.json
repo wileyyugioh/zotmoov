@@ -3,8 +3,8 @@
     "zotmoov@wileyy.com": {
       "updates": [
         {
-          "version": "0.0.2b4",
-          "update_link": "https://github.com/wileyyugioh/zotmoov/releases/download/0.0.2b4/zotmoov-0.0.2b4-fx.xpi",
+          "version": "0.0.2b5",
+          "update_link": "https://github.com/wileyyugioh/zotmoov/releases/download/0.0.2b5/zotmoov-0.0.2b5-fx.xpi",
           "applications": {
             "zotero": {
               "strict_min_version": "6.999",
