@@ -1,5 +1,7 @@
 # ZotMoov
-A *simple* plugin for Zotero 7 that mooves attachments and links them
+A *simple* plugin for Zotero 7 that mooves attachments and links them.
+
+ZotMoov can automatically move added attachments into the directory of your choosing, or you can opt to manually move and link each file into their own respective directory.
 
 ## Installation
 
