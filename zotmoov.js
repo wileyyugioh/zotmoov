@@ -82,11 +82,11 @@ Zotero.ZotMoov =
             }
 
             // Just overwrite the file if it exists
-            IOUtils.move(file_path, copy_path).then(function()
+            IOUtils.move(file_path, copy_path).then(function(clone, item)
             {
                 if(clone) clone.saveTx();
                 item.saveTx(); // Only save after copied
-            });
+            }.bind(null, clone, item));
         }
     },
 
