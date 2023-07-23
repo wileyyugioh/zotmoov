@@ -26,8 +26,8 @@ Zotero.ZotMoov =
         this.initialized = true;
         this._notifierID = Zotero.Notifier.registerObserver(this.notifyCallback, ['item'], 'zotmoov', 99);
 
-        var window = null;
-        var enumerator = Services.wm.getEnumerator('navigator:browser');
+        let window = null;
+        let enumerator = Services.wm.getEnumerator('navigator:browser');
         while (enumerator.hasMoreElements())
         {
             let win = enumerator.getNext();
@@ -47,10 +47,11 @@ Zotero.ZotMoov =
         Zotero.Notifier.unregisterObserver(this._notifierID);
     },
 
-    move: async function(items, dst_path, options = { ignore_linked: true })
+    async move(items, dst_path, options = { ignore_linked: true })
     {
         if (dst_path == '') return;
 
+        let promises = [];
         for (let item of items)
         {
             if (item.isRegularItem()) continue;
@@ -82,15 +83,18 @@ Zotero.ZotMoov =
             }
 
             // Just overwrite the file if it exists
-            IOUtils.move(file_path, copy_path).then(function(clone, item)
-            {
-                if(clone) clone.saveTx();
-                item.saveTx(); // Only save after copied
-            }.bind(null, clone, item));
+            promises.push(IOUtils.move(file_path, copy_path).then(function(clone, item)
+                {
+                    if(clone) clone.saveTx();
+                    item.saveTx(); // Only save after copied
+                }.bind(null, clone, item))
+            );
         }
+
+        return Promise.all(promises)
     },
 
-    _getSelectedItems: function()
+    _getSelectedItems()
     {
         let items = Zotero.getActiveZoteroPane().getSelectedItems();
         let att_ids = [];
@@ -112,48 +116,48 @@ Zotero.ZotMoov =
         return atts
     },
 
-    moveSelectedItems: async function()
+    async moveSelectedItems()
     {
         let atts = this._getSelectedItems();
-
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
-        return this.move(atts, dst_path, { ignore_linked: false });
+
+        await this.move(atts, dst_path, { ignore_linked: false });
     },
 
-    moveSelectedItemsCustomDir: async function()
+    async moveSelectedItemsCustomDir()
     {
         let atts = this._getSelectedItems();
 
-        var fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
-        var wm = Services.wm;
-        var win = wm.getMostRecentWindow('navigator:browser');
+        let fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
+        let wm = Services.wm;
+        let win = wm.getMostRecentWindow('navigator:browser');
 
         fp.init(win, Zotero.getString('dataDir.selectDir'), fp.modeGetFolder);
         fp.appendFilters(fp.filterAll);
-        var rv = await new Zotero.Promise(function(resolve)
+        let rv = await new Zotero.Promise(function(resolve)
         {
             fp.open((returnConstant) => resolve(returnConstant));
         });
         if (rv != fp.returnOK) return '';
 
-        return this.move(atts, fp.file.path, { ignore_linked: false });
+        await this.move(atts, fp.file.path, { ignore_linked: false });
     },
 
     notifyCallback:
     {
-        addCallback: async function(event, ids, extraData)
+        async addCallback(event, ids, extraData)
         {
             let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
             if (!auto_move) return;
 
             let items = Zotero.Items.get(ids);
             let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
-            Zotero.ZotMoov.move(items, dst_path);
+            await Zotero.ZotMoov.move(items, dst_path);
         },
 
-        notify: async function(event, type, ids, extraData)
+        async notify(event, type, ids, extraData)
         {
-            if (event == 'add') this.addCallback(event, ids, extraData);
+            if (event == 'add') await this.addCallback(event, ids, extraData);
         },
     },
 };
