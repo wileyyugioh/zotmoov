@@ -6,11 +6,11 @@ Zotero.ZotMoov_Prefs =
 {
     async pickDirectory()
     {
-        var fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
+        let fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
 
         fp.init(window, Zotero.getString('dataDir.selectDir'), fp.modeGetFolder);
         fp.appendFilters(fp.filterAll);
-        var rv = await new Zotero.Promise(function(resolve)
+        let rv = await new Zotero.Promise(function(resolve)
         {
             fp.open((returnConstant) => resolve(returnConstant));
         });
@@ -22,7 +22,7 @@ Zotero.ZotMoov_Prefs =
 
     onCustomDirClick(cb)
     {
-        var enumerator = Services.wm.getEnumerator('navigator:browser');
+        let enumerator = Services.wm.getEnumerator('navigator:browser');
         while (enumerator.hasMoreElements()) {
             let win = enumerator.getNext();
             if (!win.ZoteroPane) continue;

@@ -2,7 +2,8 @@ zotmoov-settings-title = ZotMoov设置
 
 zotmoov-settings-filepath-intro = 移动附件到以下目录
 
-zotmoov-settings-filepath-button-label = 选择目录
+zotmoov-settings-filepath-button-label =
+    .label = 选择目录
 
 zotmoov-settings-other-settings = 其它设置
 

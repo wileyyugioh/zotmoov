@@ -35,7 +35,7 @@ ZotMoov_Menus = {
 
     _getWindow()
     {
-        var enumerator = Services.wm.getEnumerator('navigator:browser');
+        let enumerator = Services.wm.getEnumerator('navigator:browser');
         while (enumerator.hasMoreElements())
         {
             let win = enumerator.getNext();
