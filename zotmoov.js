@@ -13,7 +13,6 @@ Zotero.ZotMoov =
     rootURI: null,
     initialized: false,
 
-    _track_add: null,
     _notifierID: null,
 
     init({ id, version, rootURI })
@@ -25,21 +24,6 @@ Zotero.ZotMoov =
         this.rootURI = rootURI;
         this.initialized = true;
         this._notifierID = Zotero.Notifier.registerObserver(this.notifyCallback, ['item'], 'zotmoov', 99);
-
-        let window = null;
-        let enumerator = Services.wm.getEnumerator('navigator:browser');
-        while (enumerator.hasMoreElements())
-        {
-            let win = enumerator.getNext();
-            if (!win.ZoteroPane) continue;
-            window = win;
-        }
-
-        // Unregister callback when the window closes (important to avoid a memory leak)
-        window.addEventListener('unload', function(e)
-        {
-            Zotero.Notifier.unregisterObserver(this._notifierID);
-        }, false);
     },
 
     destroy()
