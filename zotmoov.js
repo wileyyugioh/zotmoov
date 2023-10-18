@@ -39,7 +39,11 @@ Zotero.ZotMoov =
         for (let item of items)
         {
             if (item.isRegularItem()) continue;
-            if (options.ignore_linked && (item.attachmentLinkMode != Zotero.Attachments.LINK_MODE_IMPORTED_FILE)) continue;
+            if (options.ignore_linked)
+            {
+                if (!(item.attachmentLinkMode == Zotero.Attachments.LINK_MODE_IMPORTED_FILE ||
+                      item.attachmentLinkMode == Zotero.Attachments.LINK_MODE_IMPORTED_URL)) continue;
+            }
 
             let file_path = item.getFilePath();
             let file_name = file_path.split(/[\\/]/).pop();
@@ -58,10 +62,9 @@ Zotero.ZotMoov =
             } else 
             {
                 // If later transfered via menus/etc.
-                clone = item.clone()
+                clone = item.clone(null, {includeCollections: true})
                 clone.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
                 clone.attachmentPath = copy_path;
-                clone.setCollections(item.getCollections()); // This isn't cloned
 
                 item.deleted = true;
             }
