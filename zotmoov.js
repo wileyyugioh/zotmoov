@@ -108,7 +108,7 @@ Zotero.ZotMoov =
             );
         }
 
-        return Promise.all(promises)
+        return Promise.all(promises);
     },
 
     // Return collection hierarchy from deepest to shallowest
