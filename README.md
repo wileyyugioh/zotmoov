@@ -18,3 +18,5 @@ Then point ZotMoov to that same folder.
 <img src="res/Image2.png" width="500"/>
 
 If you want to moove already existing files to the ZotMoov directory, you can right click them and use the appropriate menu item.
+
+You can enable the Collection Subdirectory option for ZotMoov to automatically create and place your file in a folder that corresponds to its collection. **Note that each file is only placed in one directory — files in multiple collections will not appear in multiple folders!**
