@@ -18,3 +18,6 @@ zotmoov-settings-enable-automove-label =
 
 zotmoov-settings-enable-custom-dir-label =
     .label = Enable Menu Option to Move to Custom Directories
+
+zotmoov-settings-enable-subdir-move-label =
+    .label = Automatically Move Files to Collection Subdirectory
