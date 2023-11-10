@@ -61,15 +61,19 @@ Zotero.ZotMoov =
             if (options.into_subfolder)
             {
                 // Get parent collection if parent is present
-                let collection_ids = item.parentID ? item.parentItem.getCollections() : item.getCollections()
+                let collection_ids = item.parentID ? item.parentItem.getCollections() : item.getCollections();
 
                 if(collection_ids.length)
                 {
                     let collections = Zotero.Collections.get(collection_ids);
-                    let collection_name = collections[0].name; // Just use the first collection that comes up
-                    collection_name = collection_name.replace(/[^a-z0-9]/gi, '_'); // convert to file safe string
+                    let collection_names = this._getCollectionNamesHierarchy(collections[0]);
 
-                    local_dst_path = PathUtils.join(local_dst_path, collection_name);
+                    for (let i = collection_names.length - 1; i >= 0; i--) // Iterate backwards
+                    {
+                        let collection_name = collection_names[i];
+                        collection_name = collection_name.replace(/[^a-z0-9]/gi, '_'); // Convert to file safe string
+                        local_dst_path = PathUtils.join(local_dst_path, collection_name);
+                    }
                 }
             }
 
@@ -88,7 +92,7 @@ Zotero.ZotMoov =
             } else 
             {
                 // If later transfered via menus/etc.
-                clone = item.clone(null, {includeCollections: true})
+                clone = item.clone(null, {includeCollections: true});
                 clone.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
                 clone.attachmentPath = copy_path;
 
@@ -105,6 +109,21 @@ Zotero.ZotMoov =
         }
 
         return Promise.all(promises)
+    },
+
+    // Return collection hierarchy from deepest to shallowest
+    _getCollectionNamesHierarchy(collection)
+    {
+        let r = [];
+        let loc_collection = collection;
+        for(let i = 0; i < 10; i++) // Timeout after 10 directories
+        {
+            r.push(loc_collection.name);
+            if(!loc_collection.parentID) break;
+            loc_collection = Zotero.Collections.get(loc_collection.parentID);
+        }
+
+        return r;
     },
 
     _getSelectedItems()
