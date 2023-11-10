@@ -31,8 +31,16 @@ Zotero.ZotMoov =
         Zotero.Notifier.unregisterObserver(this._notifierID);
     },
 
-    async move(items, dst_path, options = { ignore_linked: true })
+    async move(items, dst_path, arg_options = {})
     {
+        const default_options = {
+            ignore_linked: true,
+            into_subfolder: false
+        };
+
+        let options = {...default_options, ...arg_options};
+
+
         if (dst_path == '') return;
 
         let promises = [];
@@ -47,6 +55,22 @@ Zotero.ZotMoov =
 
             let file_path = item.getFilePath();
             let file_name = file_path.split(/[\\/]/).pop();
+
+            // Optionally add subdirectory folder here
+            if (options.into_subfolder)
+            {
+                // Get parent collection if parent is present
+                let collection_ids = item.parentID ? item.parentItem.getCollections() : item.getCollections()
+
+                if(collection_ids.length)
+                {
+                    let collections = Zotero.Collections.get(collection_ids);
+                    let collection_name = collections[0].name; // Just use the first collection that comes up
+
+                    dst_path = PathUtils.join(dst_path, collection_name);
+                }
+            }
+
             let copy_path = PathUtils.join(dst_path, file_name);
 
             // Have to check since later adding an entry triggers the
@@ -107,13 +131,15 @@ Zotero.ZotMoov =
     {
         let atts = this._getSelectedItems();
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
+        let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
 
-        await this.move(atts, dst_path, { ignore_linked: false });
+        await this.move(atts, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled });
     },
 
     async moveSelectedItemsCustomDir()
     {
         let atts = this._getSelectedItems();
+        let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
 
         let fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
         let wm = Services.wm;
@@ -127,7 +153,7 @@ Zotero.ZotMoov =
         });
         if (rv != fp.returnOK) return '';
 
-        await this.move(atts, fp.file.path, { ignore_linked: false });
+        await this.move(atts, fp.file.path, { ignore_linked: false, into_subfolder: subfolder_enabled });
     },
 
     notifyCallback:
@@ -139,7 +165,9 @@ Zotero.ZotMoov =
 
             let items = Zotero.Items.get(ids);
             let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
-            await Zotero.ZotMoov.move(items, dst_path);
+            let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
+
+            await Zotero.ZotMoov.move(items, dst_path, { into_subfolder: subfolder_enabled });
         },
 
         async notify(event, type, ids, extraData)

@@ -23,7 +23,8 @@ Zotero.ZotMoov_Prefs =
     onCustomDirClick(cb)
     {
         let enumerator = Services.wm.getEnumerator('navigator:browser');
-        while (enumerator.hasMoreElements()) {
+        while (enumerator.hasMoreElements())
+        {
             let win = enumerator.getNext();
             if (!win.ZoteroPane) continue;
 
