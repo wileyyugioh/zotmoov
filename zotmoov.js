@@ -55,6 +55,7 @@ Zotero.ZotMoov =
 
             let file_path = item.getFilePath();
             let file_name = file_path.split(/[\\/]/).pop();
+            let local_dst_path = dst_path;
 
             // Optionally add subdirectory folder here
             if (options.into_subfolder)
@@ -66,12 +67,13 @@ Zotero.ZotMoov =
                 {
                     let collections = Zotero.Collections.get(collection_ids);
                     let collection_name = collections[0].name; // Just use the first collection that comes up
+                    collection_name = collection_name.replace(/[^a-z0-9]/gi, '_'); // convert to file safe string
 
-                    dst_path = PathUtils.join(dst_path, collection_name);
+                    local_dst_path = PathUtils.join(local_dst_path, collection_name);
                 }
             }
 
-            let copy_path = PathUtils.join(dst_path, file_name);
+            let copy_path = PathUtils.join(local_dst_path, file_name);
 
             // Have to check since later adding an entry triggers the
             // handler again
