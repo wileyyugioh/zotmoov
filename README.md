@@ -23,11 +23,11 @@ You can enable the Collection Subdirectory option for ZotMoov to automatically c
 
 ## FAQ
 
-### File renaming
+### File Renaming
 
 I recommend using the automatic file renaming functionality included in Zotero 7. It has support for custom patterns.
 
-### Automatic subdirectories
+### Automatic Subdirectories
 
 ZotMoov has an option to automatically move files into a subdirectory that corresponds to its collection. **Note that each file is only placed in one directory — files in multiple collections will not appear in multiple folders!**
 
