@@ -5,7 +5,7 @@
 {
   "manifest_version": 2,
   "name": "ZotMoov",
-  "version": "0.0.3b3",
+  "version": "0.0.3b4",
   "description": "Mooves attachments and links them",
   "author": "Wiley Yu",
   "applications": {

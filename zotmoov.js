@@ -51,7 +51,7 @@ Zotero.ZotMoov =
             if (options.ignore_linked)
             {
                 if (item.attachmentLinkMode != Zotero.Attachments.LINK_MODE_IMPORTED_FILE &&
-                      item.attachmentLinkMode != Zotero.Attachments.LINK_MODE_IMPORTED_URL) continue;
+                    item.attachmentLinkMode != Zotero.Attachments.LINK_MODE_IMPORTED_URL) continue;
             }
 
             let file_path = item.getFilePath();
@@ -103,13 +103,13 @@ Zotero.ZotMoov =
             // Just overwrite the file if it exists
             promises.push(IOUtils.move(file_path, copy_path).then(function(clone, item)
                 {
-                    if(clone) clone.saveTx();
+                    if(clone) clone.saveTx().then(id => Zotero.Fulltext.indexItems(id)); // reindex clone after saved
                     item.saveTx(); // Only save after copied
                 }.bind(null, clone, item))
             );
         }
 
-        return Promise.all(promises);
+        return Promise.allSettled(promises);
     },
 
     // Return collection hierarchy from deepest to shallowest
