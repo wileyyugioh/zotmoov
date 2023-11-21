@@ -20,3 +20,17 @@ Then point ZotMoov to that same folder.
 If you want to moove already existing files to the ZotMoov directory, you can right click them and use the appropriate menu item.
 
 You can enable the Collection Subdirectory option for ZotMoov to automatically create and place your file in a folder that corresponds to its collection. **Note that each file is only placed in one directory — files in multiple collections will not appear in multiple folders!**
+
+## FAQ
+
+### File renaming
+
+I recommend using the automatic file renaming functionality included in Zotero 7. It has support for custom patterns.
+
+### Automatic subdirectories
+
+ZotMoov has an option to automatically move files into a subdirectory that corresponds to its collection. **Note that each file is only placed in one directory — files in multiple collections will not appear in multiple folders!**
+
+### Bugs/Feature Requests
+
+Both can be filed [here](https://github.com/wileyyugioh/zotmoov/issues). Please keep feature requests tightly focused on the extension's core purpose of mooving attachments and linking them!
