@@ -47,10 +47,11 @@ Zotero.ZotMoov =
         for (let item of items)
         {
             if (item.isRegularItem()) continue;
+
             if (options.ignore_linked)
             {
-                if (!(item.attachmentLinkMode == Zotero.Attachments.LINK_MODE_IMPORTED_FILE ||
-                      item.attachmentLinkMode == Zotero.Attachments.LINK_MODE_IMPORTED_URL)) continue;
+                if (item.attachmentLinkMode != Zotero.Attachments.LINK_MODE_IMPORTED_FILE &&
+                      item.attachmentLinkMode != Zotero.Attachments.LINK_MODE_IMPORTED_URL) continue;
             }
 
             let file_path = item.getFilePath();
@@ -178,6 +179,8 @@ Zotero.ZotMoov =
 
     notifyCallback:
     {
+        _snapshots: [], // Jank queue system
+
         async addCallback(event, ids, extraData)
         {
             let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
@@ -187,12 +190,41 @@ Zotero.ZotMoov =
             let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
             let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
 
+            // With snapshots, Zotero adds the file to the database and then
+            // moves the file from a temporary directory to the real one
+            // We can use the index event handler to snag it
+            this._snapshots.push(...items.filter(item => item.isSnapshotAttachment()));
+            items = items.filter(item => !item.isSnapshotAttachment());
+
             await Zotero.ZotMoov.move(items, dst_path, { into_subfolder: subfolder_enabled });
+        },
+
+        async indexCallback(event, ids, extraData)
+        {
+            // Only move the items that we tracked before
+            let items = this._snapshots.filter(item => ids.includes(item.id));
+            if(items.length == 0) return;
+
+            let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
+            if (!auto_move) return;
+
+            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
+            let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
+
+            await Zotero.ZotMoov.move(items, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled });
+
+            // Remove processed tracked items
+            for (let item of items)
+            {
+                const index = this._snapshots.indexOf(item);
+                if (index > -1) this._snapshots.splice(index, 1);
+            }
         },
 
         async notify(event, type, ids, extraData)
         {
             if (event == 'add') await this.addCallback(event, ids, extraData);
+            if (event == 'index') await this.indexCallback(event, ids, extraData);
         },
     },
 };
