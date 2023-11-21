@@ -96,15 +96,19 @@ Zotero.ZotMoov =
                 clone = item.clone(null, {includeCollections: true});
                 clone.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
                 clone.attachmentPath = copy_path;
-
-                item.deleted = true;
             }
 
             // Just overwrite the file if it exists
             promises.push(IOUtils.move(file_path, copy_path).then(function(clone, item)
                 {
-                    if(clone) clone.saveTx().then(id => Zotero.Fulltext.indexItems(id)); // reindex clone after saved
-                    item.saveTx(); // Only save after copied
+                    if (clone)
+                    {
+                        clone.saveTx().then(id => Zotero.Fulltext.indexItems(id)); // reindex clone after saved
+                        item.eraseTx(); // delete original item
+                    } else
+                    {
+                        item.saveTx(); // Only save after copied
+                    }
                 }.bind(null, clone, item))
             );
         }
