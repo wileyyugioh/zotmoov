@@ -25,7 +25,7 @@ You can enable the Collection Subdirectory option for ZotMoov to automatically c
 
 ### File Renaming
 
-I recommend using the [automatic file renaming functionality included in Zotero 7](https://www.zotero.org/support/file_renaming). It has support for custom patterns.
+I recommend using the [automatic file renaming functionality included in Zotero 7](https://www.zotero.org/support/file_renaming). It has support for custom patterns. You will have to enable “Rename linked files” from the General pane of the Zotero settings.
 
 ### Automatic Subdirectories
 
