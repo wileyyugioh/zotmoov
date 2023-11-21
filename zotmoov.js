@@ -46,7 +46,7 @@ Zotero.ZotMoov =
         let promises = [];
         for (let item of items)
         {
-            if (item.isRegularItem()) continue;
+            if (!item.isAttachment()) continue;
 
             if (options.ignore_linked)
             {
@@ -138,7 +138,7 @@ Zotero.ZotMoov =
         let atts = new Set();
         for (let item of items)
         {
-            if (!item.isRegularItem())
+            if (item.isAttachment())
             {
                 atts.add(item);
                 continue;
