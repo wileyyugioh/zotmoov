@@ -160,7 +160,6 @@ Zotero.ZotMoov =
     async moveSelectedItemsCustomDir()
     {
         let atts = this._getSelectedItems();
-        let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
 
         let fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
         let wm = Services.wm;
@@ -174,7 +173,7 @@ Zotero.ZotMoov =
         });
         if (rv != fp.returnOK) return '';
 
-        await this.move(atts, fp.file.path, { ignore_linked: false, into_subfolder: subfolder_enabled });
+        await this.move(atts, fp.file.path, { ignore_linked: false, into_subfolder: false });
     },
 
     notifyCallback:
