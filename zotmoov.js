@@ -72,7 +72,7 @@ Zotero.ZotMoov =
                     for (let i = collection_names.length - 1; i >= 0; i--) // Iterate backwards
                     {
                         let collection_name = collection_names[i];
-                        collection_name = collection_name.replace(/[^a-z0-9]/gi, '_'); // Convert to file safe string
+                        collection_name = Zotero.ZotMoov.Sanitize.sanitize(collection_name, '_'); // Convert to file safe string
                         local_dst_path = PathUtils.join(local_dst_path, collection_name);
                     }
                 }
