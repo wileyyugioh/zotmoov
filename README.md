@@ -19,6 +19,8 @@ Then point ZotMoov to that same folder.
 
 If you want to moove already existing files to the ZotMoov directory, you can right click them and use the appropriate menu item.
 
+By default ZotMoov will move and link your files. You can change the dropdown menu option to `copy` for ZotMoov to just make a back-up of your added files in the specified directory.
+
 You can enable the Collection Subdirectory option for ZotMoov to automatically create and place your file in a folder that corresponds to its collection. **Note that each file is only placed in one directory — files in multiple collections will not appear in multiple folders!**
 
 ## FAQ
