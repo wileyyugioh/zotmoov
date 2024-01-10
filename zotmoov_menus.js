@@ -28,9 +28,9 @@ Zotero.ZotMoov.Menus = {
 
     _popupShowing()
     {
-        let should_disabled = !this._hasAttachments();
-        this._move_selected_item.disabled = should_disabled;
-        this._move_selected_item_custom.disabled = should_disabled;
+        let should_disabled = !Zotero.ZotMoov.Menus._hasAttachments();
+        Zotero.ZotMoov.Menus._move_selected_item.disabled = should_disabled;
+        Zotero.ZotMoov.Menus._move_selected_item_custom.disabled = should_disabled;
     },
 
     _getWindow()
@@ -82,7 +82,7 @@ Zotero.ZotMoov.Menus = {
         });
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
-        zotero_itemmenu.addEventListener('popupshowing', this._popupShowing.bind(this));
+        zotero_itemmenu.addEventListener('popupshowing', this._popupShowing);
 
         zotero_itemmenu.appendChild(menuseparator);
         zotero_itemmenu.appendChild(this._move_selected_item);

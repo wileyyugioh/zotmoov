@@ -13,8 +13,7 @@ Zotero.ZotMoov =
     rootURI: null,
     initialized: false,
 
-    _notifierIDMove: null,
-    _notifierIDCopy: null,
+    _notifierID: null,
 
     init({ id, version, rootURI })
     {
@@ -24,14 +23,12 @@ Zotero.ZotMoov =
         this.version = version;
         this.rootURI = rootURI;
         this.initialized = true;
-        this._notifierIDMove = Zotero.Notifier.registerObserver(this.notifyCallbackMove, ['item'], 'zotmoov', 99);
-        this._notifierIDCopy = Zotero.Notifier.registerObserver(this.notifyCallback, ['item'], 'zotmoov', 101);
+        this._notifierID = Zotero.Notifier.registerObserver(this.notifyCallback, ['item'], 'zotmoov', 99);
     },
 
     destroy()
     {
-        Zotero.Notifier.unregisterObserver(this._notifierIDMove);
-        Zotero.Notifier.unregisterObserver(this._notifierIDCopy);
+        Zotero.Notifier.unregisterObserver(this._notifierID);
     },
 
     _getCopyPath(item, dst_path, into_subfolder)
@@ -140,6 +137,8 @@ Zotero.ZotMoov =
         let promises = [];
         for (let item of items)
         {
+            if (!item.isAttachment()) continue;
+
             let file_path = item.getFilePath();
             let copy_path = Zotero.ZotMoov._getCopyPath(item, dst_path, options.into_subfolder);
 
@@ -226,8 +225,29 @@ Zotero.ZotMoov =
         }
     },
 
-    notifyCallbackMove:
+    notifyCallback:
     {
+        _snapshots: [], // Jank queue system
+        _copies: [],
+
+        async _postProcess(items, event, extraData)
+        {
+            let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
+            if (!auto_move) return;
+
+            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
+            let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
+
+
+            if(Zotero.Prefs.get('extensions.zotmoov.no_copy', true) == 'move')
+            {
+                 await Zotero.ZotMoov.move(items, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled });
+            } else
+            {
+                await Zotero.ZotMoov.copy(items, dst_path, { into_subfolder: subfolder_enabled });
+            }
+        },
+
         async addCallback(event, ids, extraData)
         {
             let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
@@ -248,33 +268,17 @@ Zotero.ZotMoov =
                  await Zotero.ZotMoov.move(items, dst_path, { into_subfolder: subfolder_enabled });
             } else
             {
-                // hack to get renamed file copied lol
-                this._snapshots.push(...items);
+                this._copies.push(...items);
             }
         },
 
         async indexCallback(event, ids, extraData)
         {
             // Only move the items that we tracked before
-            Zotero.log(ids);
-            Zotero.log(this._snapshots);
             let items = this._snapshots.filter(item => ids.includes(item.id));
             if(items.length == 0) return;
 
-            let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
-            if (!auto_move) return;
-
-            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
-            let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
-
-
-            if(Zotero.Prefs.get('extensions.zotmoov.no_copy', true) == 'move')
-            {
-                 await Zotero.ZotMoov.move(items, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled });
-            } else
-            {
-                await Zotero.ZotMoov.copy(items, dst_path, { into_subfolder: subfolder_enabled });
-            }
+            this._postProcess(items, event, extraData);
 
             // Remove processed tracked items
             for (let item of items)
@@ -284,10 +288,29 @@ Zotero.ZotMoov =
             }
         },
 
+        async refreshCallback(event, ids, extraData)
+        {
+            if (extraData == {}) return;
+
+            // Only move the items that we tracked before
+            let items = this._copies.filter(item => ids.includes(item.id));
+            if(items.length == 0) return;
+
+            this._postProcess(items, event, extraData);
+
+            // Remove processed tracked items
+            for (let item of items)
+            {
+                const index = this._copies.indexOf(item);
+                if (index > -1) this._copies.splice(index, 1);
+            }
+        },
+
         async notify(event, type, ids, extraData)
         {
             if (event == 'add') await this.addCallback(event, ids, extraData);
             if (event == 'index') await this.indexCallback(event, ids, extraData);
+            if (event == 'refresh') await this.refreshCallback(event, ids, extraData);
         },
     },
 };
