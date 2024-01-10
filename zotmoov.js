@@ -304,8 +304,6 @@ Zotero.ZotMoov =
             {
                 if (!item[0].isAttachment()) continue;
                 let copy_path = Zotero.ZotMoov._getCopyPath(item[0], dst_path, subfolder_enabled);
-                Zotero.log(copy_path);
-                Zotero.log(item[1]);
                 if (copy_path == item[1]) continue;
                 promises.push(IOUtils.move(item[1], copy_path));
                 remove.push(item);
