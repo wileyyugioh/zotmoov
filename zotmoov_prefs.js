@@ -2,7 +2,7 @@
 // zotmoov_prefs.js
 // Written by Wiley Yu
 
-Zotero.ZotMoov_Prefs =
+Zotero.ZotMoov.Prefs =
 {
     async pickDirectory()
     {
@@ -29,6 +29,18 @@ Zotero.ZotMoov_Prefs =
             if (!win.ZoteroPane) continue;
 
             win.document.getElementById('zotmoov-context-move-selected-custom-dir').hidden = cb.checked;
+        }
+    },
+
+    updateMenuItems(item)
+    {
+        let v = item.value;
+        if(v == 'move')
+        {
+            Zotero.ZotMoov.Menus.setMove();
+        } else
+        {
+            Zotero.ZotMoov.Menus.setCopy();
         }
     }
 };
