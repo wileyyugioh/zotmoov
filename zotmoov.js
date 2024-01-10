@@ -200,7 +200,7 @@ Zotero.ZotMoov =
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
         let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
 
-        if(Zotero.Prefs.get('extensions.zotmoov.no_copy', true) == 'move')
+        if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
              await Zotero.ZotMoov.move(atts, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled });
         } else
@@ -225,7 +225,7 @@ Zotero.ZotMoov =
         });
         if (rv != fp.returnOK) return '';
 
-        if(Zotero.Prefs.get('extensions.zotmoov.no_copy', true) == 'move')
+        if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
              await Zotero.ZotMoov.move(atts, fp.file.path, { ignore_linked: false, into_subfolder: false });
         } else
@@ -254,7 +254,7 @@ Zotero.ZotMoov =
             this._snapshots.push(...items.filter(item => item.isSnapshotAttachment()));
             items = items.filter(item => !item.isSnapshotAttachment());
 
-            if(Zotero.Prefs.get('extensions.zotmoov.no_copy', true) == 'move')
+            if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
             {
                  await Zotero.ZotMoov.move(items, dst_path, { into_subfolder: subfolder_enabled });
             } else
@@ -280,7 +280,7 @@ Zotero.ZotMoov =
             let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
             let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
 
-            if(Zotero.Prefs.get('extensions.zotmoov.no_copy', true) == 'move')
+            if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
             {
                  await Zotero.ZotMoov.move(items, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled });
             } else
