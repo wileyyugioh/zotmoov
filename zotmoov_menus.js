@@ -90,7 +90,7 @@ Zotero.ZotMoov.Menus = {
 
         this._store_added_elements.push(menuseparator, this._move_selected_item, this._move_selected_item_custom);
 
-        if(Zotero.Prefs.get('extensions.zotmoov.no_copy', true) == 'move')
+        if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
             this.setMove();
         } else
