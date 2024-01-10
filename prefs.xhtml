@@ -15,15 +15,24 @@
             <label><html:h2 data-l10n-id="zotmoov-settings-filepath-intro"></html:h2></label>
             <hbox>
                 <html:input type="text" id="zotmoov-dst-dir" readonly="true" preference="extensions.zotmoov.dst_dir" style="-moz-box-flex: 1;"/>
-                <button data-l10n-id="zotmoov-settings-filepath-button-label" onclick="Zotero.ZotMoov_Prefs.pickDirectory();"/>
+                <button data-l10n-id="zotmoov-settings-filepath-button-label" oncommand="Zotero.ZotMoov.Prefs.pickDirectory();"/>
             </hbox>
         </vbox>
     </groupbox>
     <groupbox>
         <vbox>
             <label><html:h2 data-l10n-id="zotmoov-settings-other-settings"></html:h2></label>
+                <hbox align="center">
+                    <label data-l10n-id="zotmoov-settings-behavior-explanation"></label>
+                    <menulist native="true" preference="extensions.zotmoov.no_copy">
+                        <menupopup>
+                            <menuitem data-l10n-id="zotmoov-settings-behavior-move" value="move" oncommand="Zotero.ZotMoov.Prefs.updateMenuItems(this);"/>
+                            <menuitem data-l10n-id="zotmoov-settings-behavior-copy" value="copy" oncommand="Zotero.ZotMoov.Prefs.updateMenuItems(this);"/>
+                        </menupopup>
+                    </menulist>
+                </hbox>
                 <checkbox native="true" preference="extensions.zotmoov.enable_automove" data-l10n-id="zotmoov-settings-enable-automove-label"/>
-                <checkbox native="true" preference="extensions.zotmoov.enable_custom_dir" data-l10n-id="zotmoov-settings-enable-custom-dir-label" onclick="Zotero.ZotMoov_Prefs.onCustomDirClick(this);"/>
+                <checkbox native="true" preference="extensions.zotmoov.enable_custom_dir" data-l10n-id="zotmoov-settings-enable-custom-dir-label" oncommand="Zotero.ZotMoov.Prefs.onCustomDirClick(this);"/>
                 <checkbox native="true" preference="extensions.zotmoov.enable_subdir_move" data-l10n-id="zotmoov-settings-enable-subdir-move-label"/>
         </vbox>
     </groupbox>

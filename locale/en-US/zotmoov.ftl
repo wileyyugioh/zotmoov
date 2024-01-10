@@ -13,6 +13,12 @@ zotmoov-context-move-selected =
 zotmoov-context-move-selected-custom-dir =
     .label = ZotMoov: Move Selected to Custom Directory
 
+zotmoov-context-copy-selected =
+    .label = ZotMoov: Copy Selected to Directory
+
+zotmoov-context-copy-selected-custom-dir =
+    .label = ZotMoov: Copy Selected to Custom Directory
+
 zotmoov-settings-enable-automove-label =
     .label = Automatically Move Files When Added
 
@@ -21,3 +27,11 @@ zotmoov-settings-enable-custom-dir-label =
 
 zotmoov-settings-enable-subdir-move-label =
     .label = Automatically Move Files to Collection Subdirectory
+
+zotmoov-settings-behavior-explanation = File Behavior
+
+zotmoov-settings-behavior-move =
+    .label = Move
+
+zotmoov-settings-behavior-copy =
+    .label = Copy

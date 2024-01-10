@@ -7,8 +7,6 @@ if (typeof Zotero == 'undefined')
     var Zotero;
 }
 
-var ZotMoov_Menus;
-
 function log(msg)
 {
     Zotero.debug('ZotMoov: ' + msg);
@@ -42,20 +40,23 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
     });
 
     Zotero.ZotMoov.init({ id, version, rootURI });
-    ZotMoov_Menus.init();
+    Zotero.ZotMoov.Menus.init();
 }
 
 function shutdown()
 {
     log('ZotMoov: Shutting down');
     Zotero.ZotMoov.destroy();
-    ZotMoov_Menus.destroy();
+    Zotero.ZotMoov.Menus.destroy();
 
     Zotero.ZotMoov = null;
-    ZotMoov_Menus = null;
 }
 
 function uninstall()
 {    
     log('ZotMoov: Uninstalled');
+    Zotero.ZotMoov.destroy();
+    Zotero.ZotMoov.Menus.destroy();
+
+    Zotero.ZotMoov = null;
 }

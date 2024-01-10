@@ -13,7 +13,8 @@ Zotero.ZotMoov =
     rootURI: null,
     initialized: false,
 
-    _notifierID: null,
+    _notifierIDMove: null,
+    _notifierIDCopy: null,
 
     init({ id, version, rootURI })
     {
@@ -23,12 +24,45 @@ Zotero.ZotMoov =
         this.version = version;
         this.rootURI = rootURI;
         this.initialized = true;
-        this._notifierID = Zotero.Notifier.registerObserver(this.notifyCallback, ['item'], 'zotmoov', 99);
+        this._notifierIDMove = Zotero.Notifier.registerObserver(this.notifyCallbackMove, ['item'], 'zotmoov', 99);
+        this._notifierIDCopy = Zotero.Notifier.registerObserver(this.notifyCallback, ['item'], 'zotmoov', 101);
     },
 
     destroy()
     {
-        Zotero.Notifier.unregisterObserver(this._notifierID);
+        Zotero.Notifier.unregisterObserver(this._notifierIDMove);
+        Zotero.Notifier.unregisterObserver(this._notifierIDCopy);
+    },
+
+    _getCopyPath(item, dst_path, into_subfolder)
+    {
+        let file_path = item.getFilePath();
+        let file_name = file_path.split(/[\\/]/).pop();
+        let local_dst_path = dst_path;
+
+        // Optionally add subdirectory folder here
+        if (into_subfolder)
+        {
+            // Get parent collection if parent is present
+            let collection_ids = item.parentID ? item.parentItem.getCollections() : item.getCollections();
+
+            if(collection_ids.length)
+            {
+                let collections = Zotero.Collections.get(collection_ids);
+                let collection_names = this._getCollectionNamesHierarchy(collections[0]);
+
+                for (let i = collection_names.length - 1; i >= 0; i--) // Iterate backwards
+                {
+                    let collection_name = collection_names[i];
+                    collection_name = Zotero.ZotMoov.Sanitize.sanitize(collection_name, '_'); // Convert to file safe string
+                    local_dst_path = PathUtils.join(local_dst_path, collection_name);
+                }
+            }
+        }
+
+        let copy_path = PathUtils.join(local_dst_path, file_name);
+
+        return copy_path;
     },
 
     async move(items, dst_path, arg_options = {})
@@ -55,30 +89,7 @@ Zotero.ZotMoov =
             }
 
             let file_path = item.getFilePath();
-            let file_name = file_path.split(/[\\/]/).pop();
-            let local_dst_path = dst_path;
-
-            // Optionally add subdirectory folder here
-            if (options.into_subfolder)
-            {
-                // Get parent collection if parent is present
-                let collection_ids = item.parentID ? item.parentItem.getCollections() : item.getCollections();
-
-                if(collection_ids.length)
-                {
-                    let collections = Zotero.Collections.get(collection_ids);
-                    let collection_names = this._getCollectionNamesHierarchy(collections[0]);
-
-                    for (let i = collection_names.length - 1; i >= 0; i--) // Iterate backwards
-                    {
-                        let collection_name = collection_names[i];
-                        collection_name = Zotero.ZotMoov.Sanitize.sanitize(collection_name, '_'); // Convert to file safe string
-                        local_dst_path = PathUtils.join(local_dst_path, collection_name);
-                    }
-                }
-            }
-
-            let copy_path = PathUtils.join(local_dst_path, file_name);
+            let copy_path = Zotero.ZotMoov._getCopyPath(item, dst_path, options.into_subfolder);
 
             // Have to check since later adding an entry triggers the
             // handler again
@@ -98,7 +109,6 @@ Zotero.ZotMoov =
                 clone.attachmentPath = copy_path;
             }
 
-            // Just overwrite the file if it exists
             promises.push(IOUtils.move(file_path, copy_path).then(function(clone, item)
                 {
                     if (clone)
@@ -114,6 +124,29 @@ Zotero.ZotMoov =
         }
 
         return Promise.allSettled(promises);
+    },
+
+    async copy(items, dst_path, arg_options = {})
+    {
+        const default_options = {
+            into_subfolder: false,
+        };
+
+        let options = {...default_options, ...arg_options};
+
+
+        if (dst_path == '') return;
+
+        let promises = [];
+        for (let item of items)
+        {
+            let file_path = item.getFilePath();
+            let copy_path = Zotero.ZotMoov._getCopyPath(item, dst_path, options.into_subfolder);
+
+            if (file_path == copy_path) continue;
+
+            promises.push(IOUtils.copy(file_path, copy_path));
+        }
     },
 
     // Return collection hierarchy from deepest to shallowest
@@ -159,7 +192,13 @@ Zotero.ZotMoov =
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
         let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
 
-        await this.move(atts, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled });
+        if(Zotero.Prefs.get('extensions.zotmoov.no_copy', true) == 'move')
+        {
+             await Zotero.ZotMoov.move(atts, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled });
+        } else
+        {
+            await Zotero.ZotMoov.copy(atts, dst_path, { into_subfolder: subfolder_enabled });
+        }
     },
 
     async moveSelectedItemsCustomDir()
@@ -178,13 +217,17 @@ Zotero.ZotMoov =
         });
         if (rv != fp.returnOK) return '';
 
-        await this.move(atts, fp.file.path, { ignore_linked: false, into_subfolder: false });
+        if(Zotero.Prefs.get('extensions.zotmoov.no_copy', true) == 'move')
+        {
+             await Zotero.ZotMoov.move(atts, fp.file.path, { ignore_linked: false, into_subfolder: false });
+        } else
+        {
+            await Zotero.ZotMoov.copy(atts, fp.file.path, { into_subfolder: false });
+        }
     },
 
-    notifyCallback:
+    notifyCallbackMove:
     {
-        _snapshots: [], // Jank queue system
-
         async addCallback(event, ids, extraData)
         {
             let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
@@ -200,12 +243,21 @@ Zotero.ZotMoov =
             this._snapshots.push(...items.filter(item => item.isSnapshotAttachment()));
             items = items.filter(item => !item.isSnapshotAttachment());
 
-            await Zotero.ZotMoov.move(items, dst_path, { into_subfolder: subfolder_enabled });
+            if(Zotero.Prefs.get('extensions.zotmoov.no_copy', true) == 'move')
+            {
+                 await Zotero.ZotMoov.move(items, dst_path, { into_subfolder: subfolder_enabled });
+            } else
+            {
+                // hack to get renamed file copied lol
+                this._snapshots.push(...items);
+            }
         },
 
         async indexCallback(event, ids, extraData)
         {
             // Only move the items that we tracked before
+            Zotero.log(ids);
+            Zotero.log(this._snapshots);
             let items = this._snapshots.filter(item => ids.includes(item.id));
             if(items.length == 0) return;
 
@@ -215,7 +267,14 @@ Zotero.ZotMoov =
             let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
             let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
 
-            await Zotero.ZotMoov.move(items, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled });
+
+            if(Zotero.Prefs.get('extensions.zotmoov.no_copy', true) == 'move')
+            {
+                 await Zotero.ZotMoov.move(items, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled });
+            } else
+            {
+                await Zotero.ZotMoov.copy(items, dst_path, { into_subfolder: subfolder_enabled });
+            }
 
             // Remove processed tracked items
             for (let item of items)
