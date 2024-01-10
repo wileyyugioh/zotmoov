@@ -146,6 +146,8 @@ Zotero.ZotMoov =
 
             promises.push(IOUtils.copy(file_path, copy_path));
         }
+
+        return Promise.allSettled(promises);
     },
 
     // Return collection hierarchy from deepest to shallowest
@@ -230,24 +232,6 @@ Zotero.ZotMoov =
         _snapshots: [], // Jank queue system
         _copies: [],
 
-        async _postProcess(items, event, extraData)
-        {
-            let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
-            if (!auto_move) return;
-
-            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
-            let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
-
-
-            if(Zotero.Prefs.get('extensions.zotmoov.no_copy', true) == 'move')
-            {
-                 await Zotero.ZotMoov.move(items, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled });
-            } else
-            {
-                await Zotero.ZotMoov.copy(items, dst_path, { into_subfolder: subfolder_enabled });
-            }
-        },
-
         async addCallback(event, ids, extraData)
         {
             let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
@@ -268,7 +252,12 @@ Zotero.ZotMoov =
                  await Zotero.ZotMoov.move(items, dst_path, { into_subfolder: subfolder_enabled });
             } else
             {
-                this._copies.push(...items);
+                await Zotero.ZotMoov.copy(items, dst_path, { into_subfolder: subfolder_enabled });
+                for (let item of items)
+                {
+                    if (!item.isAttachment()) continue;
+                    this._copies.push([item, Zotero.ZotMoov._getCopyPath(item, dst_path, subfolder_enabled)]);
+                }
             }
         },
 
@@ -278,7 +267,19 @@ Zotero.ZotMoov =
             let items = this._snapshots.filter(item => ids.includes(item.id));
             if(items.length == 0) return;
 
-            this._postProcess(items, event, extraData);
+            let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
+            if (!auto_move) return;
+
+            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
+            let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
+
+            if(Zotero.Prefs.get('extensions.zotmoov.no_copy', true) == 'move')
+            {
+                 await Zotero.ZotMoov.move(items, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled });
+            } else
+            {
+                await Zotero.ZotMoov.copy(items, dst_path, { into_subfolder: subfolder_enabled });
+            }
 
             // Remove processed tracked items
             for (let item of items)
@@ -290,20 +291,34 @@ Zotero.ZotMoov =
 
         async refreshCallback(event, ids, extraData)
         {
-            if (extraData == {}) return;
-
             // Only move the items that we tracked before
-            let items = this._copies.filter(item => ids.includes(item.id));
+            let items = this._copies.filter(item => ids.includes(item[0].id));
             if(items.length == 0) return;
 
-            this._postProcess(items, event, extraData);
+            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
+            let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
+
+            let promises = [];
+            let remove = [];
+            for (let item of items)
+            {
+                if (!item[0].isAttachment()) continue;
+                let copy_path = Zotero.ZotMoov._getCopyPath(item[0], dst_path, subfolder_enabled);
+                Zotero.log(copy_path);
+                Zotero.log(item[1]);
+                if (copy_path == item[1]) continue;
+                promises.push(IOUtils.move(item[1], copy_path));
+                remove.push(item);
+            }
 
             // Remove processed tracked items
-            for (let item of items)
+            for (let item of remove)
             {
                 const index = this._copies.indexOf(item);
                 if (index > -1) this._copies.splice(index, 1);
             }
+
+            return Promise.allSettled(promises);
         },
 
         async notify(event, type, ids, extraData)
