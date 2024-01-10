@@ -110,8 +110,15 @@ Zotero.ZotMoov =
                 {
                     if (clone)
                     {
-                        clone.saveTx().then(id => Zotero.Fulltext.indexItems(id)); // reindex clone after saved
-                        item.eraseTx(); // delete original item
+                        clone.saveTx().then(async function(id)
+                        {
+                            await Zotero.DB.executeTransaction(async function()
+                            {
+                              await Zotero.Items.moveChildItems(item, clone);
+                            });
+                            Zotero.Fulltext.indexItems(id);// reindex clone after saved
+                            item.eraseTx(); // delete original item
+                        });
                     } else
                     {
                         item.saveTx(); // Only save after copied
