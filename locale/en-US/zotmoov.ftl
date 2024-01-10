@@ -20,13 +20,13 @@ zotmoov-context-copy-selected-custom-dir =
     .label = ZotMoov: Copy Selected to Custom Directory
 
 zotmoov-settings-enable-automove-label =
-    .label = Automatically Move Files When Added
+    .label = Automatically Move/Copy Files When Added
 
 zotmoov-settings-enable-custom-dir-label =
-    .label = Enable Menu Option to Move to Custom Directories
+    .label = Enable Menu Option to Move/Copy to Custom Directories
 
 zotmoov-settings-enable-subdir-move-label =
-    .label = Automatically Move Files to Collection Subdirectory
+    .label = Automatically Move/Copy Files to Collection Subdirectory
 
 zotmoov-settings-behavior-explanation = File Behavior
 
