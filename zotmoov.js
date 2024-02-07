@@ -92,37 +92,21 @@ Zotero.ZotMoov =
             // handler again
             if (file_path == copy_path) continue;
 
-            let clone = null;
-            if (options.ignore_linked)
-            {
-                // If dragged and dropped from 
-                item.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
-                item.attachmentPath = copy_path;
-            } else 
-            {
-                // If later transfered via menus/etc.
-                clone = item.clone(null, {includeCollections: true});
-                clone.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
-                clone.attachmentPath = copy_path;
-            }
+            let clone = item.clone(null, {includeCollections: true});
+            clone.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
+            clone.attachmentPath = copy_path;
 
             promises.push(IOUtils.move(file_path, copy_path).then(function(clone, item)
                 {
-                    if (clone)
+                    clone.saveTx().then(async function(id)
                     {
-                        clone.saveTx().then(async function(id)
+                        await Zotero.DB.executeTransaction(async function()
                         {
-                            await Zotero.DB.executeTransaction(async function()
-                            {
-                              await Zotero.Items.moveChildItems(item, clone);
-                            });
-                            Zotero.Fulltext.indexItems(id);// reindex clone after saved
-                            item.eraseTx(); // delete original item
+                          await Zotero.Items.moveChildItems(item, clone);
                         });
-                    } else
-                    {
-                        item.saveTx(); // Only save after copied
-                    }
+                        Zotero.Fulltext.indexItems(id);// reindex clone after saved
+                        item.eraseTx(); // delete original item
+                    });
                 }.bind(null, clone, item))
             );
         }
@@ -236,8 +220,22 @@ Zotero.ZotMoov =
 
     notifyCallback:
     {
-        _snapshots: [], // Jank queue system
-        _copies: [],
+        _items: [],
+        _timeoutID: 0,
+
+        async execute()
+        {
+            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
+            let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
+
+            if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
+            {
+                 await Zotero.ZotMoov.move(this._items, dst_path, { into_subfolder: subfolder_enabled });
+            } else
+            {
+                await Zotero.ZotMoov.copy(this._items, dst_path, { into_subfolder: subfolder_enabled });
+            }
+        },
 
         async addCallback(event, ids, extraData)
         {
@@ -245,92 +243,19 @@ Zotero.ZotMoov =
             if (!auto_move) return;
 
             let items = Zotero.Items.get(ids);
-            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
-            let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
-
-            // With snapshots, Zotero adds the file to the database and then
-            // moves the file from a temporary directory to the real one
-            // We can use the index event handler to snag it
-            this._snapshots.push(...items.filter(item => item.isSnapshotAttachment()));
-            items = items.filter(item => !item.isSnapshotAttachment());
-
-            if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
-            {
-                 await Zotero.ZotMoov.move(items, dst_path, { into_subfolder: subfolder_enabled });
-            } else
-            {
-                await Zotero.ZotMoov.copy(items, dst_path, { into_subfolder: subfolder_enabled });
-                for (let item of items)
-                {
-                    if (!item.isAttachment()) continue;
-                    this._copies.push([item, Zotero.ZotMoov._getCopyPath(item, dst_path, subfolder_enabled)]);
-                }
-            }
+            this._items.push(...items);
         },
 
-        async indexCallback(event, ids, extraData)
+        async modifyCallback(event, ids, extraData)
         {
-            // Only move the items that we tracked before
-            let items = this._snapshots.filter(item => ids.includes(item.id));
-            if(items.length == 0) return;
-
-            let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
-            if (!auto_move) return;
-
-            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
-            let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
-
-            if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
-            {
-                 await Zotero.ZotMoov.move(items, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled });
-            } else
-            {
-                await Zotero.ZotMoov.copy(items, dst_path, { into_subfolder: subfolder_enabled });
-            }
-
-            // Remove processed tracked items
-            for (let item of items)
-            {
-                const index = this._snapshots.indexOf(item);
-                if (index > -1) this._snapshots.splice(index, 1);
-            }
-        },
-
-        async refreshCallback(event, ids, extraData)
-        {
-            // Only move the items that we tracked before
-            let items = this._copies.filter(item => ids.includes(item[0].id));
-            if(items.length == 0) return;
-
-            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
-            let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
-
-            let promises = [];
-            let remove = [];
-            for (let item of items)
-            {
-                if (!item[0].isAttachment()) continue;
-                let copy_path = Zotero.ZotMoov._getCopyPath(item[0], dst_path, subfolder_enabled);
-                if (copy_path == item[1]) continue;
-                promises.push(IOUtils.move(item[1], copy_path));
-                remove.push(item);
-            }
-
-            // Remove processed tracked items
-            for (let item of remove)
-            {
-                const index = this._copies.indexOf(item);
-                if (index > -1) this._copies.splice(index, 1);
-            }
-
-            return Promise.allSettled(promises);
+            clearTimeout(this._timeoutID);
+            this._timeoutID = setTimeout(this.execute, 10 * 1000); // wait 10 seconds
         },
 
         async notify(event, type, ids, extraData)
         {
             if (event == 'add') await this.addCallback(event, ids, extraData);
-            if (event == 'index') await this.indexCallback(event, ids, extraData);
-            if (event == 'refresh') await this.refreshCallback(event, ids, extraData);
+            if (event == 'modify') await this.modifyCallback(event, ids, extraData);
         },
     },
 };
