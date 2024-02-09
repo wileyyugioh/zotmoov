@@ -1,19 +1,25 @@
+// ZotMoov
+// zotmoov_wildcard.js
+// Written by Wiley Yu
+
+// If this doesn't load, fail anyways
+Components.utils.importGlobalProperties(['PathUtils']);
 
 Zotero.ZotMoov.Wildcard = {
     // Some of this code is modfied from https://github.com/jlegewie/zotfile/blob/e0c1fa1d3d92716bdec56fddd6e07f563a535d95/chrome/content/zotfile/wildcards.js
 
-    function _format_authors(item) {
+    _format_authors(item) {
         // get creator and create authors string
         var itemType = Zotero.ItemTypes.getName(item.itemTypeID);
         var creatorTypeIDs  = [Zotero.CreatorTypes.getPrimaryIDForType(item.itemTypeID)];
-        var add_etal = true;
+        var add_etal = false;
         var author = "", author_lastf="", author_initials="", author_lastg = "";
         var creators = item.getCreators();
         var numauthors = creators.length;
         for (var i = 0; i < creators.length; ++i) {
             if (creatorTypeIDs.indexOf(creators[i].creatorTypeID) === -1) numauthors=numauthors-1;
         }
-        var max_authors = 5; // Hard coded lol
+        var max_authors = 1; // Hard coded lol
         if (numauthors <= max_authors) add_etal = false;
         else numauthors = max_authors;
         var delimiter = '\ ';
@@ -35,10 +41,10 @@ Zotero.ZotMoov.Wildcard = {
             }
         }
         if (add_etal) {
-            author = author + 'et al';
-            author_lastf = author_lastf + 'et al';
-            author_initials = author_initials + 'et al';
-            author_lastg = author_lastg + 'et al';
+            author = author + ' et al';
+            author_lastf = author_lastf + ' et al';
+            author_initials = author_initials + ' et al';
+            author_lastg = author_lastg + ' et al';
         }
         //create last (senior) author string
         var lastAuthor = "", lastAuthor_lastf= "", lastAuthor_initials= "", lastAuthor_lastInitial = "";
@@ -74,25 +80,23 @@ Zotero.ZotMoov.Wildcard = {
         return([author, author_lastf, author_initials, editor, editor_lastf, editor_initials, author_lastg, lastAuthor, lastAuthor_lastInitial, lastAuthor_lastf, lastAuthor_initials]);
     },
 
-    function _truncateTitle(title) {
+    _truncateTitle(title) {
+        let custom_max_titlelength = 200;
         title = '' + title
 
-        // truncate title after : . and ?
-        if(Zotero.ZotFile.getPref("truncate_title")) {
-            var truncate = title.search(/:|\.|\?|\!/);
-            if(truncate!=-1) title = title.substr(0,truncate);
-        }
+        var truncate = title.search(/:|\.|\?|\!/);
+        if(truncate!=-1) title = title.substr(0,truncate);
 
         // truncate if to long
-        if (title.length > Zotero.ZotFile.getPref("max_titlelength")) {
-            var max_titlelength=Zotero.ZotFile.getPref("max_titlelength");
+        if (title.length > custom_max_titlelength) {
+            var max_titlelength=custom_max_titlelength;
             var before_trunc_char = title.substr(max_titlelength,1);
 
             // truncate title at max length
             title = title.substr(0,max_titlelength);
 
             // remove the last word until a space is found
-            if(Zotero.ZotFile.getPref("truncate_smart") && title.search(" ")!=-1 && before_trunc_char.search(/[a-zA-Z0-9]/!=-1)) {
+            if(title.search(" ")!=-1 && before_trunc_char.search(/[a-zA-Z0-9]/!=-1)) {
                 while (title.substring(title.length-1, title.length) != ' ') title = title.substring(0, title.length-1);
                 title = title.substring(0, title.length-1);
             }
@@ -109,9 +113,9 @@ Zotero.ZotMoov.Wildcard = {
         title = title.replace(/[\*|"<>]/g, '');
         title = title.replace(/[\?:]/g, ' -');
         return title;
-    }
+    },
 
-    function _get_collection_paths(item)
+    _get_collection_paths(item)
     {
         // Get parent collection if parent is present
         let collection_ids = item.parentID ? item.parentItem.getCollections() : item.getCollections();
@@ -126,72 +130,98 @@ Zotero.ZotMoov.Wildcard = {
             {
                 let collection_name = collection_names[i];
                 collection_name = Zotero.ZotMoov.Sanitize.sanitize(collection_name, '_'); // Convert to file safe string
-                path = PathUtils.join(path, collection_name);
+                path = path + '/' + collection_name;
             }
         }
 
         return path;
     },
 
-    function _get_fields(item)
+    // Return collection hierarchy from deepest to shallowest
+    _getCollectionNamesHierarchy(collection)
+    {
+        let r = [];
+        let loc_collection = collection;
+        for(let i = 0; i < 10; i++) // Timeout after 10 directories
+        {
+            r.push(loc_collection.name);
+            if(!loc_collection.parentID) break;
+            loc_collection = Zotero.Collections.get(loc_collection.parentID);
+        }
+
+        return r;
+    },
+
+    _get_fields(item)
     {
         let item_type = item.itemTypeID;
         let item_type_name = Zotero.ItemTypes.getName(item_type);
         // get formated author strings
-        let authors = _format_authors(item);
+        let authors = this._format_authors(item);
 
         let _item_fields =
         {
-                'itemTypeEN': Zotero.ItemTypes.getName(item_type),
-                'itemType': Zotero.ItemTypes.getLocalizedString(item_type),
-                'titleFormated': _truncateTitle(item.getField("title", false, true)),
-                'author': authors[0],
-                'authorLastF': authors[1],
-                'authorInitials': authors[2],
-                'editor': authors[3],
-                'editorLastF': authors[4],
-                'editorInitials': authors[5],
-                'authorLastG': authors[6],
-                "lastAuthor": authors[7],
-                "lastAuthor_lastInitial": authors[8],
-                "lastAuthor_lastf": authors[9],
-                "lastAuthor_initials": authors[10],
-                "collectionPaths": _get_collection_paths(item),
-                "citekey": Zotero.BetterBibTeX ? item.getField('citationKey') : undefined,
-                'year': Zotero.Date.strToDate(item.getField('date', false, true)).year,
-                'journalAbbrev': item.getField('journalAbbreviation', false, true)
-        }
+            'itemTypeEN': Zotero.ItemTypes.getName(item_type),
+            'itemType': Zotero.ItemTypes.getLocalizedString(item_type),
+            'titleFormated': this._truncateTitle(item.getField("title", false, true)),
+            'author': authors[0],
+            'authorLastF': authors[1],
+            'authorInitials': authors[2],
+            'editor': authors[3],
+            'editorLastF': authors[4],
+            'editorInitials': authors[5],
+            'authorLastG': authors[6],
+            "lastAuthor": authors[7],
+            "lastAuthor_lastInitial": authors[8],
+            "lastAuthor_lastf": authors[9],
+            "lastAuthor_initials": authors[10],
+            "collectionPaths": this._get_collection_paths(item),
+            "citekey": Zotero.BetterBibTeX ? item.getField('citationKey') : '',
+            'year': item.getField('year', false, true),
+            'journalAbbrev': item.getField('journalAbbreviation', false, true),
+            'publication': item.getField('publicationTitle', false, true),
+            'publisher': item.getField('publisher', false, true),
+            'volume': item.getField('volume', false, true),
+            'issue': item.getField('issue', false, true),
+            'pages': item.getField('pages', false, true)
+        };
 
         return _item_fields
     },
 
-    function process_string(item, string)
+    process_string(item, string)
     {
         const bracket_reg = /\{([^\}]+)\}/g;
         const sub_brackets = string.match(bracket_reg);
+
+        if (sub_brackets == null) return;
+
+        let item_fields = this._get_fields(item);
+        const sub_strs = sub_brackets.map((bracket) => this._process_wildcard(item, item_fields, bracket.slice(1, -1)));
+
+        let i = 0;
+        return string.replaceAll(bracket_reg, function ()
+        {
+            return sub_strs[i++];
+        });
     },
 
-    function _process_wildcard(item, wildcard)
+    _process_wildcard(item, item_fields, wildcard)
     {
-        let optional_flag = wildcard.startsWith('{-')
-        let strip_between_or = wildcard.replaceAll( /(%[a-z]|\|)([^%\|\}]*)/g, '$1');
-        let sub_strings = strip_between_or.split(/(%[a-z]|\|)/);
-
-        let item_fields = _get_fields(item);
+        let preprocess = wildcard.replaceAll(/(%[a-z])([^\|]*)\|/g, '$1|');
+        preprocess = preprocess.replaceAll(/\|([^%]*)(%[a-z])/g, '|$2');
+        let sub_strings = preprocess.split(/(%[a-z]|\|)/);
 
         let processed_array = [];
         let subbed_a_wildcard = false;
+        let optional_processing = sub_strings.includes('|')
         substr_iterate: for (const sub of sub_strings)
         {
             let result = sub;
+            if (subbed_a_wildcard && result[0] == '%') continue;
             switch(sub)
             {
                 case '|':
-                    if (subbed_a_wildcard)
-                    {
-                        processed_array.push('}');
-                        break substr_iterate;
-                    }
                     result = '';
                     break;
                 case '%a':
@@ -200,10 +230,10 @@ Zotero.ZotMoov.Wildcard = {
                 case '%b':
                     result = item_fields['citekey'];
                     break;
-                case 'I':
+                case '%I':
                     result = item_fields['authorInitials'];
                     break;
-                case 'F':
+                case '%F':
                     result = item_fields['authorLastF'];
                     break;
                 case '%A':
@@ -218,11 +248,33 @@ Zotero.ZotMoov.Wildcard = {
                 case '%T':
                     result = item_fields['itemType'];
                     break;
+                case '%j':
+                    result = item_fields['publication'];
+                    break;
+                case '%p':
+                    result = item_fields['publisher'];
+                    break;
+                case '%w':
+                    result = item_fields['publication']
+                    if (result == '') result = item_fields['publisher'];
                 case '%s':
                     result = item_fields['journalAbbrev'];
                     break;
+                case '%v':
+                    result = item_fields['volume'];
+                    break;
+                case '%e':
+                    result = item_fields['issue'];
+                    break;
+                case '%f':
+                    result = item_fields['pages'];
+                    break;
+                case '%c':
+                    result = this._get_collection_paths(item);
+                    break;
 
                 default:
+                    break;
             }
 
             if (result != sub && result != '')
@@ -232,7 +284,16 @@ Zotero.ZotMoov.Wildcard = {
 
             processed_array.push(result);
         }
-        final_result = processed_array.join('')
-        final_result = final_result.slice(optional_flag ? 2 : 1, -1);
-    }
+
+        if (!subbed_a_wildcard) return '';
+        final_result = processed_array.join('');
+
+        return final_result;
+    },
+
+    _test(item)
+    {
+        const str_to_test = '{%a/}{%b | %I/}{%F/}{%A/}{%y | %t/}{%T/}{%j/}{%p/}{%w/}{%s/}{%v/}{%e/}{%f/}{%c/}';
+        return this.process_string(item, str_to_test);
+    },
 }

@@ -141,21 +141,6 @@ Zotero.ZotMoov =
         return Promise.allSettled(promises);
     },
 
-    // Return collection hierarchy from deepest to shallowest
-    _getCollectionNamesHierarchy(collection)
-    {
-        let r = [];
-        let loc_collection = collection;
-        for(let i = 0; i < 10; i++) // Timeout after 10 directories
-        {
-            r.push(loc_collection.name);
-            if(!loc_collection.parentID) break;
-            loc_collection = Zotero.Collections.get(loc_collection.parentID);
-        }
-
-        return r;
-    },
-
     _getSelectedItems()
     {
         let items = Zotero.getActiveZoteroPane().getSelectedItems();
