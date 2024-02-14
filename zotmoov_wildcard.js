@@ -129,7 +129,7 @@ Zotero.ZotMoov.Wildcard = {
             for (let i = collection_names.length - 1; i >= 0; i--) // Iterate backwards
             {
                 let collection_name = collection_names[i];
-                collection_name = Zotero.ZotMoov.Sanitize.sanitize(collection_name, '_'); // Convert to file safe string
+                collection_name = Zotero.ZotMoov.Sanitize.sanitize(collection_name, '_');
                 path = path + '/' + collection_name;
             }
         }
@@ -194,7 +194,7 @@ Zotero.ZotMoov.Wildcard = {
         const bracket_reg = /\{([^\}]+)\}/g;
         const sub_brackets = string.match(bracket_reg);
 
-        if (sub_brackets == null) return;
+        if (sub_brackets == null) return '';
 
         let item_fields = this._get_fields(item);
         const sub_strs = sub_brackets.map((bracket) => this._process_wildcard(item, item_fields, bracket.slice(1, -1)));
@@ -281,6 +281,8 @@ Zotero.ZotMoov.Wildcard = {
             {
                 subbed_a_wildcard = true;
             }
+
+            if(sub[0] == '%' && sub != '%c') result = Zotero.ZotMoov.Sanitize.sanitize(result, '_');
 
             processed_array.push(result);
         }
