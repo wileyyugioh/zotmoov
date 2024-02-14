@@ -31,7 +31,7 @@ Zotero.ZotMoov =
         Zotero.Notifier.unregisterObserver(this._notifierID);
     },
 
-    _getCopyPath(item, dst_path, into_subfolder)
+    _getCopyPath(item, dst_path, into_subfolder, subdir_str)
     {
         let file_path = item.getFilePath();
         let file_name = file_path.split(/[\\/]/).pop();
@@ -40,21 +40,8 @@ Zotero.ZotMoov =
         // Optionally add subdirectory folder here
         if (into_subfolder)
         {
-            // Get parent collection if parent is present
-            let collection_ids = item.parentID ? item.parentItem.getCollections() : item.getCollections();
-
-            if(collection_ids.length)
-            {
-                let collections = Zotero.Collections.get(collection_ids);
-                let collection_names = this._getCollectionNamesHierarchy(collections[0]);
-
-                for (let i = collection_names.length - 1; i >= 0; i--) // Iterate backwards
-                {
-                    let collection_name = collection_names[i];
-                    collection_name = Zotero.ZotMoov.Sanitize.sanitize(collection_name, '_'); // Convert to file safe string
-                    local_dst_path = PathUtils.join(local_dst_path, collection_name);
-                }
-            }
+            let custom_dir = Zotero.ZotMoov.Wildcard.process_string(item, subdir_str);
+            local_dst_path = PathUtils.join(local_dst_path, ...custom_dir.split('/'));
         }
 
         let copy_path = PathUtils.join(local_dst_path, file_name);
@@ -66,7 +53,8 @@ Zotero.ZotMoov =
     {
         const default_options = {
             ignore_linked: true,
-            into_subfolder: false
+            into_subfolder: false,
+            subdir_str: '',
         };
 
         let options = {...default_options, ...arg_options};
@@ -86,7 +74,7 @@ Zotero.ZotMoov =
             }
 
             let file_path = item.getFilePath();
-            let copy_path = Zotero.ZotMoov._getCopyPath(item, dst_path, options.into_subfolder);
+            let copy_path = Zotero.ZotMoov._getCopyPath(item, dst_path, options.into_subfolder, options.subdir_str);
 
             // Have to check since later adding an entry triggers the
             // handler again
@@ -168,13 +156,14 @@ Zotero.ZotMoov =
         let atts = this._getSelectedItems();
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
         let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
+        let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
 
         if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
-             await Zotero.ZotMoov.move(atts, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled });
+             await Zotero.ZotMoov.move(atts, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled, subdir_str: subdir_str });
         } else
         {
-            await Zotero.ZotMoov.copy(atts, dst_path, { into_subfolder: subfolder_enabled });
+            await Zotero.ZotMoov.copy(atts, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str });
         }
     },
 
@@ -212,13 +201,14 @@ Zotero.ZotMoov =
         {
             let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
             let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
+            let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
 
             if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
             {
-                 await Zotero.ZotMoov.move(Zotero.ZotMoov._items, dst_path, { into_subfolder: subfolder_enabled });
+                 await Zotero.ZotMoov.move(Zotero.ZotMoov.notifyCallback._items, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str});
             } else
             {
-                await Zotero.ZotMoov.copy(Zotero.ZotMoov._items, dst_path, { into_subfolder: subfolder_enabled });
+                await Zotero.ZotMoov.copy(Zotero.ZotMoov.notifyCallback._items, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str });
             }
         },
 
@@ -234,7 +224,7 @@ Zotero.ZotMoov =
         async modifyCallback(event, ids, extraData)
         {
             clearTimeout(this._timeoutID);
-            this._timeoutID = setTimeout(this.execute, 10 * 1000); // wait 10 seconds
+            this._timeoutID = setTimeout(this.execute, 10 * 5000); // wait 5 seconds
         },
 
         async notify(event, type, ids, extraData)

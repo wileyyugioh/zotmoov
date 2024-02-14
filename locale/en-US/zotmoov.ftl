@@ -36,6 +36,6 @@ zotmoov-settings-behavior-move =
 zotmoov-settings-behavior-copy =
     .label = Copy
 
-zotmoov-settings-subdir-str = Subdirectory String (default: %c)
+zotmoov-settings-subdir-str = Subdirectory String (default: {"{"}%c{"}"})
 
 zotmoov-settings-subdir-about = Formatting
