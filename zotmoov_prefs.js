@@ -4,6 +4,12 @@
 
 Zotero.ZotMoov.Prefs =
 {
+    init()
+    {
+        let enable_subdir_move = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
+        document.getElementById('zotmoov-subdir-str').disabled = !enable_subdir_move;
+    },
+
     async pickDirectory()
     {
         let fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
@@ -30,6 +36,11 @@ Zotero.ZotMoov.Prefs =
 
             win.document.getElementById('zotmoov-context-move-selected-custom-dir').hidden = cb.checked;
         }
+    },
+
+    onSubDirClick(cb)
+    {
+        document.getElementById('zotmoov-subdir-str').disabled = !cb.checked;
     },
 
     updateMenuItems(item)

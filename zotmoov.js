@@ -215,10 +215,10 @@ Zotero.ZotMoov =
 
             if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
             {
-                 await Zotero.ZotMoov.move(this._items, dst_path, { into_subfolder: subfolder_enabled });
+                 await Zotero.ZotMoov.move(Zotero.ZotMoov._items, dst_path, { into_subfolder: subfolder_enabled });
             } else
             {
-                await Zotero.ZotMoov.copy(this._items, dst_path, { into_subfolder: subfolder_enabled });
+                await Zotero.ZotMoov.copy(Zotero.ZotMoov._items, dst_path, { into_subfolder: subfolder_enabled });
             }
         },
 

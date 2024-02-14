@@ -8,7 +8,7 @@
     <html:link rel="localization" href="zotmoov.ftl"/>
 </linkset>
 
-<vbox>
+<vbox onload="Zotero.ZotMoov.Prefs.init();">
     <label><html:h1 data-l10n-id="zotmoov-settings-title"></html:h1></label>
     <groupbox>
         <vbox>
@@ -33,7 +33,14 @@
                 </hbox>
                 <checkbox native="true" preference="extensions.zotmoov.enable_automove" data-l10n-id="zotmoov-settings-enable-automove-label"/>
                 <checkbox native="true" preference="extensions.zotmoov.enable_custom_dir" data-l10n-id="zotmoov-settings-enable-custom-dir-label" oncommand="Zotero.ZotMoov.Prefs.onCustomDirClick(this);"/>
-                <checkbox native="true" preference="extensions.zotmoov.enable_subdir_move" data-l10n-id="zotmoov-settings-enable-subdir-move-label"/>
+                <vbox>
+                    <checkbox native="true" preference="extensions.zotmoov.enable_subdir_move" data-l10n-id="zotmoov-settings-enable-subdir-move-label" oncommand="Zotero.ZotMoov.Prefs.onSubDirClick(this);"/>
+                    <hbox align="center">
+                        <label for="zotmoov-subdir-str" data-l10n-id="zotmoov-settings-subdir-str"/>
+                        <html:input type="text" data-l10n-id="zotmoov-settings-subdir-str" id="zotmoov-subdir-str" preference="extensions.zotmoov.subdirectory_string" style="-moz-box-flex: 1;" placeholder="%c"/>
+                        <label is="zotero-text-link" data-l10n-id="zotmoov-settings-subdir-about" href="https://github.com/wileyyugioh/zotmoov"/>
+                    </hbox>
+                </vbox>
         </vbox>
     </groupbox>
 </vbox>

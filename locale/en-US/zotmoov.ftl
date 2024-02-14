@@ -26,7 +26,7 @@ zotmoov-settings-enable-custom-dir-label =
     .label = Enable Menu Option to Move/Copy to Custom Directories
 
 zotmoov-settings-enable-subdir-move-label =
-    .label = Automatically Move/Copy Files to Collection Subdirectory
+    .label = Automatically Move/Copy Files to Subdirectory
 
 zotmoov-settings-behavior-explanation = File Behavior
 
@@ -35,3 +35,7 @@ zotmoov-settings-behavior-move =
 
 zotmoov-settings-behavior-copy =
     .label = Copy
+
+zotmoov-settings-subdir-str = Subdirectory String (default: %c)
+
+zotmoov-settings-subdir-about = Formatting
