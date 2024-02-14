@@ -195,6 +195,7 @@ Zotero.ZotMoov.Wildcard = {
         const sub_brackets = string.match(bracket_reg);
 
         if (sub_brackets == null) return '';
+        if (item.isAttachment() && item.parentItem) item = item.parentItem;
 
         let item_fields = this._get_fields(item);
         const sub_strs = sub_brackets.map((bracket) => this._process_wildcard(item, item_fields, bracket.slice(1, -1)));
