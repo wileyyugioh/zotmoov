@@ -189,26 +189,108 @@ Zotero.ZotMoov.Wildcard = {
         return _item_fields
     },
 
+    _sub(item, item_fields, wildcard)
+    {
+        let result = wildcard;
+        switch(wildcard)
+        {
+            case '%a':
+                result = item_fields['author'];
+                break;
+            case '%b':
+                result = item_fields['citekey'];
+                break;
+            case '%I':
+                result = item_fields['authorInitials'];
+                break;
+            case '%F':
+                result = item_fields['authorLastF'];
+                break;
+            case '%A':
+                result = item_fields['author'][0];
+                break;
+            case '%y':
+                result = item_fields['year'];
+                break;
+            case '%t':
+                result = item_fields['titleFormated'];
+                break;
+            case '%T':
+                result = item_fields['itemType'];
+                break;
+            case '%j':
+                result = item_fields['publication'];
+                break;
+            case '%p':
+                result = item_fields['publisher'];
+                break;
+            case '%w':
+                result = item_fields['publication']
+                if (result == '') result = item_fields['publisher'];
+            case '%s':
+                result = item_fields['journalAbbrev'];
+                break;
+            case '%v':
+                result = item_fields['volume'];
+                break;
+            case '%e':
+                result = item_fields['issue'];
+                break;
+            case '%f':
+                result = item_fields['pages'];
+                break;
+            case '%c':
+                result = this._get_collection_paths(item);
+                break;
+
+            default:
+                break;
+        }
+
+        return result;
+    },
+
     process_string(item, string)
     {
-        const bracket_reg = /\{([^\}]+)\}/g;
-        const sub_brackets = string.match(bracket_reg);
+        // TODO Fix non bracketed wildcards
+        let sub_brackets = [];
+        let open_br = 0;
+        let start_br = 0;
+        for (let i = 0; i < string.length; i++)
+        {
+            if (string[i] == '{')
+            {
+                if(open_br == 0) start_br = i;
+                open_br++;
+            } else if (string[i] == '}')
+            {
+                if(open_br == 1) sub_brackets.push(string.substring(start_br, i + 1));
+                open_br--;
+            }
+        }
 
-        if (sub_brackets == null) return '';
+        if (sub_brackets.length == 0) return '';
         if (item.isAttachment() && item.parentItem) item = item.parentItem;
 
         let item_fields = this._get_fields(item);
         const sub_strs = sub_brackets.map((bracket) => this._process_wildcard(item, item_fields, bracket.slice(1, -1)));
 
-        let i = 0;
-        return string.replaceAll(bracket_reg, function ()
+        for (let i = 0; i < sub_brackets.length; i++)
         {
-            return sub_strs[i++];
+            string = string.replace(sub_brackets[i], sub_strs[i]);
+        }
+
+        string = string.replaceAll(/%[a-z]/g, function(match)
+        {
+            return Zotero.ZotMoov.Wildcard._sub(item, item_fields, match)
         });
+
+        return string
     },
 
     _process_wildcard(item, item_fields, wildcard)
     {
+        // TODO fix multiple wildcards
         let preprocess = wildcard.replaceAll(/(%[a-z])([^\|]*)\|/g, '$1|');
         preprocess = preprocess.replaceAll(/\|([^%]*)(%[a-z])/g, '|$2');
         let sub_strings = preprocess.split(/(%[a-z]|\|)/);
@@ -216,72 +298,13 @@ Zotero.ZotMoov.Wildcard = {
         let processed_array = [];
         let subbed_a_wildcard = false;
         let optional_processing = sub_strings.includes('|')
-        substr_iterate: for (const sub of sub_strings)
+        for (const sub of sub_strings)
         {
-            let result = sub;
-            if (subbed_a_wildcard && result[0] == '%') continue;
-            switch(sub)
-            {
-                case '|':
-                    result = '';
-                    break;
-                case '%a':
-                    result = item_fields['author'];
-                    break;
-                case '%b':
-                    result = item_fields['citekey'];
-                    break;
-                case '%I':
-                    result = item_fields['authorInitials'];
-                    break;
-                case '%F':
-                    result = item_fields['authorLastF'];
-                    break;
-                case '%A':
-                    result = item_fields['author'][0];
-                    break;
-                case '%y':
-                    result = item_fields['year'];
-                    break;
-                case '%t':
-                    result = item_fields['titleFormated'];
-                    break;
-                case '%T':
-                    result = item_fields['itemType'];
-                    break;
-                case '%j':
-                    result = item_fields['publication'];
-                    break;
-                case '%p':
-                    result = item_fields['publisher'];
-                    break;
-                case '%w':
-                    result = item_fields['publication']
-                    if (result == '') result = item_fields['publisher'];
-                case '%s':
-                    result = item_fields['journalAbbrev'];
-                    break;
-                case '%v':
-                    result = item_fields['volume'];
-                    break;
-                case '%e':
-                    result = item_fields['issue'];
-                    break;
-                case '%f':
-                    result = item_fields['pages'];
-                    break;
-                case '%c':
-                    result = this._get_collection_paths(item);
-                    break;
-
-                default:
-                    break;
-            }
-
-            if (result != sub && result != '')
-            {
-                subbed_a_wildcard = true;
-            }
+            if (optional_processing && subbed_a_wildcard && sub[0] == '%') continue;
+            let result = this._sub(item, item_fields, sub);
+            if (result == '|') result = '';
+            if (result != sub && result != '') subbed_a_wildcard = true;
+            if (!optional_processing && sub[0] == '%' && result == '') return ''; // Failed to sub
 
             if(sub[0] == '%' && sub != '%c') result = Zotero.ZotMoov.Sanitize.sanitize(result, '_');
 
