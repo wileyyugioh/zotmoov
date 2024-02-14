@@ -41,6 +41,8 @@ Zotero.ZotMoov =
         if (into_subfolder)
         {
             let custom_dir = Zotero.ZotMoov.Wildcard.process_string(item, subdir_str);
+            Zotero.log(subdir_str)
+            Zotero.log(custom_dir)
             local_dst_path = PathUtils.join(local_dst_path, ...custom_dir.split('/'));
         }
 
@@ -194,7 +196,7 @@ Zotero.ZotMoov =
 
     notifyCallback:
     {
-        _items: [],
+        _item_ids: [],
         _timeoutID: 0,
 
         async execute()
@@ -203,12 +205,14 @@ Zotero.ZotMoov =
             let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
             let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
 
+            let items = Zotero.Items.get(Zotero.ZotMoov.notifyCallback._item_ids);
+            Zotero.log(items[0])
             if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
             {
-                 await Zotero.ZotMoov.move(Zotero.ZotMoov.notifyCallback._items, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str});
+                 await Zotero.ZotMoov.move(items, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str});
             } else
             {
-                await Zotero.ZotMoov.copy(Zotero.ZotMoov.notifyCallback._items, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str });
+                await Zotero.ZotMoov.copy(items, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str });
             }
         },
 
@@ -217,14 +221,13 @@ Zotero.ZotMoov =
             let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
             if (!auto_move) return;
 
-            let items = Zotero.Items.get(ids);
-            this._items.push(...items);
+            this._item_ids.push(...ids);
         },
 
         async modifyCallback(event, ids, extraData)
         {
             clearTimeout(this._timeoutID);
-            this._timeoutID = setTimeout(this.execute, 10 * 5000); // wait 5 seconds
+            this._timeoutID = setTimeout(this.execute, Zotero.Prefs.get('extensions.zotmoov.auto_process_delay', true));
         },
 
         async notify(event, type, ids, extraData)
