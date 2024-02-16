@@ -26,7 +26,7 @@ ZotMoov keeps many of the same wildcards that Zotfile has, as well as the condit
 Only add the characters inside the curly brackets if ALL of the wildcards can be replaced. Otherwise, replace nothing.
 
 
-- `{/%y}{/%j (%s)/}{/%A}` - "/2002/American Journal of Sociology (AJS)/A" if BOTH %j AND %s can be replaced
+- `{/%y}{/%j (%s)}{/%A}` - "/2002/American Journal of Sociology (AJS)/A" if BOTH %j AND %s can be replaced
     - otherwise "/2002/A"
 
 
