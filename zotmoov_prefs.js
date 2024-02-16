@@ -26,18 +26,6 @@ Zotero.ZotMoov.Prefs =
         document.getElementById('zotmoov-dst-dir').value = fp.file.path;
     },
 
-    onCustomDirClick(cb)
-    {
-        let enumerator = Services.wm.getEnumerator('navigator:browser');
-        while (enumerator.hasMoreElements())
-        {
-            let win = enumerator.getNext();
-            if (!win.ZoteroPane) continue;
-
-            win.document.getElementById('zotmoov-context-move-selected-custom-dir').hidden = cb.checked;
-        }
-    },
-
     onSubDirClick(cb)
     {
         document.getElementById('zotmoov-subdir-str').disabled = !cb.checked;
