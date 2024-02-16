@@ -129,7 +129,6 @@ Zotero.ZotMoov.Wildcard = {
             for (let i = collection_names.length - 1; i >= 0; i--) // Iterate backwards
             {
                 let collection_name = collection_names[i];
-                collection_name = Zotero.ZotMoov.Sanitize.sanitize(collection_name, '_');
                 path = path + '/' + collection_name;
             }
         }
@@ -305,8 +304,6 @@ Zotero.ZotMoov.Wildcard = {
             if (result == '|') result = '';
             if (sub[0] == '%' && result != '') subbed_a_wildcard = true;
             if (!optional_processing && sub[0] == '%' && result == '') return ''; // Failed to sub
-
-            if(sub[0] == '%' && sub != '%c') result = Zotero.ZotMoov.Sanitize.sanitize(result, '_');
 
             processed_array.push(result);
         }

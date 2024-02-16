@@ -41,7 +41,8 @@ Zotero.ZotMoov =
         if (into_subfolder)
         {
             let custom_dir = Zotero.ZotMoov.Wildcard.process_string(item, subdir_str);
-            local_dst_path = PathUtils.join(local_dst_path, ...custom_dir.split('/'));
+            let sanitized_custom_dir = custom_dir.split('/').map((dir) => Zotero.ZotMoov.Sanitize.sanitize(dir, '_'));
+            local_dst_path = PathUtils.join(local_dst_path, ...sanitized_custom_dir);
         }
 
         let copy_path = PathUtils.join(local_dst_path, file_name);
