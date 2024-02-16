@@ -41,8 +41,6 @@ Zotero.ZotMoov =
         if (into_subfolder)
         {
             let custom_dir = Zotero.ZotMoov.Wildcard.process_string(item, subdir_str);
-            Zotero.log(subdir_str)
-            Zotero.log(custom_dir)
             local_dst_path = PathUtils.join(local_dst_path, ...custom_dir.split('/'));
         }
 
@@ -121,7 +119,7 @@ Zotero.ZotMoov =
             if (!item.isAttachment()) continue;
 
             let file_path = item.getFilePath();
-            let copy_path = Zotero.ZotMoov._getCopyPath(item, dst_path, options.into_subfolder);
+            let copy_path = Zotero.ZotMoov._getCopyPath(item, dst_path, options.into_subfolder, options.subdir_str);
 
             if (file_path == copy_path) continue;
 
@@ -201,12 +199,12 @@ Zotero.ZotMoov =
 
         async execute()
         {
+            if (_item_ids.length == 0) return;
             let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
             let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
             let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
 
             let items = Zotero.Items.get(Zotero.ZotMoov.notifyCallback._item_ids);
-            Zotero.log(items[0])
             if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
             {
                  await Zotero.ZotMoov.move(items, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str});
