@@ -75,7 +75,6 @@ Zotero.ZotMoov.Menus = {
         // Custom Dir Menu item
         this._move_selected_item_custom = doc.createXULElement('menuitem');
         this._move_selected_item_custom.id = 'zotmoov-context-move-selected-custom-dir';
-        this._move_selected_item_custom.hidden = !Zotero.Prefs.get('extensions.zotmoov.enable_custom_dir', true);
         this._move_selected_item_custom.addEventListener('command', function()
         {
             Zotero.ZotMoov.moveSelectedItemsCustomDir();
