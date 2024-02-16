@@ -134,6 +134,8 @@ Zotero.ZotMoov.Wildcard = {
             }
         }
 
+        if (path != '') path = path.substring(1);
+
         return path;
     },
 
@@ -207,7 +209,7 @@ Zotero.ZotMoov.Wildcard = {
                 result = item_fields['authorLastF'];
                 break;
             case '%A':
-                result = item_fields['author'][0];
+                result = (item_fields['author'] == '') ? '' : item_fields['author'][0];
                 break;
             case '%y':
                 result = item_fields['year'];
@@ -227,6 +229,7 @@ Zotero.ZotMoov.Wildcard = {
             case '%w':
                 result = item_fields['publication']
                 if (result == '') result = item_fields['publisher'];
+                break;
             case '%s':
                 result = item_fields['journalAbbrev'];
                 break;
@@ -252,7 +255,6 @@ Zotero.ZotMoov.Wildcard = {
 
     process_string(item, string)
     {
-        // TODO Fix non bracketed wildcards
         let sub_brackets = [];
         let open_br = 0;
         let start_br = 0;
@@ -269,7 +271,6 @@ Zotero.ZotMoov.Wildcard = {
             }
         }
 
-        if (sub_brackets.length == 0) return '';
         if (item.isAttachment() && item.parentItem) item = item.parentItem;
 
         let item_fields = this._get_fields(item);
@@ -280,7 +281,7 @@ Zotero.ZotMoov.Wildcard = {
             string = string.replace(sub_brackets[i], sub_strs[i]);
         }
 
-        string = string.replaceAll(/%[a-z]/g, function(match)
+        string = string.replaceAll(/%[a-zA-Z]/g, function(match)
         {
             return Zotero.ZotMoov.Wildcard._sub(item, item_fields, match)
         });
@@ -290,10 +291,9 @@ Zotero.ZotMoov.Wildcard = {
 
     _process_wildcard(item, item_fields, wildcard)
     {
-        // TODO fix multiple wildcards
-        let preprocess = wildcard.replaceAll(/(%[a-z])([^\|]*)\|/g, '$1|');
-        preprocess = preprocess.replaceAll(/\|([^%]*)(%[a-z])/g, '|$2');
-        let sub_strings = preprocess.split(/(%[a-z]|\|)/);
+        let preprocess = wildcard.replaceAll(/(%[a-zA-Z])([^\|]*)\|/g, '$1|');
+        preprocess = preprocess.replaceAll(/\|([^%]*)(%[a-zA-Z])/g, '|$2');
+        let sub_strings = preprocess.split(/(%[a-zA-Z]|\|)/);
 
         let processed_array = [];
         let subbed_a_wildcard = false;
@@ -303,7 +303,7 @@ Zotero.ZotMoov.Wildcard = {
             if (optional_processing && subbed_a_wildcard && sub[0] == '%') continue;
             let result = this._sub(item, item_fields, sub);
             if (result == '|') result = '';
-            if (result != sub && result != '') subbed_a_wildcard = true;
+            if (sub[0] == '%' && result != '') subbed_a_wildcard = true;
             if (!optional_processing && sub[0] == '%' && result == '') return ''; // Failed to sub
 
             if(sub[0] == '%' && sub != '%c') result = Zotero.ZotMoov.Sanitize.sanitize(result, '_');
@@ -319,7 +319,7 @@ Zotero.ZotMoov.Wildcard = {
 
     _test(item)
     {
-        const str_to_test = '{%a/}{%b | %I/}{%F/}{%A/}{%y | %t/}{%T/}{%j/}{%p/}{%w/}{%s/}{%v/}{%e/}{%f/}{%c/}';
+        const str_to_test = '{%a/}{%b | %I/}{%F/}{%A/}{%y/}{%t/}{%T/}{%j/}{%p/}{%w/}{%s/}{%v/}{%e/}{%f/}{%c/}';
         return this.process_string(item, str_to_test);
     },
 }
