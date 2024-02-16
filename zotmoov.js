@@ -199,18 +199,25 @@ Zotero.ZotMoov =
 
         async execute()
         {
-            if (_item_ids.length == 0) return;
+            let ids = Zotero.ZotMoov.notifyCallback._item_ids;
+            if (ids.length == 0) return;
             let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
             let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
             let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
 
-            let items = Zotero.Items.get(Zotero.ZotMoov.notifyCallback._item_ids);
+            let items = Zotero.Items.get(ids);
             if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
             {
                  await Zotero.ZotMoov.move(items, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str});
             } else
             {
                 await Zotero.ZotMoov.copy(items, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str });
+            }
+
+            for (let id of ids)
+            {
+                const index = Zotero.ZotMoov.notifyCallback._item_ids.indexOf(id);
+                if (index > -1) Zotero.ZotMoov.notifyCallback._item_ids.splice(index, 1);
             }
         },
 
