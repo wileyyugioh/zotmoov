@@ -33,6 +33,6 @@ Only add the characters inside the curly brackets if ALL of the wildcards can be
 
 Insert the first wildcard that can be replaced. Note that characters between the wildcard and the `|` will be removed.
 
-- `{(%s | %j)}` - "(AJS)" if %s can be replaced. "(American Journal of Sociology)"
-    - if %s cannot be replaced and %j can be replaced
+- `{(%s | %j)}` - "(AJS)" if %s can be replaced
+    - "(American Journal of Sociology)" if %s cannot be replaced and %j can be replaced
     - "" if neither can be replaced
