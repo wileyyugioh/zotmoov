@@ -129,6 +129,7 @@ Zotero.ZotMoov.Wildcard = {
             for (let i = collection_names.length - 1; i >= 0; i--) // Iterate backwards
             {
                 let collection_name = collection_names[i];
+                collection_name = Zotero.ZotMoov.Sanitize.sanitize(collection_name, '_'); // Convert to file safe string
                 path = path + '/' + collection_name;
             }
         }
