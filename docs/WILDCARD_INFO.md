@@ -3,10 +3,10 @@
 ZotMoov keeps many of the same wildcards that Zotfile has, as well as the conditional and or wildcard operators
 
 ## Wildcards
-- `%a` last names of the first author
+- `%a` last name of the first author
 - `%b` citation key
-- `%I` author initials.
-- `%F` author's last name with first letter of first name (e.g. DoeJ).
+- `%I` author initials
+- `%F` author's last name with first letter of first name (e.g. DoeJ)
 - `%A` first letter of author
 - `%y` year
 - `%t` title
