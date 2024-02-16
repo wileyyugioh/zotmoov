@@ -21,7 +21,7 @@ If you want to moove already existing files to the ZotMoov directory, you can ri
 
 By default ZotMoov will move and link your files. You can change the dropdown menu option to `copy` for ZotMoov to just make a back-up of your added files in the specified directory.
 
-You can enable the Collection Subdirectory option for ZotMoov to automatically create and place your file in a folder that corresponds to its collection. **Note that each file is only placed in one directory — files in multiple collections will not appear in multiple folders!**
+You can enable the Collection Subdirectory option for ZotMoov to automatically create and place your file in a custom subdirectory
 
 ## FAQ
 
@@ -31,7 +31,7 @@ I recommend using the [automatic file renaming functionality included in Zotero 
 
 ### Automatic Subdirectories
 
-ZotMoov has an option to automatically move files into a subdirectory that corresponds to its collection. **Note that each file is only placed in one directory — files in multiple collections will not appear in multiple folders!**
+ZotMoov has an option to automatically move files into a custom subdirectory. By default it is `{%c}` which is by item collection. [Click here for the formatting options](https://github.com/wileyyugioh/zotmoov/blob/master/docs/WILDCARD_INFO.md)
 
 ### Bugs/Feature Requests
 
