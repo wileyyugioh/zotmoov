@@ -204,12 +204,27 @@ Zotero.ZotMoov.Wildcard = {
                 break;
             case '%I':
                 result = item_fields['authorInitials'];
+                result = result.toUpperCase();
                 break;
             case '%F':
                 result = item_fields['authorLastF'];
                 break;
             case '%A':
                 result = (item_fields['author'] == '') ? '' : item_fields['author'][0];
+                result = result.toUpperCase();
+                break;
+            case '%d':
+                result = item_fields['editor'];
+                break;
+            case '%D':
+                result = (item_fields['editor'] == '') ? '' : item_fields['editor'][0];
+                result = result.toUpperCase();
+                break;
+            case '%L':
+                result = item_fields['editorLastF'];
+                break;
+            case '%l':
+                result = item_fields['editorInitials'];
                 break;
             case '%y':
                 result = item_fields['year'];
@@ -317,7 +332,7 @@ Zotero.ZotMoov.Wildcard = {
 
     _test(item)
     {
-        const str_to_test = '{%a/}{%b | %I/}{%F/}{%A/}{%y/}{%t/}{%T/}{%j/}{%p/}{%w/}{%s/}{%v/}{%e/}{%f/}{%c/}';
+        const str_to_test = '{%a/}{%b | %I/}{%F/}{%A/}{%d}{%D}{%L}{%l/}{%y/}{%t/}{%T/}{%j/}{%p/}{%w/}{%s/}{%v/}{%e/}{%f/}{%c/}';
         return this.process_string(item, str_to_test);
     },
 }
