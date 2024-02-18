@@ -332,7 +332,7 @@ Zotero.ZotMoov.Wildcard = {
 
     _test(item)
     {
-        const str_to_test = '{%a/}{%b | %I/}{%F/}{%A/}{%d}{%D}{%L}{%l/}{%y/}{%t/}{%T/}{%j/}{%p/}{%w/}{%s/}{%v/}{%e/}{%f/}{%c/}';
+        const str_to_test = '{%a/}{%b | %I/}{%F/}{%A/}{%d/}{%D/}{%L/}{%l/}{%y/}{%t/}{%T/}{%j/}{%p/}{%w/}{%s/}{%v/}{%e/}{%f/}{%c/}';
         return this.process_string(item, str_to_test);
     },
 }

@@ -8,6 +8,10 @@ ZotMoov keeps many of the same wildcards that Zotfile has, as well as the condit
 - `%I` author initials
 - `%F` author's last name with first letter of first name (e.g. DoeJ)
 - `%A` first letter of author
+- `%d` last name of the first editor
+- `%D` first letter of editor
+- `%L` editor's last name with first letter of first name
+- `%l` editor initials
 - `%y` year
 - `%t` title
 - `%T` item type (localized)
