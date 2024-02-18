@@ -81,11 +81,20 @@ Zotero.ZotMoov =
             // handler again
             if (file_path == copy_path) continue;
 
-            let clone = item.clone(null, {includeCollections: true});
-            clone.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
-            clone.attachmentPath = copy_path;
+            let final_path = copy_path;
+            let path_arr = final_path.split('.');
+            let file_ext = path_arr.pop();
+            let rest_of_path = path_arr.join('.');
 
-            promises.push(IOUtils.move(file_path, copy_path).then(function(clone, item)
+            let i = 1;
+            while(await IOUtils.exists(final_path)) final_path = rest_of_path + ' ' + (i++) + '.' + file_ext;
+
+            let clone = item.clone(null, { includeCollections: true });
+            clone.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
+            clone.attachmentPath = final_path;
+            clone.setField('title', PathUtils.filename(clone.attachmentPath));
+
+            promises.push(IOUtils.move(file_path, final_path, { noOverwrite: true }).then(function(clone, item)
                 {
                     clone.saveTx().then(async function(id)
                     {
@@ -124,7 +133,15 @@ Zotero.ZotMoov =
 
             if (file_path == copy_path) continue;
 
-            promises.push(IOUtils.copy(file_path, copy_path));
+            let final_path = copy_path;
+            let path_arr = final_path.split('.');
+            let file_ext = path_arr.pop();
+            let rest_of_path = path_arr.join('.');
+
+            let i = 1;
+            while(await IOUtils.exists(final_path)) final_path = rest_of_path + ' ' + (i++) + '.' + file_ext;
+
+            promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }));
         }
 
         return Promise.allSettled(promises);
