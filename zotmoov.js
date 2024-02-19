@@ -92,7 +92,7 @@ Zotero.ZotMoov =
             let clone = item.clone(null, { includeCollections: true });
             clone.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
             clone.attachmentPath = final_path;
-            clone.setField('title', PathUtils.filename(clone.attachmentPath));
+            clone.setField('title', PathUtils.filename(final_path));
 
             promises.push(IOUtils.move(file_path, final_path, { noOverwrite: true }).then(function(clone, item)
                 {
