@@ -67,6 +67,7 @@ Zotero.ZotMoov =
         for (let item of items)
         {
             if (!item.isAttachment()) continue;
+            if (item.libraryID !=  Zotero.Libraries.userLibraryID) continue;
 
             if (options.ignore_linked)
             {
