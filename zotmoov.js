@@ -212,9 +212,7 @@ Zotero.ZotMoov =
              await Zotero.ZotMoov.move(atts, fp.file.path, { ignore_linked: false, into_subfolder: false });
         } else
         {
-            let allow_group_libraries = Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true);
-            await Zotero.ZotMoov.copy(atts, fp.file.path, { into_subfolder: false,
-                allow_group_libraries: allow_group_libraries });
+            await Zotero.ZotMoov.copy(atts, fp.file.path, { into_subfolder: false, allow_group_libraries: true });
         }
     },
 
