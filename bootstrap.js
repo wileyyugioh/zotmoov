@@ -40,14 +40,22 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
     });
 
     Zotero.ZotMoov.init({ id, version, rootURI });
-    Zotero.ZotMoov.Menus.init();
+    Zotero.ZotMoov.Menus.loadAll();
+}
+
+function onMainWindowLoad({ window }) {
+    Zotero.ZotMoov.Menus.load(window);
+}
+
+function onMainWindowUnload({ window }) {
+    Zotero.ZotMoov.Menus.unload(window);
 }
 
 function shutdown()
 {
     log('ZotMoov: Shutting down');
     Zotero.ZotMoov.destroy();
-    Zotero.ZotMoov.Menus.destroy();
+    Zotero.ZotMoov.Menus.unloadAll();
 
     Zotero.ZotMoov = null;
 }
@@ -56,7 +64,7 @@ function uninstall()
 {    
     log('ZotMoov: Uninstalled');
     Zotero.ZotMoov.destroy();
-    Zotero.ZotMoov.Menus.destroy();
+    Zotero.ZotMoov.Menus.unloadAll();
 
     Zotero.ZotMoov = null;
 }
