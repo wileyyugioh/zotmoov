@@ -5,43 +5,16 @@
 Components.utils.import('resource://gre/modules/Services.jsm');
 
 Zotero.ZotMoov.Menus = {
-    _store_added_elements: [],
-    _move_selected_item: null,
-    _move_selected_item_custom: null,
+    menuseparator_id: 'zotmoov-context-menuseparator',
+    move_selected_item_id: 'zotmoov-context-move-selected',
+    move_selected_item_custom_id: 'zotmoov-context-move-selected-custom-dir',
 
-    _window_listener:
-    {
-        onOpenWindow: function(a_window)
-        {
-            let dom_window = a_window.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindow);
-            dom_window.addEventListener('load', function()
-            {
-                dom_window.removeEventListener('load', arguments.callee, false);
-                if (dom_window.document.documentElement.getAttribute('windowtype') != 'navigator:browser') return;
-                Zotero.ZotMoov.Menus._store_added_elements = []; // Clear tracked elements since destroyed by closed window
-                Zotero.ZotMoov.Menus._move_selected_item = null;
-                Zotero.ZotMoov.Menus._move_selected_item_custom = null;
-                Zotero.ZotMoov.Menus._init();
-            }, false);
-        }
-    },
-
-    _popupShowing()
+    _popupShowing(win)
     {
         let should_disabled = !Zotero.ZotMoov.Menus._hasAttachments();
-        Zotero.ZotMoov.Menus._move_selected_item.disabled = should_disabled;
-        Zotero.ZotMoov.Menus._move_selected_item_custom.disabled = should_disabled;
-    },
 
-    _getWindow()
-    {
-        let enumerator = Services.wm.getEnumerator('navigator:browser');
-        while (enumerator.hasMoreElements())
-        {
-            let win = enumerator.getNext();
-            if (!win.ZoteroPane) continue;
-            return win;
-        }
+        win.document.getElementById(Zotero.ZotMoov.Menus.move_selected_item_id).disabled = should_disabled;
+        win.document.getElementById(Zotero.ZotMoov.Menus.move_selected_item_custom_id).disabled = should_disabled;
     },
 
     _hasAttachments()
@@ -50,44 +23,36 @@ Zotero.ZotMoov.Menus = {
         return (items.size != 0);
     },
 
-    init()
+    load(win)
     {
-        this._init();
-        Services.wm.addListener(this._window_listener);
-    },
-
-    _init()
-    {
-        let win = this._getWindow();
         let doc = win.document;
 
         // Menu separator
         let menuseparator = doc.createXULElement('menuseparator');
+        menuseparator.id = this.menuseparator_id;
 
         // Move Selected Menu item
-        this._move_selected_item = doc.createXULElement('menuitem');
-        this._move_selected_item.id = 'zotmoov-context-move-selected';
-        this._move_selected_item.addEventListener('command', function()
+        let move_selected_item = doc.createXULElement('menuitem');
+        move_selected_item.id = this.move_selected_item_id;
+        move_selected_item.addEventListener('command', function()
         {
             Zotero.ZotMoov.moveSelectedItems();
         });
 
         // Custom Dir Menu item
-        this._move_selected_item_custom = doc.createXULElement('menuitem');
-        this._move_selected_item_custom.id = 'zotmoov-context-move-selected-custom-dir';
-        this._move_selected_item_custom.addEventListener('command', function()
+        let move_selected_item_custom = doc.createXULElement('menuitem');
+        move_selected_item_custom.id = this.move_selected_item_custom_id;
+        move_selected_item_custom.addEventListener('command', function()
         {
             Zotero.ZotMoov.moveSelectedItemsCustomDir();
         });
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
-        zotero_itemmenu.addEventListener('popupshowing', this._popupShowing);
+        zotero_itemmenu.addEventListener('popupshowing', () => this._popupShowing(win));
 
         zotero_itemmenu.appendChild(menuseparator);
-        zotero_itemmenu.appendChild(this._move_selected_item);
-        zotero_itemmenu.appendChild(this._move_selected_item_custom);
-
-        this._store_added_elements.push(menuseparator, this._move_selected_item, this._move_selected_item_custom);
+        zotero_itemmenu.appendChild(move_selected_item);
+        zotero_itemmenu.appendChild(move_selected_item_custom);
 
         if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
@@ -103,36 +68,56 @@ Zotero.ZotMoov.Menus = {
 
     setMove()
     {
-        this._move_selected_item.setAttribute('data-l10n-id', 'zotmoov-context-move-selected');
-        this._move_selected_item_custom.setAttribute('data-l10n-id', 'zotmoov-context-move-selected-custom-dir');
+        let windows = Zotero.getMainWindows();
+        for (let win of windows)
+        {
+            if(!win.ZoteroPane) continue;
+            win.document.getElementById(this.move_selected_item_id).setAttribute('data-l10n-id', 'zotmoov-context-move-selected');
+            win.document.getElementById(this.move_selected_item_custom_id).setAttribute('data-l10n-id', 'zotmoov-context-move-selected-custom-dir');
+        }
     },
 
     setCopy()
     {
-        this._move_selected_item.setAttribute('data-l10n-id', 'zotmoov-context-copy-selected');
-        this._move_selected_item_custom.setAttribute('data-l10n-id', 'zotmoov-context-copy-selected-custom-dir');
-    },
-
-    destroy()
-    {
-        this._destroy();
-        Services.wm.removeListener(this._window_listener);
-    },
-
-    _destroy()
-    {
-        let doc = this._getWindow().document;
-        for (let element of this._store_added_elements)
+        let windows = Zotero.getMainWindows();
+        for (let win of windows)
         {
-            if (element) element.remove();
+            if(!win.ZoteroPane) continue;
+            win.document.getElementById(this.move_selected_item_id).setAttribute('data-l10n-id', 'zotmoov-context-copy-selected');
+            win.document.getElementById(this.move_selected_item_custom_id).setAttribute('data-l10n-id', 'zotmoov-context-copy-selected-custom-dir');
         }
+    },
+
+    unload(win)
+    {
+        let doc = win.document;
+
+        win.document.getElementById(this.menuseparator_id).remove();
+        win.document.getElementById(this.move_selected_item_id).remove();
+        win.document.getElementById(this.move_selected_item_custom_id).remove();
         doc.querySelector('[href="zotmoov.ftl"]').remove();
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
         zotero_itemmenu.removeEventListener('popupshowing', this._popupShowing);
+    },
 
-        this._store_added_elements = [];
-        this._move_selected_item = null;
-        this._move_selected_item_custom = null;
-    }
+    loadAll()
+    {
+        let windows = Zotero.getMainWindows();
+        for (let win of windows)
+        {
+            if(!win.ZoteroPane) continue;
+            this.load(win);
+        }
+    },
+
+    unloadAll()
+    {
+        let windows = Zotero.getMainWindows();
+        for (let win of windows)
+        {
+            if(!win.ZoteroPane) continue;
+            this.unload(win);
+        }
+    },
 }
