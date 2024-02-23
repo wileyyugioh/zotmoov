@@ -67,7 +67,7 @@ Zotero.ZotMoov =
         for (let item of items)
         {
             if (!item.isAttachment()) continue;
-            if (item.libraryID !=  Zotero.Libraries.userLibraryID) continue;
+            if (item.libraryID != Zotero.Libraries.userLibraryID) continue;
 
             if (options.ignore_linked)
             {
@@ -117,6 +117,8 @@ Zotero.ZotMoov =
     {
         const default_options = {
             into_subfolder: false,
+            subdir_str: '',
+            allow_group_libraries: false,
         };
 
         let options = {...default_options, ...arg_options};
@@ -128,6 +130,7 @@ Zotero.ZotMoov =
         for (let item of items)
         {
             if (!item.isAttachment()) continue;
+            if (!options.allow_group_libraries && item.libraryID != Zotero.Libraries.userLibraryID) continue;
 
             let file_path = item.getFilePath();
             let copy_path = Zotero.ZotMoov._getCopyPath(item, dst_path, options.into_subfolder, options.subdir_str);
@@ -182,7 +185,9 @@ Zotero.ZotMoov =
              await Zotero.ZotMoov.move(atts, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled, subdir_str: subdir_str });
         } else
         {
-            await Zotero.ZotMoov.copy(atts, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str });
+            let allow_group_libraries = Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true);
+            await Zotero.ZotMoov.copy(atts, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str,
+                allow_group_libraries: allow_group_libraries });
         }
     },
 
@@ -207,7 +212,9 @@ Zotero.ZotMoov =
              await Zotero.ZotMoov.move(atts, fp.file.path, { ignore_linked: false, into_subfolder: false });
         } else
         {
-            await Zotero.ZotMoov.copy(atts, fp.file.path, { into_subfolder: false });
+            let allow_group_libraries = Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true);
+            await Zotero.ZotMoov.copy(atts, fp.file.path, { into_subfolder: false,
+                allow_group_libraries: allow_group_libraries });
         }
     },
 
@@ -230,7 +237,9 @@ Zotero.ZotMoov =
                  await Zotero.ZotMoov.move(items, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str});
             } else
             {
-                await Zotero.ZotMoov.copy(items, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str });
+                let allow_group_libraries = Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true);
+                await Zotero.ZotMoov.copy(items, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str,
+                    allow_group_libraries: allow_group_libraries });
             }
 
             for (let id of ids)

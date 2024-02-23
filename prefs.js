@@ -8,3 +8,4 @@ pref('extensions.zotmoov.enable_subdir_move', false);
 pref('extensions.zotmoov.file_behavior', 'move');
 pref('extensions.zotmoov.subdirectory_string', '{%c}');
 pref('extensions.zotmoov.auto_process_delay', 5000);
+pref('extensions.zotmoov.copy_group_libraries', false)

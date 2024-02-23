@@ -63,8 +63,4 @@ function shutdown()
 function uninstall()
 {    
     log('ZotMoov: Uninstalled');
-    Zotero.ZotMoov.destroy();
-    Zotero.ZotMoov.Menus.unloadAll();
-
-    Zotero.ZotMoov = null;
 }
