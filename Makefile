@@ -6,7 +6,7 @@ RELEASE:=$(shell grep version manifest.json | sed '2q;d' | sed -e 's/^ *"version
 
 zotmoov.xpi: FORCE
 	rm -rf $@
-	zip -FSr $@ bootstrap.js locale manifest.json prefs.js prefs.xhtml zotmoov.js zotmoov_prefs.js zotmoov_menus.js zotmoov_wildcard.js lib -x \*.DS_Store
+	zip -FSr $@ bootstrap.js locale manifest.json prefs.js prefs.xhtml src lib -x \*.DS_Store
 
 zotmoov-%-fx.xpi: zotmoov.xpi
 	mv $< $@
