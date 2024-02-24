@@ -27,16 +27,16 @@ async function install()
 
 async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 {
-    Services.scriptloader.loadSubScript(rootURI + 'zotmoov.js');
+    Services.scriptloader.loadSubScript(rootURI + 'src/zotmoov.js');
     Services.scriptloader.loadSubScript(rootURI + 'lib/sanitize-filename.js');
-    Services.scriptloader.loadSubScript(rootURI + 'zotmoov_wildcard.js');
-    Services.scriptloader.loadSubScript(rootURI + 'zotmoov_menus.js');
+    Services.scriptloader.loadSubScript(rootURI + 'src/zotmoov_wildcard.js');
+    Services.scriptloader.loadSubScript(rootURI + 'src/zotmoov_menus.js');
 
     Zotero.PreferencePanes.register(
     {
         pluginID: 'zotmoov@wileyy.com',
         src: rootURI + 'prefs.xhtml',
-        scripts: [rootURI + 'zotmoov_prefs.js']
+        scripts: [rootURI + 'src/zotmoov_prefs.js']
     });
 
     Zotero.ZotMoov.init({ id, version, rootURI });
