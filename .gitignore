@@ -2,3 +2,5 @@
 *.xpi
 *.in
 
+# IDEA
+/.idea
