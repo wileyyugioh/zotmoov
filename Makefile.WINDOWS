@@ -11,6 +11,7 @@ zotmoov.xpi: FORCE
 	ren temp.zip $@
 
 zotmoov-%-fx.xpi: zotmoov.xpi
+	if exist $@ del /F /Q $@
 	ren $< $@
 
 Makefile.in: manifest.json
