@@ -4,12 +4,12 @@ class ScriptDefinitions {
     }
 
     getScriptPaths(){
-        let lib_scripts = ['sanitize-filename']
-        let src_scripts = ['zotmoov', 'zotmoov_menus', 'zotmoov_prefs', 'zotmoov_wildcard']
+        let lib_scripts = ['sanitize-filename', 'zotmoov-notify-callback']
+        let src_scripts = ['zotmoov-wildcard', 'zotmoov', 'zotmoov-menus', 'zotmoov-prefs']
 
         let lib_paths = lib_scripts.map(this._convertScriptToPath.bind(this, 'lib'));
         let src_paths = src_scripts.map(this._convertScriptToPath.bind(this,'src'));
 
-        return [].concat(src_paths, lib_paths);
+        return [].concat(lib_paths, src_paths);
     }
 }
