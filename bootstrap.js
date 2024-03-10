@@ -27,10 +27,14 @@ async function install()
 
 async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 {
-    Services.scriptloader.loadSubScript(rootURI + 'src/zotmoov.js');
-    Services.scriptloader.loadSubScript(rootURI + 'lib/sanitize-filename.js');
-    Services.scriptloader.loadSubScript(rootURI + 'src/zotmoov_wildcard.js');
-    Services.scriptloader.loadSubScript(rootURI + 'src/zotmoov_menus.js');
+    // Only ones we need to load directly here.
+    Services.scriptloader.loadSubScript(rootURI + 'init/script-definitions.js');
+    Services.scriptloader.loadSubScript(rootURI + 'init/script-loader.js');
+
+    let scriptPaths = new ScriptDefinitions().getScriptPaths();
+    let scriptLoader = new ScriptLoader(rootURI);
+
+    await scriptLoader.loadScripts(scriptPaths);
 
     Zotero.PreferencePanes.register(
     {
