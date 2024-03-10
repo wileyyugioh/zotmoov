@@ -40,6 +40,20 @@
                         <label is="zotero-text-link" data-l10n-id="zotmoov-settings-subdir-about" href="https://github.com/wileyyugioh/zotmoov/blob/master/docs/WILDCARD_INFO.md"/>
                     </hbox>
                 </vbox>
+                <vbox align="right">
+                    <label data-l10n-id="zotmoov-settings-fileext-title"/>
+                    <tree id="zotmoov-settings-fileext-tree" flex="1" height="100px" editable="true" hidecolumnpicker="true">
+                       <treecols>
+                            <treecol id="zotmoov-settings-fileext-title" flex="1" hideheader="true"/>
+                       </treecols>
+                       <treechildren id="zotmoov-settings-fileext-treechildren">
+                       </treechildren>
+                     </tree>
+                    <hbox>
+                        <button id="zotmoov-fileext-table-delete" disabled="true" label="-"/>
+                        <button label="+"/>
+                    </hbox>
+                </vbox>
         </vbox>
     </groupbox>
 </vbox>
