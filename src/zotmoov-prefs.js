@@ -1,14 +1,13 @@
-// ZotMoov
-// zotmoov_prefs.js
-// Written by Wiley Yu
+class ZotmoovPrefs {
+    constructor(zotmoovMenus) {
+        this.zotmoovMenus = zotmoovMenus;
+    }
 
-Zotero.ZotMoov.Prefs =
-{
     init()
     {
         let enable_subdir_move = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
         document.getElementById('zotmoov-subdir-str').disabled = !enable_subdir_move;
-    },
+    }
 
     async pickDirectory()
     {
@@ -24,22 +23,22 @@ Zotero.ZotMoov.Prefs =
 
         Zotero.Prefs.set('extensions.zotmoov.dst_dir', fp.file.path, true);
         document.getElementById('zotmoov-dst-dir').value = fp.file.path;
-    },
+    }
 
     onSubDirClick(cb)
     {
         document.getElementById('zotmoov-subdir-str').disabled = !cb.checked;
-    },
+    }
 
     updateMenuItems(item)
     {
         let v = item.value;
         if(v == 'move')
         {
-            Zotero.ZotMoov.Menus.setMove();
+            this.zotmoovMenus.setMove();
         } else
         {
-            Zotero.ZotMoov.Menus.setCopy();
+            this.zotmoovMenus.setCopy();
         }
     }
-};
+}

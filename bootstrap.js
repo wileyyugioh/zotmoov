@@ -7,13 +7,17 @@ if (typeof Zotero == 'undefined')
     var Zotero;
 }
 
+// Declare zotmoov and zotmoovMenus at the top level
+var zotmoov = null;
+var zotmoovMenus = null;
+
 function log(msg)
 {
     Zotero.debug('ZotMoov: ' + msg);
 }
 
 async function install()
-{    
+{
     log('ZotMoov: Installed');
 
     // Fix for old version parity
@@ -27,7 +31,7 @@ async function install()
 
 async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 {
-    // Only ones we need to load directly here.
+    // Only ones we need to load directly here
     Services.scriptloader.loadSubScript(rootURI + 'init/script-definitions.js');
     Services.scriptloader.loadSubScript(rootURI + 'init/script-loader.js');
 
@@ -36,35 +40,38 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 
     await scriptLoader.loadScripts(scriptPaths);
 
-    Zotero.PreferencePanes.register(
-    {
-        pluginID: 'zotmoov@wileyy.com',
-        src: rootURI + 'prefs.xhtml',
-        scripts: [rootURI + 'src/zotmoov_prefs.js']
-    });
+    const sanitizer = new Sanitizer();
+    const zotmoovWildcard = new ZotmoovWildcard(sanitizer);
 
-    Zotero.ZotMoov.init({ id, version, rootURI });
-    Zotero.ZotMoov.Menus.loadAll();
+    zotmoov = new ZotMoov(id, version, zotmoovWildcard, sanitizer);
+    zotmoovMenus = new ZotmoovMenus(zotmoov);
+
+    Zotero.PreferencePanes.register(
+        {
+            pluginID: 'zotmoov@wileyy.com',
+            src: rootURI + 'prefs.xhtml',
+            scripts: [rootURI + 'src/zotmoov_prefs.js']
+        });
+
+    zotmoovMenus.loadAll();
 }
 
 function onMainWindowLoad({ window }) {
-    Zotero.ZotMoov.Menus.load(window);
+    zotmoovMenus.load(window);
 }
 
 function onMainWindowUnload({ window }) {
-    Zotero.ZotMoov.Menus.unload(window);
+    zotmoovMenus.unload(window);
 }
 
 function shutdown()
 {
     log('ZotMoov: Shutting down');
-    Zotero.ZotMoov.destroy();
-    Zotero.ZotMoov.Menus.unloadAll();
-
-    Zotero.ZotMoov = null;
+    zotmoov.destroy();
+    zotmoovMenus.unloadAll();
 }
 
 function uninstall()
-{    
+{
     log('ZotMoov: Uninstalled');
 }

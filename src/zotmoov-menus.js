@@ -1,27 +1,26 @@
-// ZotMoov
-// zotmoov_menus.js
-// Written by Wiley Yu
-
 Components.utils.import('resource://gre/modules/Services.jsm');
 
-Zotero.ZotMoov.Menus = {
-    menuseparator_id: 'zotmoov-context-menuseparator',
-    move_selected_item_id: 'zotmoov-context-move-selected',
-    move_selected_item_custom_id: 'zotmoov-context-move-selected-custom-dir',
+class ZotmoovMenus {
+    constructor(zotmoov) {
+        this.menuseparator_id = 'zotmoov-context-menuseparator'
+        this.move_selected_item_id = 'zotmoov-context-move-selected'
+        this.move_selected_item_custom_id = 'zotmoov-context-move-selected-custom-dir'
+        this.zotmoov = zotmoov
+    }
 
     _popupShowing(win)
     {
-        let should_disabled = !Zotero.ZotMoov.Menus._hasAttachments();
+        let should_disabled = !this._hasAttachments();
 
-        win.document.getElementById(Zotero.ZotMoov.Menus.move_selected_item_id).disabled = should_disabled;
-        win.document.getElementById(Zotero.ZotMoov.Menus.move_selected_item_custom_id).disabled = should_disabled;
-    },
+        win.document.getElementById(this.move_selected_item_id).disabled = should_disabled;
+        win.document.getElementById(this.move_selected_item_custom_id).disabled = should_disabled;
+    }
 
     _hasAttachments()
     {
-        let items = Zotero.ZotMoov._getSelectedItems();
+        let items = this.zotmoov._getSelectedItems();
         return (items.size != 0);
-    },
+    }
 
     load(win)
     {
@@ -36,7 +35,7 @@ Zotero.ZotMoov.Menus = {
         move_selected_item.id = this.move_selected_item_id;
         move_selected_item.addEventListener('command', function()
         {
-            Zotero.ZotMoov.moveSelectedItems();
+            this.zotmoov.moveSelectedItems();
         });
 
         // Custom Dir Menu item
@@ -44,7 +43,7 @@ Zotero.ZotMoov.Menus = {
         move_selected_item_custom.id = this.move_selected_item_custom_id;
         move_selected_item_custom.addEventListener('command', function()
         {
-            Zotero.ZotMoov.moveSelectedItemsCustomDir();
+            this.zotmoov.moveSelectedItemsCustomDir();
         });
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
@@ -64,7 +63,7 @@ Zotero.ZotMoov.Menus = {
 
         // Enable localization
         win.MozXULElement.insertFTLIfNeeded('zotmoov.ftl');
-    },
+    }
 
     setMove()
     {
@@ -75,7 +74,7 @@ Zotero.ZotMoov.Menus = {
             win.document.getElementById(this.move_selected_item_id).setAttribute('data-l10n-id', 'zotmoov-context-move-selected');
             win.document.getElementById(this.move_selected_item_custom_id).setAttribute('data-l10n-id', 'zotmoov-context-move-selected-custom-dir');
         }
-    },
+    }
 
     setCopy()
     {
@@ -86,7 +85,7 @@ Zotero.ZotMoov.Menus = {
             win.document.getElementById(this.move_selected_item_id).setAttribute('data-l10n-id', 'zotmoov-context-copy-selected');
             win.document.getElementById(this.move_selected_item_custom_id).setAttribute('data-l10n-id', 'zotmoov-context-copy-selected-custom-dir');
         }
-    },
+    }
 
     unload(win)
     {
@@ -99,7 +98,7 @@ Zotero.ZotMoov.Menus = {
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
         zotero_itemmenu.removeEventListener('popupshowing', this._popupShowing);
-    },
+    }
 
     loadAll()
     {
@@ -109,7 +108,7 @@ Zotero.ZotMoov.Menus = {
             if(!win.ZoteroPane) continue;
             this.load(win);
         }
-    },
+    }
 
     unloadAll()
     {
@@ -119,5 +118,5 @@ Zotero.ZotMoov.Menus = {
             if(!win.ZoteroPane) continue;
             this.unload(win);
         }
-    },
+    }
 }
