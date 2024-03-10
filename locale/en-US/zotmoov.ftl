@@ -39,3 +39,5 @@ zotmoov-settings-behavior-copy =
 zotmoov-settings-subdir-str = Subdirectory String (default: {"{"}%c{"}"})
 
 zotmoov-settings-subdir-about = Formatting
+
+zotmoov-settings-fileext-title = Allowed File Extensions
