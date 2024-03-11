@@ -18,13 +18,19 @@ To build, depending on your environment, run `Makefile.UNIX` or `Makefile.WINDOW
 The `script_definition_builder.py` is not smart enough to detect file dependencies between javascript code, and this would be far too complicated to write anyway.
 Therefore, every script needs to be sorted alphabetically in the way dependencies work. So, every source code file needs to be prefixed with a number that is relative to the folder.
 
+If necessary, nested folders can also get a number prefix to fix load order issues.
+The top-level folders are defined explicitly in `script_definition_builder.py` and therefore do not need prefixes.
+
+
 By this, I mean that the numbers reset per folder.
 
 ### Example:
 - Folder A
-  - Folder A/A
+  - Folder A/00-Test
     - `00-abstract-type.js`
     - `01-specific-type.js`
+  - Folder A/01-Common
+  - Folder A/02-UsesCommon
   - `00-test.js`
   - `01-test2.js`
   - `02-test3.js`
