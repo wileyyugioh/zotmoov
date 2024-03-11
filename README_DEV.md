@@ -7,7 +7,7 @@ In order for you to be able to contribute to this plugin, you need:
 # Building the plugin
 
 First, before building, and even before running Zotero in dev mode for the plugin (directly from source) you NEED to run `script_definition_builder.py`.
-It automatically builds a file called `script-definitions.js` in the `init` folder, which is necessary for Zotero to load our plugin's code.
+It automatically builds a file called `00-script-definitions.js` in the `init` folder, which is necessary for Zotero to load our plugin's code.
 
 Mr. Hoorn wrote this builder in Python so that we don't have to hardcode every source file.
 
