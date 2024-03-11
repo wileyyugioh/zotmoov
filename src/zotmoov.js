@@ -85,7 +85,7 @@ Zotero.ZotMoov =
         let promises = [];
         for (let item of items)
         {
-            if (!item.isAttachment()) continue;
+            if (!item.isFileAttachment()) continue;
             if (item.libraryID != Zotero.Libraries.userLibraryID) continue;
 
             if (options.ignore_linked)
@@ -148,7 +148,7 @@ Zotero.ZotMoov =
         let promises = [];
         for (let item of items)
         {
-            if (!item.isAttachment()) continue;
+            if (!item.isFileAttachment()) continue;
             if (!options.allow_group_libraries && item.libraryID != Zotero.Libraries.userLibraryID) continue;
 
             let file_path = item.getFilePath();
