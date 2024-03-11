@@ -66,9 +66,9 @@ if __name__ == '__main__':
     walked_directories = []
 
     for directory in directories:
-        walked_directories.append(directory)
         sub_directories = FileProcessor.get_sub_dirs(directory)
         walked_directories.extend([f"{directory}/{sub_directory}" for sub_directory in sub_directories])
+        walked_directories.append(directory)
 
     js_content = JSFileContent(walked_directories)
     js_content.generate_content()
