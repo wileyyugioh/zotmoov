@@ -5,5 +5,9 @@
 # IDEA
 /.idea
 
+# Python
+/venv
+
 # Personal
 /open_zotero_dev.bat
+/init/script-definitions.js
