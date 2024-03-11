@@ -22,38 +22,43 @@
     <groupbox>
         <vbox>
             <label><html:h2 data-l10n-id="zotmoov-settings-other-settings"></html:h2></label>
+            <hbox align="center">
+                <label data-l10n-id="zotmoov-settings-behavior-explanation"></label>
+                <menulist native="true" preference="extensions.zotmoov.file_behavior">
+                    <menupopup>
+                        <menuitem data-l10n-id="zotmoov-settings-behavior-move" value="move" oncommand="Zotero.ZotMoov.Prefs.updateMenuItems(this);"/>
+                        <menuitem data-l10n-id="zotmoov-settings-behavior-copy" value="copy" oncommand="Zotero.ZotMoov.Prefs.updateMenuItems(this);"/>
+                    </menupopup>
+                </menulist>
+            </hbox>
+            <checkbox native="true" preference="extensions.zotmoov.enable_automove" data-l10n-id="zotmoov-settings-enable-automove-label"/>
+            <vbox>
+                <checkbox native="true" preference="extensions.zotmoov.enable_subdir_move" data-l10n-id="zotmoov-settings-enable-subdir-move-label" oncommand="Zotero.ZotMoov.Prefs.onSubDirClick(this);"/>
                 <hbox align="center">
-                    <label data-l10n-id="zotmoov-settings-behavior-explanation"></label>
-                    <menulist native="true" preference="extensions.zotmoov.file_behavior">
-                        <menupopup>
-                            <menuitem data-l10n-id="zotmoov-settings-behavior-move" value="move" oncommand="Zotero.ZotMoov.Prefs.updateMenuItems(this);"/>
-                            <menuitem data-l10n-id="zotmoov-settings-behavior-copy" value="copy" oncommand="Zotero.ZotMoov.Prefs.updateMenuItems(this);"/>
-                        </menupopup>
-                    </menulist>
+                    <label for="zotmoov-subdir-str" data-l10n-id="zotmoov-settings-subdir-str"/>
+                    <html:input type="text" data-l10n-id="zotmoov-settings-subdir-str" id="zotmoov-subdir-str" preference="extensions.zotmoov.subdirectory_string" style="-moz-box-flex: 1;" placeholder="%c"/>
+                    <label is="zotero-text-link" data-l10n-id="zotmoov-settings-subdir-about" href="https://github.com/wileyyugioh/zotmoov/blob/master/docs/WILDCARD_INFO.md"/>
                 </hbox>
-                <checkbox native="true" preference="extensions.zotmoov.enable_automove" data-l10n-id="zotmoov-settings-enable-automove-label"/>
-                <vbox>
-                    <checkbox native="true" preference="extensions.zotmoov.enable_subdir_move" data-l10n-id="zotmoov-settings-enable-subdir-move-label" oncommand="Zotero.ZotMoov.Prefs.onSubDirClick(this);"/>
-                    <hbox align="center">
-                        <label for="zotmoov-subdir-str" data-l10n-id="zotmoov-settings-subdir-str"/>
-                        <html:input type="text" data-l10n-id="zotmoov-settings-subdir-str" id="zotmoov-subdir-str" preference="extensions.zotmoov.subdirectory_string" style="-moz-box-flex: 1;" placeholder="%c"/>
-                        <label is="zotero-text-link" data-l10n-id="zotmoov-settings-subdir-about" href="https://github.com/wileyyugioh/zotmoov/blob/master/docs/WILDCARD_INFO.md"/>
-                    </hbox>
-                </vbox>
-                <vbox align="right">
-                    <label data-l10n-id="zotmoov-settings-fileext-title"/>
-                    <tree id="zotmoov-settings-fileext-tree" flex="1" height="100px" editable="true" hidecolumnpicker="true">
-                       <treecols>
-                            <treecol id="zotmoov-settings-fileext-title" flex="1" hideheader="true"/>
-                       </treecols>
-                       <treechildren id="zotmoov-settings-fileext-treechildren">
-                       </treechildren>
-                     </tree>
-                    <hbox>
-                        <button id="zotmoov-fileext-table-delete" disabled="true" label="-"/>
-                        <button label="+"/>
-                    </hbox>
-                </vbox>
+            </vbox>
+        </vbox>
+    </groupbox>
+    <groupbox>
+        <vbox>
+            <label><html:h2 data-l10n-id="zotmoov-settings-fileext-title"></html:h2></label>
+            <hbox>
+                <tree id="zotmoov-settings-fileext-tree" flex="1" height="100px" editable="true" hidecolumnpicker="true" onselect="Zotero.ZotMoov.Prefs.onFileExtTreeSelect();">
+                   <treecols>
+                        <treecol id="zotmoov-settings-fileext-title" flex="1" hideheader="true"/>
+                   </treecols>
+                   <treechildren id="zotmoov-settings-fileext-treechildren">
+                   </treechildren>
+                 </tree>
+            </hbox>
+            <hbox width="100%" pack="end">
+                <button id="zotmoov-fileext-table-delete" disabled="true" label="-" style="min-width: 0;" oncommand="Zotero.ZotMoov.Prefs.removeFileExtEntries();"/>
+                <button id="zotmoov-fileext-table-add" label="+" style="min-width: 0;" oncommand="Zotero.ZotMoov.Prefs.createFileExtEntry();"/>
+            </hbox>
+            <label data-l10n-id="zotmoov-settings-fileext-about"></label>
         </vbox>
     </groupbox>
 </vbox>

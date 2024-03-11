@@ -7,6 +7,8 @@ zotmoov-settings-filepath-button-label =
 
 zotmoov-settings-other-settings = Other Settings
 
+zotmoov-settings-fileext-title = Allowed File Extensions
+
 zotmoov-context-move-selected =
     .label = ZotMoov: Move Selected to Directory
 
@@ -40,4 +42,4 @@ zotmoov-settings-subdir-str = Subdirectory String (default: {"{"}%c{"}"})
 
 zotmoov-settings-subdir-about = Formatting
 
-zotmoov-settings-fileext-title = Allowed File Extensions
+zotmoov-settings-fileext-about = Defaults to all file extensions if empty

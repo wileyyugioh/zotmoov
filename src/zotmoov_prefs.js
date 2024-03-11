@@ -45,12 +45,80 @@ Zotero.ZotMoov.Prefs =
         }
     },
 
+    createFileExtEntry()
+    {
+        let dummy_value = 'New File Extension';
+        let treechildren = document.getElementById('zotmoov-settings-fileext-treechildren');
+        
+        let treeitem = document.createXULElement('treeitem');
+        let treerow = document.createXULElement('treerow');
+        let treecell = document.createXULElement('treecell');
+        treecell.setAttribute('label', 'New File Extension');
+
+        treerow.appendChild(treecell);
+        treeitem.appendChild(treerow);
+        treechildren.appendChild(treeitem);
+
+        let fileexts = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
+        fileexts.push(dummy_value);
+        Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(fileexts), true);
+
+    },
+
+    removeFileExtEntries()
+    {
+        let tree = document.getElementById('zotmoov-settings-fileext-tree');
+        let treechildren = document.getElementById('zotmoov-settings-fileext-treechildren');
+
+        let start = {};
+        let end = {};
+        let num_ranges = tree.view.selection.getRangeCount();
+        let selected_text = [];
+        let children = [];
+
+        for (let t = 0; t < num_ranges; t++)
+        {
+            tree.view.selection.getRangeAt(t, start, end);
+            for (let v = start.value; v <= end.value; v++)
+            {
+                let text = tree.view.getCellText(v, tree.columns.getColumnAt(0));
+                selected_text.push(text);
+                children.push(treechildren.children[v]);
+            }
+        }
+
+        let fileexts = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
+        for (let text of selected_text)
+        {
+            const index = fileexts.indexOf(text);
+            if (index > -1) fileexts.splice(index, 1);
+        }
+        Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(fileexts), true);
+
+        for (let child of children)
+        {
+            child.remove();
+        }
+    },
+
+    onFileExtTreeSelect()
+    {
+        let tree = document.getElementById('zotmoov-settings-fileext-tree');
+        let sel = tree.view.selection.currentIndex;
+
+        let remove_button = document.getElementById('zotmoov-fileext-table-delete');
+        if (sel > -1)
+        {
+            remove_button.disabled = false;
+            return;
+        }
+
+        remove_button.disabled = true;
+    },
+
     _loadFileExtTable()
     {
-        let tree = document.getElementById('zotmoov-settings-fileext-tree')
-        tree.addEventListener('change', this.onFileExtTreeChange);
-
-        let fileexts = Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true).split(',');
+        let fileexts = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
 
         let treechildren = document.getElementById('zotmoov-settings-fileext-treechildren');
         for (let fileext of fileexts)
@@ -78,13 +146,13 @@ Zotero.ZotMoov.Prefs =
             {
                 if (mutation.type == 'attributes')
                 {
-                    let fileexts = Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true).split(',');
+                    let fileexts = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
 
                     const index = fileexts.indexOf(mutation.oldValue);
                     if (index > -1)
                     {
                         fileexts[index] = mutation.target.getAttribute(mutation.attributeName);
-                        Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', fileexts.join(','), true);
+                        Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(fileexts), true);
                     }
                 }
               }
