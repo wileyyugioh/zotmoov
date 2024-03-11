@@ -75,9 +75,16 @@ Zotero.ZotMoov =
             ignore_linked: true,
             into_subfolder: false,
             subdir_str: '',
+            allowed_file_ext: null,
         };
 
         let options = {...default_options, ...arg_options};
+
+        // Convert to lowercase to ensure case insensitive
+        if (Array.isArray(options.allowed_file_ext))
+        {
+            options.allowed_file_ext = options.allowed_file_ext.map(ext => ext.toLowerCase());
+        }
 
 
         if (dst_path == '') return;
@@ -95,6 +102,14 @@ Zotero.ZotMoov =
             }
 
             let file_path = item.getFilePath();
+
+            // Test to see if file extension is allowed
+            if (Array.isArray(options.allowed_file_ext))
+            {
+                let file_ext = file_path.split('.').pop().toLowerCase();
+                if (!options.allowed_file_ext.includes(file_ext)) continue;
+            }
+
             let copy_path = Zotero.ZotMoov._getCopyPath(item, dst_path, options.into_subfolder, options.subdir_str);
 
             // Have to check since later adding an entry triggers the
@@ -138,10 +153,16 @@ Zotero.ZotMoov =
             into_subfolder: false,
             subdir_str: '',
             allow_group_libraries: false,
+            allowed_file_ext: null,
         };
 
         let options = {...default_options, ...arg_options};
 
+        // Convert to lowercase to ensure case insensitive
+        if (Array.isArray(options.allowed_file_ext))
+        {
+            options.allowed_file_ext = options.allowed_file_ext.map(ext => ext.toLowerCase());
+        }
 
         if (dst_path == '') return;
 
@@ -152,6 +173,14 @@ Zotero.ZotMoov =
             if (!options.allow_group_libraries && item.libraryID != Zotero.Libraries.userLibraryID) continue;
 
             let file_path = item.getFilePath();
+
+            // Test to see if file extension is allowed
+            if (Array.isArray(options.allowed_file_ext))
+            {
+                let file_ext = file_path.split('.').pop().toLowerCase();
+                if (!options.allowed_file_ext.includes(file_ext)) continue;
+            }
+
             let copy_path = Zotero.ZotMoov._getCopyPath(item, dst_path, options.into_subfolder, options.subdir_str);
 
             if (file_path == copy_path) continue;
@@ -246,16 +275,31 @@ Zotero.ZotMoov =
             let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
             let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
             let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
+            let allowed_file_ext = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
+
+            // Pass null if empty
+            allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext : null;
 
             let items = Zotero.Items.get(ids);
             if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
             {
-                 await Zotero.ZotMoov.move(items, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str});
+                await Zotero.ZotMoov.move(items, dst_path,
+                {
+                    into_subfolder: subfolder_enabled,
+                    subdir_str: subdir_str,
+                    allowed_file_ext: allowed_file_ext
+                });
+
             } else
             {
                 let allow_group_libraries = Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true);
-                await Zotero.ZotMoov.copy(items, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str,
-                    allow_group_libraries: allow_group_libraries });
+                await Zotero.ZotMoov.copy(items, dst_path,
+                {
+                    into_subfolder: subfolder_enabled,
+                    subdir_str: subdir_str,
+                    allow_group_libraries: allow_group_libraries,
+                    allowed_file_ext: allowed_file_ext
+                });
             }
 
             for (let id of ids)
