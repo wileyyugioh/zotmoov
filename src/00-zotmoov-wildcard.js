@@ -7,7 +7,6 @@ class ZotmoovWildcard {
 
     _format_authors(item) {
         // get creator and create authors string
-        var itemType = Zotero.ItemTypes.getName(item.itemTypeID);
         var creatorTypeIDs  = [Zotero.CreatorTypes.getPrimaryIDForType(item.itemTypeID)];
         var add_etal = false;
         var author = "", author_lastf="", author_initials="", author_lastg = "";
@@ -20,6 +19,7 @@ class ZotmoovWildcard {
         if (numauthors <= max_authors) add_etal = false;
         else numauthors = max_authors;
         var delimiter = '\ ';
+
         var j = 0;
         for (i = 0; i < creators.length; ++i) {
             if (j < numauthors && creatorTypeIDs.indexOf(creators[i].creatorTypeID) != -1) {
