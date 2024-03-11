@@ -14,6 +14,8 @@ Zotero.ZotMoov =
     initialized: false,
 
     _notifierID: null,
+    _enabled: false,
+    _origConvertLinked: null,
 
     init({ id, version, rootURI })
     {
@@ -24,11 +26,28 @@ Zotero.ZotMoov =
         this.rootURI = rootURI;
         this.initialized = true;
         this._notifierID = Zotero.Notifier.registerObserver(this.notifyCallback, ['item'], 'zotmoov', 99);
+        this._enabled = true;
+
+        // This is kinda dangerous
+        this._origConvertLinked = Zotero.Attachments.convertLinkedFileToStoredFile.bind(Zotero.Attachments);
+        Zotero.Attachments.convertLinkedFileToStoredFile = this._convertLinkedFileToStoredFile;
     },
 
     destroy()
     {
         Zotero.Notifier.unregisterObserver(this._notifierID);
+        Zotero.Attachments.convertLinkedFileToStoredFile = this._origConvertLinked;
+    },
+
+    enable() { this._enabled = true;},
+
+    disable() { this._enabled = false;},
+
+    async _convertLinkedFileToStoredFile(item, options = {})
+    {
+        Zotero.ZotMoov.disable();
+        await Zotero.ZotMoov._origConvertLinked(item, options);
+        Zotero.ZotMoov.enable();
     },
 
     _getCopyPath(item, dst_path, into_subfolder, subdir_str)
@@ -249,7 +268,7 @@ Zotero.ZotMoov =
         async addCallback(event, ids, extraData)
         {
             let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
-            if (!auto_move) return;
+            if (!auto_move || !Zotero.ZotMoov._enabled) return;
 
             this._item_ids.push(...ids);
         },
