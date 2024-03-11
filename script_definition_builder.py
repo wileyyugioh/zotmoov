@@ -61,15 +61,28 @@ class FileWriter:
             file.write(js_file_content)
 
 
-if __name__ == '__main__':
-    directories = ['lib', 'src']
+def get_directory_tree(directories):
     walked_directories = []
 
     for directory in directories:
+        # Get subdirectories for this directory
         sub_directories = FileProcessor.get_sub_dirs(directory)
-        walked_directories.extend([f"{directory}/{sub_directory}" for sub_directory in sub_directories])
+
+        # For each subdirectory, get its subdirectories recursively
+        for sub_directory in sub_directories:
+            full_path = f"{directory}/{sub_directory}"
+            walked_directories.extend(get_directory_tree([full_path]))
+
+        # Append the current directory after its subdirectories
         walked_directories.append(directory)
 
-    js_content = JSFileContent(walked_directories)
+    return walked_directories
+
+
+if __name__ == '__main__':
+    directories = ['lib', 'src']
+    directories = get_directory_tree(directories)
+
+    js_content = JSFileContent(directories)
     js_content.generate_content()
     FileWriter.write_file(js_content.js_file_content)
