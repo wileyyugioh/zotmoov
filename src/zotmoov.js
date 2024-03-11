@@ -29,7 +29,7 @@ Zotero.ZotMoov =
         this._enabled = true;
 
         // This is kinda dangerous
-        this._origConvertLinked = Zotero.Attachments.convertLinkedFileToStoredFile.bind(Zotero.Attachments);
+        this._origConvertLinked = Zotero.Attachments.convertLinkedFileToStoredFile;
         Zotero.Attachments.convertLinkedFileToStoredFile = this._convertLinkedFileToStoredFile;
     },
 
@@ -46,7 +46,7 @@ Zotero.ZotMoov =
     async _convertLinkedFileToStoredFile(item, options = {})
     {
         Zotero.ZotMoov.disable();
-        await Zotero.ZotMoov._origConvertLinked(item, options);
+        await Zotero.ZotMoov._origConvertLinked.bind(Zotero.Attachments)(item, options);
         Zotero.ZotMoov.enable();
     },
 
