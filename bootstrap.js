@@ -43,8 +43,8 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
     const sanitizer = new Sanitizer();
     const zotmoovWildcard = new ZotmoovWildcard(sanitizer);
 
-    zotmoov = new ZotMoov(id, version, zotmoovWildcard, sanitizer);
-    zotmoovMenus = new ZotmoovMenus(zotmoov);
+    let zotmoov = new ZotMoov(id, version, zotmoovWildcard, sanitizer);
+    let zotmoovMenus = new ZotmoovMenus(zotmoov);
 
     Zotero.PreferencePanes.register(
         {

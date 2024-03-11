@@ -33,17 +33,20 @@ class ZotmoovMenus {
         // Move Selected Menu item
         let move_selected_item = doc.createXULElement('menuitem');
         move_selected_item.id = this.move_selected_item_id;
-        move_selected_item.addEventListener('command', function()
+
+        let thisCache = this;
+
+        move_selected_item.addEventListener('command', () =>
         {
-            this.zotmoov.moveSelectedItems();
+            thisCache.zotmoov.moveSelectedItems();
         });
 
         // Custom Dir Menu item
         let move_selected_item_custom = doc.createXULElement('menuitem');
         move_selected_item_custom.id = this.move_selected_item_custom_id;
-        move_selected_item_custom.addEventListener('command', function()
+        move_selected_item_custom.addEventListener('command', () =>
         {
-            this.zotmoov.moveSelectedItemsCustomDir();
+            thisCache.zotmoov.moveSelectedItemsCustomDir();
         });
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
