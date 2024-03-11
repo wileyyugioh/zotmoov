@@ -19,6 +19,16 @@ Then point ZotMoov to that same folder.
 
 If you want to moove already existing files to the ZotMoov directory, you can right click them and use the appropriate menu item.
 
+## FAQ
+
+### File Renaming
+
+I recommend using the [automatic file renaming functionality included in Zotero 7](https://www.zotero.org/support/file_renaming). It has support for custom patterns. You will have to enable “Rename linked files” from the General pane of the Zotero settings.
+
+### Bugs/Feature Requests
+
+Both can be filed [here](https://github.com/wileyyugioh/zotmoov/issues). Please keep feature requests tightly focused on the extension's core purpose of mooving attachments and linking them!
+
 ## Settings
 
 ### Directory to Move Files To
@@ -36,14 +46,3 @@ When this is enabled, ZotMoov will automatically move files into a custom subdir
 ### Allowed File Extensions
 
 By adding/removing entries to this table via the [+] and [-] buttons, you can choose which types of files ZotMoov will automatically move. If the table is empty, then all files will be moved regardless of their file extension.
-
-
-## FAQ
-
-### File Renaming
-
-I recommend using the [automatic file renaming functionality included in Zotero 7](https://www.zotero.org/support/file_renaming). It has support for custom patterns. You will have to enable “Rename linked files” from the General pane of the Zotero settings.
-
-### Bugs/Feature Requests
-
-Both can be filed [here](https://github.com/wileyyugioh/zotmoov/issues). Please keep feature requests tightly focused on the extension's core purpose of mooving attachments and linking them!
