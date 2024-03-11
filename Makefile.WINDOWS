@@ -1,0 +1,20 @@
+all: get_version.ps1 Makefile.in
+
+-include Makefile.in
+
+# Combine the PowerShell command parts to form the final RELEASE value
+RELEASE := $(shell powershell -File "get_version.ps1")
+
+zotmoov.xpi: FORCE
+	if exist $@ del /F /Q $@
+	"$(ComSpec)" /c "powershell -Command Compress-Archive -Path bootstrap.js, locale, manifest.json, prefs.js, prefs.xhtml, src, lib, init -DestinationPath temp.zip -Force -CompressionLevel Optimal"
+	ren temp.zip $@
+
+zotmoov-%-fx.xpi: zotmoov.xpi
+	if exist $@ del /F /Q $@
+	ren $< $@
+
+Makefile.in: manifest.json
+	echo all: zotmoov-$(RELEASE)-fx.xpi > Makefile.in
+
+FORCE:

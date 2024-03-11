@@ -5,9 +5,9 @@
 {
   "manifest_version": 2,
   "name": "ZotMoov",
-  "version": "0.0.5b7",
+  "version": "0.0.6b1",
   "description": "Mooves attachments and links them",
-  "author": "Wiley Yu",
+  "author": "Wiley Yu & Mr. Hoorn",
   "applications": {
     "zotero": {
       "id": "zotmoov@wileyy.com",
