@@ -8,10 +8,25 @@ class ZotMoov {
         this.wildcard = wildcard;
         this.sanitizer = sanitizer;
         this.zotmoov_debugger = zotmoov_debugger;
+
+        Zotero.Attachments.convertLinkedFileToStoredFile = this._convertLinkedFileToStoredFile;
+        this._origConvertLinked = Zotero.Attachments.convertLinkedFileToStoredFile;
     }
 
     destroy() {
         Zotero.Notifier.unregisterObserver(this._notifierID);
+        Zotero.Attachments.convertLinkedFileToStoredFile = this._origConvertLinked;
+    }
+
+    enable() { this._enabled = true;}
+
+    disable() { this._enabled = false;}
+
+    async _convertLinkedFileToStoredFile(item, options = {})
+    {
+        this.disable();
+        await Zotero.ZotMoov._origConvertLinked.bind(Zotero.Attachments)(item, options);
+        this.enable();
     }
 
     _getCopyPath(item, dst_path, into_subfolder, subdir_str)
@@ -41,17 +56,23 @@ class ZotMoov {
             ignore_linked: true,
             into_subfolder: false,
             subdir_str: '',
+            allowed_file_ext: null,
         };
 
         let options = {...default_options, ...arg_options};
 
+        // Convert to lowercase to ensure case insensitive
+        if (Array.isArray(options.allowed_file_ext))
+        {
+            options.allowed_file_ext = options.allowed_file_ext.map(ext => ext.toLowerCase());
+        }
 
         if (dst_path == '') return;
 
         let promises = [];
         for (let item of items)
         {
-            if (!item.isAttachment()) continue;
+            if (!item.isFileAttachment()) continue;
             if (item.libraryID != Zotero.Libraries.userLibraryID) continue;
 
             if (options.ignore_linked)
@@ -61,6 +82,14 @@ class ZotMoov {
             }
 
             let file_path = item.getFilePath();
+
+            // Test to see if file extension is allowed
+            if (Array.isArray(options.allowed_file_ext))
+            {
+                let file_ext = file_path.split('.').pop().toLowerCase();
+                if (!options.allowed_file_ext.includes(file_ext)) continue;
+            }
+
             let copy_path = this._getCopyPath(item, dst_path, options.into_subfolder, options.subdir_str);
 
             // Have to check since later adding an entry triggers the
@@ -104,21 +133,35 @@ class ZotMoov {
             into_subfolder: false,
             subdir_str: '',
             allow_group_libraries: false,
+            allowed_file_ext: null,
         };
 
         let options = {...default_options, ...arg_options};
 
+        // Convert to lowercase to ensure case insensitive
+        if (Array.isArray(options.allowed_file_ext))
+        {
+            options.allowed_file_ext = options.allowed_file_ext.map(ext => ext.toLowerCase());
+        }
 
         if (dst_path == '') return;
 
         let promises = [];
         for (let item of items)
         {
-            if (!item.isAttachment()) continue;
+            if (!item.isFileAttachment()) continue;
             if (!options.allow_group_libraries && item.libraryID != Zotero.Libraries.userLibraryID) continue;
 
             let file_path = item.getFilePath();
-            let copy_path = this._getCopyPath(item, dst_path, options.into_subfolder, options.subdir_str);
+
+            // Test to see if file extension is allowed
+            if (Array.isArray(options.allowed_file_ext))
+            {
+                let file_ext = file_path.split('.').pop().toLowerCase();
+                if (!options.allowed_file_ext.includes(file_ext)) continue;
+            }
+
+            let copy_path = Zotero.ZotMoov._getCopyPath(item, dst_path, options.into_subfolder, options.subdir_str);
 
             if (file_path == copy_path) continue;
 
