@@ -56,7 +56,7 @@ class ScriptDefinitions {
 class FileWriter:
     @staticmethod
     def write_file(js_file_content):
-        js_path: Path = Path(os.path.dirname(__file__)).joinpath('init', 'script-definitions.js')
+        js_path: Path = Path(os.path.dirname(__file__)).joinpath('init', '00-script-definitions.js')
         with open(js_path, 'w') as file:
             file.write(js_file_content)
 

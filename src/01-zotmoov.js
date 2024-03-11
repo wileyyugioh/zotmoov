@@ -1,12 +1,13 @@
 Components.utils.importGlobalProperties(['PathUtils', 'IOUtils']);
 
 class ZotMoov {
-    constructor(id, version, wildcard, sanitizer) {
+    constructor(id, version, wildcard, sanitizer, zotmoov_debugger) {
         this.id = id;
         this.version = version;
         this._notifierID = Zotero.Notifier.registerObserver(new ZotmoovNotifyCallback(this), ['item'], 'zotmoov', 99);
         this.wildcard = wildcard;
         this.sanitizer = sanitizer;
+        this.zotmoov_debugger = zotmoov_debugger;
     }
 
     destroy() {
@@ -15,6 +16,8 @@ class ZotMoov {
 
     _getCopyPath(item, dst_path, into_subfolder, subdir_str)
     {
+        this.zotmoov_debugger.debug('Testing the debug method.')
+
         let file_path = item.getFilePath();
         let file_name = file_path.split(/[\\/]/).pop();
         let local_dst_path = dst_path;

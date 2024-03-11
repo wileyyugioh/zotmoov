@@ -32,18 +32,22 @@ async function install()
 async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 {
     // Only ones we need to load directly here
-    Services.scriptloader.loadSubScript(rootURI + 'init/script-definitions.js');
-    Services.scriptloader.loadSubScript(rootURI + 'init/script-loader.js');
+    Services.scriptloader.loadSubScript(rootURI + 'init/00-script-definitions.js');
+    Services.scriptloader.loadSubScript(rootURI + 'init/01-script-loader.js');
 
     let scriptPaths = new ScriptDefinitions().getScriptPaths();
     let scriptLoader = new ScriptLoader(rootURI);
 
     await scriptLoader.loadScripts(scriptPaths);
 
+    const directoryManager = new DirectoryManager();
+    const outputManager = new OutputManager(directoryManager);
+    const zotmoovDebugger = new ZotmoovDebugger('ZotMoov', outputManager);
+
     const sanitizer = new Sanitizer();
     const zotmoovWildcard = new ZotmoovWildcard(sanitizer);
 
-    let zotmoov = new ZotMoov(id, version, zotmoovWildcard, sanitizer);
+    let zotmoov = new ZotMoov(id, version, zotmoovWildcard, sanitizer, zotmoovDebugger);
     let zotmoovMenus = new ZotmoovMenus(zotmoov);
 
     Zotero.PreferencePanes.register(
