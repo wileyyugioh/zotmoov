@@ -1,6 +1,6 @@
 Components.utils.import('resource://gre/modules/Services.jsm');
 
-class ZotmoovMenus {
+class ZotMoovMenus {
     constructor(zotmoov) {
         this.menuseparator_id = 'zotmoov-context-menuseparator'
         this.move_selected_item_id = 'zotmoov-context-move-selected'

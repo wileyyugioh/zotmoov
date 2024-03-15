@@ -1,4 +1,4 @@
-class ZotmoovNotifyCallback {
+class ZotMoovNotifyCallback {
     constructor(zotmoov) {
         this._item_ids = [];
         this._timeoutID = 0;
@@ -46,7 +46,7 @@ class ZotmoovNotifyCallback {
 
     async addCallback(event, ids, extraData) {
         let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
-        if (!auto_move) return;
+        if (!auto_move || !this._zotmoov.isEnabled()) return;
 
         this._item_ids.push(...ids);
     }
