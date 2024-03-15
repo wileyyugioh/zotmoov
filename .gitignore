@@ -2,3 +2,12 @@
 *.xpi
 *.in
 
+# IDEA
+/.idea
+
+# Python
+/venv
+
+# Personal
+/.personal
+/init/00-script-definitions.js

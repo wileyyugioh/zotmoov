@@ -1,12 +1,11 @@
-// ZotMoov
-// zotmoov_wildcard.js
-// Written by Wiley Yu
-
-// If this doesn't load, fail anyways
 Components.utils.importGlobalProperties(['PathUtils']);
 
-Zotero.ZotMoov.Wildcard = {
+class ZotMoovWildcard {
     // Some of this code is modfied from https://github.com/jlegewie/zotfile/blob/e0c1fa1d3d92716bdec56fddd6e07f563a535d95/chrome/content/zotfile/wildcards.js
+
+    constructor(sanitizer) {
+        this.sanitizer = sanitizer;
+    }
 
     _format_authors(item) {
         // get creator and create authors string
@@ -34,7 +33,7 @@ Zotero.ZotMoov.Wildcard = {
                 var initials = creators[i].firstName.substr(0, 1).toUpperCase() + creators[i].lastName.substr(0, 1).toUpperCase()
                 if (author_initials !== "") author_initials += delimiter + initials;
                 if (author_initials === "") author_initials = initials;
-        var lastg = creators[i].lastName + ", " + creators[i].firstName;
+                var lastg = creators[i].lastName + ", " + creators[i].firstName;
                 if (author_lastg !== "") author_lastg += delimiter + lastg;
                 if (author_lastg === "") author_lastg = lastg;
                 j=j+1;
@@ -78,7 +77,7 @@ Zotero.ZotMoov.Wildcard = {
             }
         }
         return([author, author_lastf, author_initials, editor, editor_lastf, editor_initials, author_lastg, lastAuthor, lastAuthor_lastInitial, lastAuthor_lastf, lastAuthor_initials]);
-    },
+    }
 
     _truncateTitle(title) {
         let custom_max_titlelength = 200;
@@ -113,7 +112,7 @@ Zotero.ZotMoov.Wildcard = {
         title = title.replace(/[\*|"<>]/g, '');
         title = title.replace(/[\?:]/g, ' -');
         return title;
-    },
+    }
 
     _get_collection_paths(item)
     {
@@ -129,7 +128,7 @@ Zotero.ZotMoov.Wildcard = {
             for (let i = collection_names.length - 1; i >= 0; i--) // Iterate backwards
             {
                 let collection_name = collection_names[i];
-                collection_name = Zotero.ZotMoov.Sanitize.sanitize(collection_name, '_'); // Convert to file safe string
+                collection_name = this.sanitizer.sanitize(collection_name, '_'); // Convert to file safe string
                 path = path + '/' + collection_name;
             }
         }
@@ -137,9 +136,8 @@ Zotero.ZotMoov.Wildcard = {
         if (path != '') path = path.substring(1);
 
         return path;
-    },
+    }
 
-    // Return collection hierarchy from deepest to shallowest
     _getCollectionNamesHierarchy(collection)
     {
         let r = [];
@@ -152,7 +150,7 @@ Zotero.ZotMoov.Wildcard = {
         }
 
         return r;
-    },
+    }
 
     _get_fields(item)
     {
@@ -162,34 +160,34 @@ Zotero.ZotMoov.Wildcard = {
         let authors = this._format_authors(item);
 
         let _item_fields =
-        {
-            'itemTypeEN': Zotero.ItemTypes.getName(item_type),
-            'itemType': Zotero.ItemTypes.getLocalizedString(item_type),
-            'titleFormated': this._truncateTitle(item.getField("title", false, true)),
-            'author': authors[0],
-            'authorLastF': authors[1],
-            'authorInitials': authors[2],
-            'editor': authors[3],
-            'editorLastF': authors[4],
-            'editorInitials': authors[5],
-            'authorLastG': authors[6],
-            "lastAuthor": authors[7],
-            "lastAuthor_lastInitial": authors[8],
-            "lastAuthor_lastf": authors[9],
-            "lastAuthor_initials": authors[10],
-            "collectionPaths": this._get_collection_paths(item),
-            "citekey": Zotero.BetterBibTeX ? item.getField('citationKey') : '',
-            'year': item.getField('year', false, true),
-            'journalAbbrev': item.getField('journalAbbreviation', false, true),
-            'publication': item.getField('publicationTitle', false, true),
-            'publisher': item.getField('publisher', false, true),
-            'volume': item.getField('volume', false, true),
-            'issue': item.getField('issue', false, true),
-            'pages': item.getField('pages', false, true)
-        };
+            {
+                'itemTypeEN': Zotero.ItemTypes.getName(item_type),
+                'itemType': Zotero.ItemTypes.getLocalizedString(item_type),
+                'titleFormated': this._truncateTitle(item.getField("title", false, true)),
+                'author': authors[0],
+                'authorLastF': authors[1],
+                'authorInitials': authors[2],
+                'editor': authors[3],
+                'editorLastF': authors[4],
+                'editorInitials': authors[5],
+                'authorLastG': authors[6],
+                "lastAuthor": authors[7],
+                "lastAuthor_lastInitial": authors[8],
+                "lastAuthor_lastf": authors[9],
+                "lastAuthor_initials": authors[10],
+                "collectionPaths": this._get_collection_paths(item),
+                "citekey": Zotero.BetterBibTeX ? item.getField('citationKey') : '',
+                'year': item.getField('year', false, true),
+                'journalAbbrev': item.getField('journalAbbreviation', false, true),
+                'publication': item.getField('publicationTitle', false, true),
+                'publisher': item.getField('publisher', false, true),
+                'volume': item.getField('volume', false, true),
+                'issue': item.getField('issue', false, true),
+                'pages': item.getField('pages', false, true)
+            };
 
         return _item_fields
-    },
+    }
 
     _sub(item, item_fields, wildcard)
     {
@@ -266,7 +264,7 @@ Zotero.ZotMoov.Wildcard = {
         }
 
         return result;
-    },
+    }
 
     process_string(item, string)
     {
@@ -296,13 +294,13 @@ Zotero.ZotMoov.Wildcard = {
             string = string.replace(sub_brackets[i], sub_strs[i]);
         }
 
-        string = string.replaceAll(/%[a-zA-Z]/g, function(match)
+        string = string.replaceAll(/%[a-zA-Z]/g, (match) =>
         {
-            return Zotero.ZotMoov.Wildcard._sub(item, item_fields, match)
+            return this._sub(item, item_fields, match);
         });
 
         return string
-    },
+    }
 
     _process_wildcard(item, item_fields, wildcard)
     {
@@ -325,14 +323,12 @@ Zotero.ZotMoov.Wildcard = {
         }
 
         if (!subbed_a_wildcard) return '';
-        final_result = processed_array.join('');
-
-        return final_result;
-    },
+        return processed_array.join('');
+    }
 
     _test(item)
     {
         const str_to_test = '{%a/}{%b | %I/}{%F/}{%A/}{%d/}{%D/}{%L/}{%l/}{%y/}{%t/}{%T/}{%j/}{%p/}{%w/}{%s/}{%v/}{%e/}{%f/}{%c/}';
         return this.process_string(item, str_to_test);
-    },
+    }
 }

@@ -1,16 +1,11 @@
-// ZotMoov
-// zotmoov_prefs.js
-// Written by Wiley Yu
-
-Zotero.ZotMoov.Prefs =
-{
+class ZotMoovPrefs {
     init()
     {
         let enable_subdir_move = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
         document.getElementById('zotmoov-subdir-str').disabled = !enable_subdir_move;
 
         this._loadFileExtTable()
-    },
+    }
 
     async pickDirectory()
     {
@@ -26,24 +21,24 @@ Zotero.ZotMoov.Prefs =
 
         Zotero.Prefs.set('extensions.zotmoov.dst_dir', fp.file.path, true);
         document.getElementById('zotmoov-dst-dir').value = fp.file.path;
-    },
+    }
 
     onSubDirClick(cb)
     {
         document.getElementById('zotmoov-subdir-str').disabled = !cb.checked;
-    },
+    }
 
     updateMenuItems(item)
     {
         let v = item.value;
         if(v == 'move')
         {
-            Zotero.ZotMoov.Menus.setMove();
+            this.zotmoovMenus.setMove();
         } else
         {
-            Zotero.ZotMoov.Menus.setCopy();
+            this.zotmoovMenus.setCopy();
         }
-    },
+    }
 
     createFileExtEntry()
     {
@@ -62,8 +57,7 @@ Zotero.ZotMoov.Prefs =
         let fileexts = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
         fileexts.push(dummy_value);
         Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(fileexts), true);
-
-    },
+    }
 
     removeFileExtEntries()
     {
@@ -99,7 +93,7 @@ Zotero.ZotMoov.Prefs =
         {
             child.remove();
         }
-    },
+    }
 
     onFileExtTreeSelect()
     {
@@ -114,7 +108,7 @@ Zotero.ZotMoov.Prefs =
         }
 
         remove_button.disabled = true;
-    },
+    }
 
     _loadFileExtTable()
     {
@@ -161,4 +155,7 @@ Zotero.ZotMoov.Prefs =
         const observer = new MutationObserver(callback);
         observer.observe(treechildren, config);
     }
-};
+}
+
+// Expose to Zotero
+Zotero.ZotMoov.Prefs = new ZotMoovPrefs();
