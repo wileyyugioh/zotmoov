@@ -5,12 +5,14 @@ class ZotMoov {
         this.id = id;
         this.version = version;
         this._notifierID = Zotero.Notifier.registerObserver(new ZotmoovNotifyCallback(this), ['item'], 'zotmoov', 99);
+        this._enabled = true;
+
         this.wildcard = wildcard;
         this.sanitizer = sanitizer;
         this.zotmoov_debugger = zotmoov_debugger;
 
-        Zotero.Attachments.convertLinkedFileToStoredFile = this._convertLinkedFileToStoredFile;
         this._origConvertLinked = Zotero.Attachments.convertLinkedFileToStoredFile;
+        Zotero.Attachments.convertLinkedFileToStoredFile = this._convertLinkedFileToStoredFile;
     }
 
     destroy() {
@@ -31,8 +33,6 @@ class ZotMoov {
 
     _getCopyPath(item, dst_path, into_subfolder, subdir_str)
     {
-        this.zotmoov_debugger.debug('Testing the debug method.')
-
         let file_path = item.getFilePath();
         let file_name = file_path.split(/[\\/]/).pop();
         let local_dst_path = dst_path;

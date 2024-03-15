@@ -1,6 +1,8 @@
 Components.utils.importGlobalProperties(['PathUtils']);
 
 class ZotmoovWildcard {
+    // Some of this code is modfied from https://github.com/jlegewie/zotfile/blob/e0c1fa1d3d92716bdec56fddd6e07f563a535d95/chrome/content/zotfile/wildcards.js
+
     constructor(sanitizer) {
         this.sanitizer = sanitizer;
     }
