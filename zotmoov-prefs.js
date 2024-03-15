@@ -1,8 +1,4 @@
-class ZotmoovPrefs {
-    constructor(zotmoovMenus) {
-        this.zotmoovMenus = zotmoovMenus;
-    }
-
+class ZotMoovPrefs {
     init()
     {
         let enable_subdir_move = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
@@ -160,3 +156,6 @@ class ZotmoovPrefs {
         observer.observe(treechildren, config);
     }
 }
+
+// Expose to Zotero
+Zotero.ZotMoov.Prefs = new ZotMoovPrefs();

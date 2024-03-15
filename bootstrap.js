@@ -1,11 +1,6 @@
 // ZotMoov
 // bootstrap.js
-// Written by Wiley Yus
-
-if (typeof Zotero == 'undefined')
-{
-    var Zotero;
-}
+// Written by Wiley Yu
 
 // Declare zotmoov and zotmoovMenus at the top level
 var zotmoov = null;
@@ -54,10 +49,13 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
         {
             pluginID: 'zotmoov@wileyy.com',
             src: rootURI + 'prefs.xhtml',
-            scripts: [rootURI + 'src/zotmoov_prefs.js']
+            scripts: [rootURI + 'zotmoov-prefs.js']
         });
 
     zotmoovMenus.loadAll();
+
+    // Need to expose our addon to rest of Zotero
+    Zotero.ZotMoov = zotmoov;
 }
 
 function onMainWindowLoad({ window }) {

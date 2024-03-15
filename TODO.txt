@@ -1,0 +1,9 @@
+# Bugs found
+01-zotmoov.js
+Line 13: this._origConvertLinked is being set to our modified convertLinkedFileToStoredFile when it should be set to the original function
+
+00-zotmoov-wildcard.js
+Add line referencing zotfile code https://github.com/jlegewie/zotfile/blob/e0c1fa1d3d92716bdec56fddd6e07f563a535d95/chrome/content/zotfile/wildcards.js
+
+02-sanitize-filename.js
+Add line referencing https://github.com/parshap/node-sanitize-filename
