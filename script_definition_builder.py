@@ -43,6 +43,7 @@ class ScriptDefinitions {
     def generate_content(self):
         for directory in self.directories:
             script_files = self.file_processor.get_script_files(directory)
+            script_files.sort()
             self.js_file_content += self.file_processor.write_content(directory, script_files)
 
         concat_str = self.file_processor.get_concat_str(self.directories)
