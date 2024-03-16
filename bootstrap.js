@@ -62,6 +62,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 
     // Need to expose our addon to rest of Zotero
     Zotero.ZotMoov = zotmoov;
+    Zotero.ZotMoov.Menus = zotmoovMenus;
 }
 
 function onMainWindowLoad({ window }) {
