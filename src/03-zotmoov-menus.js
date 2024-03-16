@@ -6,12 +6,15 @@ class ZotMoovMenus {
         this.move_selected_item_id = 'zotmoov-context-move-selected'
         this.move_selected_item_custom_id = 'zotmoov-context-move-selected-custom-dir'
         this.zotmoov = zotmoov
+
+        this._popupShowing = this._doPopupShowing.bind(this);
     }
 
-    _popupShowing(win)
+    _doPopupShowing(event)
     {
         let should_disabled = !this._hasAttachments();
 
+        let win = event.view;
         win.document.getElementById(this.move_selected_item_id).disabled = should_disabled;
         win.document.getElementById(this.move_selected_item_custom_id).disabled = should_disabled;
     }
@@ -50,7 +53,7 @@ class ZotMoovMenus {
         });
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
-        zotero_itemmenu.addEventListener('popupshowing', () => this._popupShowing(win));
+        zotero_itemmenu.addEventListener('popupshowing', this._popupShowing);
 
         zotero_itemmenu.appendChild(menuseparator);
         zotero_itemmenu.appendChild(move_selected_item);
