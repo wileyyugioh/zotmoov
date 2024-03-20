@@ -5,7 +5,7 @@ from pathlib import Path
 class FileProcessor:
     @staticmethod
     def get_sub_dirs(directory):
-        directory_path = Path(directory)
+        directory_path = Path("..", directory)
         sub_dirs = []
         for subdirectory in directory_path.iterdir():
             if subdirectory.is_dir():
@@ -14,7 +14,7 @@ class FileProcessor:
 
     @staticmethod
     def get_script_files(directory):
-        return [file[:-3] for file in os.listdir(directory) if file.endswith('.js')]
+        return [file[:-3] for file in os.listdir(Path("..", directory)) if file.endswith('.js')]
 
     @staticmethod
     def write_content(directory, script_files):
@@ -82,6 +82,7 @@ def get_directory_tree(directories):
 
 if __name__ == '__main__':
     directories = ['lib', 'src']
+
     directories = get_directory_tree(directories)
 
     js_content = JSFileContent(directories)
