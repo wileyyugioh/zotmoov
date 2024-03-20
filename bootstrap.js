@@ -39,10 +39,9 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
     const outputManager = new OutputManager(directoryManager);
     const zotmoovDebugger = new ZotMoovDebugger('ZotMoov', outputManager);
 
-    const sanitizer = new Sanitizer();
-    const zotmoovWildcard = new ZotMoovWildcard(sanitizer);
+    const sanitizer = new FileNameSanitizer();
 
-    let zotmoov = new ZotMoov(id, version, zotmoovWildcard, sanitizer, zotmoovDebugger);
+    let zotmoov = new ZotMoov(id, version, sanitizer, zotmoovDebugger);
     let zotmoovMenus = new ZotMoovMenus(zotmoov);
 
     Zotero.PreferencePanes.register(

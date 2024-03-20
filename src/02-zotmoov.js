@@ -1,13 +1,24 @@
 Components.utils.importGlobalProperties(['PathUtils', 'IOUtils']);
 
 class ZotMoov {
-    constructor(id, version, wildcard, sanitizer, zotmoov_debugger) {
+    /**
+     *
+     * @param id
+     * @param version
+     * @param sanitizer {FileNameSanitizer}
+     * @param zotmoov_debugger {ZotMoovDebugger}
+     */
+    constructor(id, version, sanitizer, zotmoov_debugger) {
         this.id = id;
         this.version = version;
         this._notifierID = Zotero.Notifier.registerObserver(new ZotMoovNotifyCallback(this), ['item'], 'zotmoov', 99);
         this._enabled = true;
 
-        this.wildcard = wildcard;
+        const config = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
+        const getItemTemplatePossibilities = new GetItemTemplatePossibilities();
+        this.configuration_parser = new ConfigurationParser(config, zotmoov_debugger, getItemTemplatePossibilities);
+        this.item_factory = new ItemFactory(new CreatorModelFactory(), zotmoov_debugger, sanitizer, 3, ', ');
+
         this.sanitizer = sanitizer;
         this.zotmoov_debugger = zotmoov_debugger;
 
@@ -33,21 +44,27 @@ class ZotMoov {
         this.enable();
     }
 
-    _getCopyPath(item, dst_path, into_subfolder, subdir_str)
+    _getCopyPath(zoteroItem, dst_path, into_subfolder, subdir_str)
     {
-        let file_path = item.getFilePath();
+        let file_path = zoteroItem.getFilePath();
         let file_name = file_path.split(/[\\/]/).pop();
+
+        this.zotmoov_debugger.debug("Getting copy path for: " + file_name);
+
         let local_dst_path = dst_path;
 
         // Optionally add subdirectory folder here
         if (into_subfolder)
         {
-            let custom_dir = this.wildcard.process_string(item, subdir_str);
+            const item = this.item_factory.createItem(zoteroItem);
+            let custom_dir = this.configuration_parser.parse(item);
             let sanitized_custom_dir = custom_dir.split('/').map((dir) => this.sanitizer.sanitize(dir, '_'));
             local_dst_path = PathUtils.join(local_dst_path, ...sanitized_custom_dir);
         }
 
         let copy_path = PathUtils.join(local_dst_path, file_name);
+
+        this.zotmoov_debugger.debug("Final path: " + copy_path)
 
         return copy_path;
     }
