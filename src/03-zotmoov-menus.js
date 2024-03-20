@@ -15,6 +15,8 @@ class ZotMoovMenus {
         let should_disabled = !this._hasAttachments();
 
         let win = event.view;
+        if(!win) return;
+
         win.document.getElementById(this.move_selected_item_id).disabled = should_disabled;
         win.document.getElementById(this.move_selected_item_custom_id).disabled = should_disabled;
     }

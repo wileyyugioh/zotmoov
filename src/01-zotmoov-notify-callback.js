@@ -3,7 +3,12 @@ class ZotMoovNotifyCallback {
         this._item_ids = [];
         this._timeoutID = 0;
         this._zotmoov = zotmoov;
+
+        this._enabled = true;
     }
+
+    enable() { this._enabled = true; }
+    disable() { this._enabled = false; }
 
     async execute() {
         let ids = this._item_ids;
@@ -46,7 +51,7 @@ class ZotMoovNotifyCallback {
 
     async addCallback(event, ids, extraData) {
         let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
-        if (!auto_move || !this._zotmoov.isEnabled()) return;
+        if (!auto_move || !this._enabled) return;
 
         this._item_ids.push(...ids);
     }

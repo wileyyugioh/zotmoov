@@ -4,18 +4,11 @@ class ZotMoov {
     constructor(id, version, wildcard, sanitizer, zotmoov_debugger) {
         this.id = id;
         this.version = version;
-        this._enabled = true;
 
         this.wildcard = wildcard;
         this.sanitizer = sanitizer;
         this.zotmoov_debugger = zotmoov_debugger;
     }
-
-    enable() { this._enabled = true;}
-
-    disable() { this._enabled = false;}
-
-    isEnabled() {return this._enabled;}
 
     _getCopyPath(item, dst_path, into_subfolder, subdir_str)
     {
@@ -38,7 +31,6 @@ class ZotMoov {
 
     async delete(items, home_path, arg_options = {})
     {
-        if (!this._enabled) return;
         const default_options = {
         };
 
@@ -78,7 +70,6 @@ class ZotMoov {
 
     async move(items, dst_path, arg_options = {})
     {
-        if (!this._enabled) return;
         const default_options = {
             ignore_linked: true,
             into_subfolder: false,
@@ -156,7 +147,6 @@ class ZotMoov {
 
     async copy(items, dst_path, arg_options = {})
     {
-        if (!this._enabled) return;
         const default_options = {
             into_subfolder: false,
             subdir_str: '',
