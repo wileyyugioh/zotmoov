@@ -13,19 +13,15 @@ class ZotMoovBindings {
 
         let self = this;
         Zotero.Item.prototype._eraseData = Zotero.Promise.coroutine(function* (env) {
-            try
+            return self._origEraseData.apply(this, [env]).then((val) =>
             {
-                if(Zotero.Prefs.get('extensions.zotmoov.delete_files', true))
+                if (Zotero.Prefs.get('extensions.zotmoov.delete_files', true))
                 {
                     self._zotmoov.delete([this], Zotero.Prefs.get('extensions.zotmoov.dst_dir', true));
                 }
-            }
-            catch (e)
-            {
-                Zotero.logError(e);
-            }
 
-            return self._origEraseData.apply(this, [env]);
+                return val;
+            });
         });
     }
 
