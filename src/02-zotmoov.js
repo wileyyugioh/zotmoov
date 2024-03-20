@@ -36,6 +36,7 @@ class ZotMoov {
 
         let options = {...default_options, ...arg_options};
 
+        if (home_path == '') return;
         let home_path_arr = PathUtils.split(home_path);
 
         let promises = [];
