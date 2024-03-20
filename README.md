@@ -43,6 +43,10 @@ By default ZotMoov will move and link your files. You can change the dropdown me
 
 When this is enabled, ZotMoov will automatically move files into a custom subdirectory. By default it is `{%c}` which is by item collection. [Click here for the formatting options](https://github.com/wileyyugioh/zotmoov/blob/master/docs/WILDCARD_INFO.md)
 
+### Automatically Delete External Linked Files in the ZotMoov Directory
+
+When this is enabled, ZotMoov will automatically delete linked files in the ZotMoov Directory. Meaning that when you trash/permanently delete a file with this option enabled in Zotero, and it is a linked file in the ZotMoov directory, it will also get deleted on your hard drive.
+
 ### Allowed File Extensions
 
 By adding/removing entries to this table via the [+] and [-] buttons, you can choose which types of files ZotMoov will automatically move. If the table is empty, then all files will be moved regardless of their file extension.
