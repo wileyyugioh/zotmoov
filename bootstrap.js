@@ -77,7 +77,6 @@ function onMainWindowUnload({ window }) {
 function shutdown()
 {
     log('ZotMoov: Shutting down');
-    zotmoov.destroy();
     zotmoovMenus.unloadAll();
     zotmoovBindings.destroy();
 
