@@ -10,14 +10,10 @@ class ZotMoov {
         this.wildcard = wildcard;
         this.sanitizer = sanitizer;
         this.zotmoov_debugger = zotmoov_debugger;
-
-        this._origConvertLinked = Zotero.Attachments.convertLinkedFileToStoredFile;
-        Zotero.Attachments.convertLinkedFileToStoredFile = this._convertLinkedFileToStoredFile.bind(this);
     }
 
     destroy() {
         Zotero.Notifier.unregisterObserver(this._notifierID);
-        Zotero.Attachments.convertLinkedFileToStoredFile = this._origConvertLinked;
     }
 
     enable() { this._enabled = true;}
@@ -25,13 +21,6 @@ class ZotMoov {
     disable() { this._enabled = false;}
 
     isEnabled() {return this._enabled;}
-
-    async _convertLinkedFileToStoredFile(item, options = {})
-    {
-        this.disable();
-        await this._origConvertLinked.bind(Zotero.Attachments)(item, options);
-        this.enable();
-    }
 
     _getCopyPath(item, dst_path, into_subfolder, subdir_str)
     {

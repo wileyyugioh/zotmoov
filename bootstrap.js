@@ -50,6 +50,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 
     zotmoov = new ZotMoov(id, version, zotmoovWildcard, sanitizer, zotmoovDebugger);
     zotmoovMenus = new ZotMoovMenus(zotmoov);
+    zotmoovBindings = new ZotMoovBindings(zotmoov);
 
     Zotero.PreferencePanes.register(
         {
@@ -78,6 +79,7 @@ function shutdown()
     log('ZotMoov: Shutting down');
     zotmoov.destroy();
     zotmoovMenus.unloadAll();
+    zotmoovBindings.destroy();
 
     zotmoov = null;
     zotmoovMenus = null;
