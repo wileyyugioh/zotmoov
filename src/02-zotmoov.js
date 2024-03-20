@@ -61,8 +61,7 @@ class ZotMoov {
             if (!ok) continue;
 
             // It's not, so delete the file
-            Zotero.log(fp);
-            //promises.push(IOUtils.remove(fp));
+            promises.push(IOUtils.remove(fp));
         }
 
         return Promise.allSettled(promises);
