@@ -15,7 +15,7 @@ class ZotMoovBindings {
         Zotero.Item.prototype._eraseData = Zotero.Promise.coroutine(function* (env) {
             if(Zotero.Prefs.get('extensions.zotmoov.delete_files', true))
             {
-                self.zotmoov.delete([this], Zotero.Prefs.get('extensions.zotmoov.dst_dir', true));
+                self._zotmoov.delete([this], Zotero.Prefs.get('extensions.zotmoov.dst_dir', true));
             }
 
             return self._origEraseData.apply(this, [env]);
@@ -33,9 +33,9 @@ class ZotMoovBindings {
 
     async _convertLinkedFileToStoredFile(item, options = {})
     {
-        this._zotmoov.disable();
+        this._callback.disable();
         let ret = await this._origConvertLinked.apply(Zotero.Attachments, [item, options]);
-        this._zotmoov.enable();
+        this._callback.enable();
 
         return ret;
     }
