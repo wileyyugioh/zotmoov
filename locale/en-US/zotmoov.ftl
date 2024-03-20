@@ -43,3 +43,6 @@ zotmoov-settings-subdir-str = Subdirectory String (default: {"{"}%c{"}"})
 zotmoov-settings-subdir-about = Formatting
 
 zotmoov-settings-fileext-about = Defaults to all file extensions if empty
+
+zotmoov-settings-delete-files-label =
+    .label = Automatically Delete Linked Files in the ZotMoov Directory

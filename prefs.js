@@ -10,3 +10,4 @@ pref('extensions.zotmoov.subdirectory_string', '{%c}');
 pref('extensions.zotmoov.auto_process_delay', 5000);
 pref('extensions.zotmoov.copy_group_libraries', false)
 pref('extensions.zotmoov.allowed_fileext', JSON.stringify(['pdf', 'epub', 'docx']))
+pref('extensions.zotmoov.delete_files', false);

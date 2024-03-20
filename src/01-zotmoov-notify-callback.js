@@ -60,5 +60,10 @@ class ZotMoovNotifyCallback {
         if (event == 'add') await this.addCallback(event, ids, extraData);
         if (event == 'modify') await this.modifyCallback(event, ids, extraData);
     }
+
+    destroy()
+    {
+        clearTimeout(this._timeoutID);
+    }
 }
 

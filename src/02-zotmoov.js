@@ -4,16 +4,11 @@ class ZotMoov {
     constructor(id, version, wildcard, sanitizer, zotmoov_debugger) {
         this.id = id;
         this.version = version;
-        this._notifierID = Zotero.Notifier.registerObserver(new ZotMoovNotifyCallback(this), ['item'], 'zotmoov', 99);
         this._enabled = true;
 
         this.wildcard = wildcard;
         this.sanitizer = sanitizer;
         this.zotmoov_debugger = zotmoov_debugger;
-    }
-
-    destroy() {
-        Zotero.Notifier.unregisterObserver(this._notifierID);
     }
 
     enable() { this._enabled = true;}
@@ -39,6 +34,46 @@ class ZotMoov {
         let copy_path = PathUtils.join(local_dst_path, file_name);
 
         return copy_path;
+    }
+
+    async delete(items, home_path, arg_options = {})
+    {
+        if (!this._enabled) return;
+        const default_options = {
+        };
+
+        let options = {...default_options, ...arg_options};
+
+        let home_path_arr = PathUtils.split(home_path);
+
+        let promises = [];
+        for (let item of items)
+        {
+            if (!item.isFileAttachment()) continue;
+            if (item.libraryID != Zotero.Libraries.userLibraryID) continue;
+
+            // Check to see if file is a linked file
+            if (item.attachmentLinkMode != Zotero.Attachments.LINK_MODE_LINKED_FILE) continue;
+            let fp = item.getFilePath();
+            let fp_arr = PathUtils.split(fp);
+
+            // Check to see if file is in home_path
+            let ok = true;
+            for (let [i, dir] of home_path_arr.entries())
+            {
+                if (dir == fp_arr[i]) continue;
+
+                ok = false;
+                break;
+            }
+            if (!ok) continue;
+
+            // It's not, so delete the file
+            Zotero.log(fp);
+            //promises.push(IOUtils.remove(fp));
+        }
+
+        return Promise.allSettled(promises);
     }
 
     async move(items, dst_path, arg_options = {})
