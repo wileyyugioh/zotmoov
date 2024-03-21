@@ -129,6 +129,24 @@ class ZotMoov {
             clone.attachmentPath = final_path;
             clone.setField('title', PathUtils.filename(final_path));
 
+            // Temporary fix
+            if (final_path.length > 260) {
+                this.zotmoov_debugger.error("File path too long: " + final_path + "\nTotal " + (final_path.length) + " characters");
+                this.zotmoov_debugger.debug("Implementing temporary fix; renaming file to paper.pdf");
+
+                const original_file_name = PathUtils.filename(file_path);
+                const new_file_name = 'paper.pdf';
+
+                final_path = final_path.replace(original_file_name, new_file_name);
+
+                if (final_path.length > 260) {
+                    this.zotmoov_debugger.error("File path too long after temporary fix: " + final_path + "\nTotal " + (final_path.length) + " characters\nSKIPPING!");
+                    return;
+                }
+
+                this.zotmoov_debugger.debug("Final path: " + final_path);
+            }
+
             promises.push(IOUtils.move(file_path, final_path, { noOverwrite: true }).then(function(clone, item)
                 {
                     clone.saveTx().then(async function(id)
