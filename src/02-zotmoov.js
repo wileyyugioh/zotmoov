@@ -61,7 +61,7 @@ class ZotMoov {
             }
             if (!ok) continue;
 
-            // It's not, so delete the file
+            // It is, so delete the file
             promises.push(IOUtils.remove(fp));
         }
 
