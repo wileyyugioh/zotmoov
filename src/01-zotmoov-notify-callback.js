@@ -12,7 +12,7 @@ class ZotMoovNotifyCallback {
     disable() { this._enabled = false; }
 
     async execute() {
-        let ids = this._item_ids;
+        let ids = this._item_ids.slice();
         if (ids.length == 0) return;
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
         let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
