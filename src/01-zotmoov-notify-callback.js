@@ -2,6 +2,7 @@ class ZotMoovNotifyCallback {
     constructor(zotmoov) {
         this._item_ids = [];
         this._timeoutID = 0;
+        this._syncDelayHandle = null;
         this._zotmoov = zotmoov;
 
         this._enabled = true;
@@ -47,11 +48,21 @@ class ZotMoovNotifyCallback {
             const index = this._item_ids.indexOf(id);
             if (index > -1) this._item_ids.splice(index, 1);
         }
+
+        // Re-enable syncing
+        if(this._syncDelayHandle)
+        {
+            this._syncDelayHandle();
+            this._syncDelayHandle = null;
+        }
     }
 
     async addCallback(event, ids, extraData) {
         let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
         if (!auto_move || !this._enabled) return;
+
+        // Disable syncing
+        if (this._syncDelayHandle == null) this._syncDelayHandle = Zotero.Sync.Runner.delayIndefinite();
 
         this._item_ids.push(...ids);
     }
@@ -69,6 +80,13 @@ class ZotMoovNotifyCallback {
     destroy()
     {
         clearTimeout(this._timeoutID);
+        this._timeoutID = 0;
+
+        if(this._syncDelayHandle)
+        {
+            this._syncDelayHandle();
+            this._syncDelayHandle = null;
+        }
     }
 }
 
