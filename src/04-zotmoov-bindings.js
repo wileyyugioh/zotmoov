@@ -37,27 +37,14 @@ class ZotMoovBindings {
             for (let key of results.deleted['items'])
             {
                 let obj = Zotero.Items.getByLibraryAndKey(Zotero.Libraries.userLibraryID, key);
-                if (obj.isFileAttachment())
+                if (!obj.isFileAttachment() || obj.attachmentLinkMode != Zotero.Attachments.LINK_MODE_LINKED_FILE)
                 {
-                    if (obj.attachmentLinkMode != Zotero.Attachments.LINK_MODE_LINKED_FILE)
-                    {
-                        new_delete.push(key);
-                        continue;
-                    }
-                    obj._eraseData = self._origEraseData;
-                    obj.eraseTx({skipEditCheck: true, skipDeleteLog: true});
-                } else
-                {
-                    for (let att of Zotero.Items.get(obj.getAttachments()))
-                    {
-                        if (att.attachmentLinkMode != Zotero.Attachments.LINK_MODE_LINKED_FILE) continue;
-
-                        att._eraseData = self._origEraseData;
-                        att.eraseTx({skipEditCheck: true, skipDeleteLog: true});
-                    }
-
                     new_delete.push(key);
+                    continue;
                 }
+
+                obj._eraseData = self._origEraseData;
+                obj.eraseTx({skipEditCheck: true, skipDeleteLog: true});
             }
 
             results.deleted['items'] = new_delete;
