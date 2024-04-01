@@ -127,17 +127,16 @@ class ZotMoov {
             clone.attachmentPath = final_path;
             clone.setField('title', PathUtils.filename(final_path));
 
-            promises.push(IOUtils.move(file_path, final_path, { noOverwrite: true }).then(function(clone, item)
+            promises.push(IOUtils.move(file_path, final_path, { noOverwrite: true }).then(async function(clone, item)
                 {
-                    clone.saveTx().then(async function(id)
+                    let id = null;
+                    await Zotero.DB.executeTransaction(async function()
                     {
-                        await Zotero.DB.executeTransaction(async function()
-                        {
-                            await Zotero.Items.moveChildItems(item, clone);
-                        });
-                        Zotero.Fulltext.indexItems(id);// reindex clone after saved
-                        item.eraseTx(); // delete original item
+                        id = await clone.save();
+                        await Zotero.Items.moveChildItems(item, clone);
+                        await item.erase();
                     });
+                    Zotero.Fulltext.indexItems(id);// reindex clone after saved
                 }.bind(null, clone, item))
             );
         }
