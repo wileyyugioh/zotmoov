@@ -4,10 +4,11 @@ class ZotMoovBindings {
         this._zotmoov = zotmoov;
         this._callback = new ZotMoovNotifyCallback(zotmoov);
 
-        this._notifierID = Zotero.Notifier.registerObserver(this._callback, ['item'], 'zotmoov', 99);
+        this._notifierID = Zotero.Notifier.registerObserver(this._callback, ['item'], 'zotmoov', 100);
 
         this._origConvertLinked = Zotero.Attachments.convertLinkedFileToStoredFile;
         this._origEraseData = Zotero.Item.prototype._eraseData;
+        this._origGetDeleted = Zotero.Sync.APIClient.prototype.getDeleted;
 
         Zotero.Attachments.convertLinkedFileToStoredFile = this._convertLinkedFileToStoredFile.bind(this);
 
@@ -15,17 +16,53 @@ class ZotMoovBindings {
         Zotero.Item.prototype._eraseData = Zotero.Promise.coroutine(function* (env) {
             return self._origEraseData.apply(this, [env]).then((val) =>
             {
-                // This is a jank way to check if the erase is initiated
-                // locally vs via a sync
-                // We do not want to delete the file if initiated via a sync since
-                // we are assuming that the folder is synchronized outside of Zotero
-                if (!env.options.skipDeleteLog && Zotero.Prefs.get('extensions.zotmoov.delete_files', true))
+                if (Zotero.Prefs.get('extensions.zotmoov.delete_files', true))
                 {
                     self._zotmoov.delete([this], Zotero.Prefs.get('extensions.zotmoov.dst_dir', true));
                 }
 
                 return val;
             });
+        });
+
+        // We do not want to delete the linked files upon sync
+        // So we have to do this complicated stuff to preprocess the deleted files
+        Zotero.Sync.APIClient.prototype.getDeleted = Zotero.Promise.coroutine(function* (libraryType, libraryTypeID, since) {
+            let results = yield self._origGetDeleted.apply(this, [libraryType, libraryTypeID, since]);
+
+            // Linked files only exist in user library
+            if (libraryType != 'user') return results;
+
+            let new_delete = []
+            for (let key of results.deleted['items'])
+            {
+                let obj = Zotero.Items.getByLibraryAndKey(Zotero.Libraries.userLibraryID, key);
+                if (obj.isFileAttachment())
+                {
+                    if (obj.attachmentLinkMode != Zotero.Attachments.LINK_MODE_LINKED_FILE)
+                    {
+                        new_delete.push(key);
+                        continue;
+                    }
+                    obj._eraseData = self._origEraseData;
+                    obj.eraseTx({skipEditCheck: true, skipDeleteLog: true});
+                } else
+                {
+                    for (let att of Zotero.Items.get(obj.getAttachments()))
+                    {
+                        if (att.attachmentLinkMode != Zotero.Attachments.LINK_MODE_LINKED_FILE) continue;
+
+                        att._eraseData = self._origEraseData;
+                        att.eraseTx({skipEditCheck: true, skipDeleteLog: true});
+                    }
+
+                    new_delete.push(key);
+                }
+            }
+
+            results.deleted['items'] = new_delete;
+
+            return results;
         });
     }
 
@@ -36,6 +73,7 @@ class ZotMoovBindings {
 
         Zotero.Attachments.convertLinkedFileToStoredFile = this._origConvertLinked;
         Zotero.Item.prototype._eraseData = this._origEraseData;
+        Zotero.Sync.APIClient.prototype.getDeleted = this._origGetDeleted;
     }
 
     async _convertLinkedFileToStoredFile(item, options = {})
