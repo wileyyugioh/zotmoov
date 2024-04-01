@@ -17,6 +17,8 @@ Then point ZotMoov to that same folder.
 
 <img src="res/Image2.png" width="500"/>
 
+** If you are not using images in notes, it is highly recommended to uncheck "Sync attachment files in My Library" in the Sync settings. **
+
 If you want to moove already existing files to the ZotMoov directory, you can right click them and use the appropriate menu item.
 
 ## FAQ
