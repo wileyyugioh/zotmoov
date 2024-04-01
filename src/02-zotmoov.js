@@ -32,6 +32,7 @@ class ZotMoov {
     async delete(items, home_path, arg_options = {})
     {
         const default_options = {
+            prune_empty_dir: true
         };
 
         let options = {...default_options, ...arg_options};
@@ -62,7 +63,43 @@ class ZotMoov {
             if (!ok) continue;
 
             // It is, so delete the file
-            promises.push(IOUtils.remove(fp));
+            let p = IOUtils.remove(fp);
+
+            // Delete empty directories recursively up to home directory
+            if (options.prune_empty_dir)
+            {
+                p = p.then(async function()
+                {
+                    let path_arr = fp_arr.slice();
+                    path_arr.pop();
+
+                    while(path_arr.length > home_path_arr.length)
+                    {
+                        let path = PathUtils.join(...path_arr);
+                        let children = await IOUtils.getChildren(path);
+
+                        // Filter out .DS_Store and Thumbs.db
+                        let filter_children = children.filter((c) => {
+                            let filename = PathUtils.filename(c);
+                            return !(['.DS_Store', 'Thumbs.db'].includes(filename));
+                        });
+
+                        if (filter_children.length > 0) return;
+
+                        // Delete the pesky files we don't care about
+                        for (let child of children)
+                        {
+                            await IOUtils.remove(child);
+                        }
+
+                        // Remove the directory if it is empty
+                        await IOUtils.remove(path);
+                        path_arr.pop();
+                    }
+                });
+            }
+
+            promises.push(p);
         }
 
         return Promise.allSettled(promises);

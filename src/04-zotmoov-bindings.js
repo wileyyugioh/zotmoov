@@ -43,6 +43,7 @@ class ZotMoovBindings {
                     continue;
                 }
 
+                // Just do the original delete on all linked files
                 obj._eraseData = self._origEraseData;
                 obj.eraseTx({skipEditCheck: true, skipDeleteLog: true});
             }
