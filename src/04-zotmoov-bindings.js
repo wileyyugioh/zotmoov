@@ -15,7 +15,11 @@ class ZotMoovBindings {
         Zotero.Item.prototype._eraseData = Zotero.Promise.coroutine(function* (env) {
             return self._origEraseData.apply(this, [env]).then((val) =>
             {
-                if (Zotero.Prefs.get('extensions.zotmoov.delete_files', true))
+                // This is a jank way to check if the erase is initiated
+                // locally vs via a sync
+                // We do not want to delete the file if initiated via a sync since
+                // we are assuming that the folder is synchronized outside of Zotero
+                if (!env.options.skipDeleteLog && Zotero.Prefs.get('extensions.zotmoov.delete_files', true))
                 {
                     self._zotmoov.delete([this], Zotero.Prefs.get('extensions.zotmoov.dst_dir', true));
                 }
