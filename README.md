@@ -1,7 +1,7 @@
 # ZotMoov
 A *simple* plugin for Zotero 7 that mooves attachments and links them.
 
-ZotMoov can automatically move added attachments into the directory of your choosing, or you can opt to manually move and link each file into their own respective directory.
+ZotMoov can automatically move added attachments into the directory of your choosing, or you can opt to manually move and link each file via right-clicking.
 
 ## Installation
 
@@ -17,15 +17,14 @@ Then point ZotMoov to that same folder.
 
 <img src="res/Image2.png" width="500"/>
 
-** If you are not using images in notes, it is highly recommended to uncheck "Sync attachment files in My Library" in the Sync settings. **
-
-If you want to moove already existing files to the ZotMoov directory, you can right click them and use the appropriate menu item.
+**If you are only using linked files, it is highly recommended to uncheck "Sync attachment files in My Library" in the Sync settings.**
 
 ## FAQ
 
 ### File Renaming
 
 I recommend using the [automatic file renaming functionality included in Zotero 7](https://www.zotero.org/support/file_renaming). It has support for custom patterns.
+
 ### Bugs/Feature Requests
 
 Both can be filed [here](https://github.com/wileyyugioh/zotmoov/issues). Please keep feature requests tightly focused on the extension's core purpose of mooving attachments and linking them!
