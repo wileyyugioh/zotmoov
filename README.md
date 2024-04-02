@@ -18,7 +18,7 @@ Then point ZotMoov to that same folder.
 <img src="res/Image2.png" width="500"/>
 
 It is highly recommended to
-1. Give ZotMoov it's own folder that other applications will not alter/access
+1. Give ZotMoov its own folder that other applications will not alter/access
 2. Uncheck "Sync attachment files in My Library" in the Sync settings if you do not plan to use Zotero's cloud file storage
 
 ## FAQ
