@@ -33,7 +33,7 @@ class JSFileContent:
         self.directories = directories
         self.file_processor = FileProcessor()
         self.js_file_content = """
-class ScriptDefinitions {
+var ScriptDefinitions = class {
     _convertScriptToPath(directory, scriptName) {
         return directory + '/' + scriptName + '.js';
     }
