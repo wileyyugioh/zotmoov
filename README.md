@@ -5,7 +5,7 @@ ZotMoov can automatically move added attachments into the directory of your choo
 
 ## Installation
 
-[Download the latest release here](https://github.com/wileyyugioh/zotmoov/releases)
+[Download the latest release here](https://github.com/wileyyugioh/zotmoov/releases/latest)
 
 Note that you have to right click the .xpi and save link as.
 
