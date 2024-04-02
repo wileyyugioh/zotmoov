@@ -48,6 +48,7 @@ class ZotMoov {
 
             // Check to see if file is a linked file
             if (item.attachmentLinkMode != Zotero.Attachments.LINK_MODE_LINKED_FILE) continue;
+
             let fp = item.getFilePath();
             let fp_arr = PathUtils.split(fp);
 

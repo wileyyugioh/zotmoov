@@ -18,7 +18,9 @@ class ZotMoovBindings {
             {
                 if (Zotero.Prefs.get('extensions.zotmoov.delete_files', true))
                 {
-                    self._zotmoov.delete([this], Zotero.Prefs.get('extensions.zotmoov.dst_dir', true));
+                    let prune_empty_dir = Zotero.Prefs.get('extensions.zotmoov.prune_empty_dir', true);
+
+                    self._zotmoov.delete([this], Zotero.Prefs.get('extensions.zotmoov.dst_dir', true), { prune_empty_dir: prune_empty_dir });
                 }
 
                 return val;
