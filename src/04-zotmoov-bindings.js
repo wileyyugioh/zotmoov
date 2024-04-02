@@ -37,7 +37,7 @@ class ZotMoovBindings {
             for (let key of results.deleted['items'])
             {
                 let obj = Zotero.Items.getByLibraryAndKey(Zotero.Libraries.userLibraryID, key);
-                if (!obj.isFileAttachment() || obj.attachmentLinkMode != Zotero.Attachments.LINK_MODE_LINKED_FILE)
+                if (!obj || !obj.isFileAttachment() || obj.attachmentLinkMode != Zotero.Attachments.LINK_MODE_LINKED_FILE)
                 {
                     new_delete.push(key);
                     continue;
