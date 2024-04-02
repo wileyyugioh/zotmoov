@@ -1,4 +1,4 @@
-class ZotMoovNotifyCallback {
+var ZotMoovNotifyCallback = class {
     constructor(zotmoov) {
         this._item_ids = [];
         this._timeoutID = 0;

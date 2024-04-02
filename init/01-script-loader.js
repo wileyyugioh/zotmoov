@@ -1,4 +1,4 @@
-class ScriptLoader {
+var ScriptLoader = class {
     constructor(rootURI) {
         this.rootURI = rootURI;
     }

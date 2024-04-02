@@ -2,10 +2,10 @@
 // bootstrap.js
 // Written by Wiley Yu
 
-// Declare zotmoov and zotmoovMenus at the top level
-let first_startup = true;
+// Declare at top level
 let zotmoov = null;
 let zotmoovMenus = null;
+let zotmoovBindings = null;
 
 function log(msg)
 {
@@ -27,19 +27,14 @@ async function install()
 
 async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 {
-    if (first_startup)
-    {
-        // Only ones we need to load directly here
-        Services.scriptloader.loadSubScript(rootURI + 'init/00-script-definitions.js');
-        Services.scriptloader.loadSubScript(rootURI + 'init/01-script-loader.js');
+    // Only ones we need to load directly here
+    Services.scriptloader.loadSubScript(rootURI + 'init/00-script-definitions.js');
+    Services.scriptloader.loadSubScript(rootURI + 'init/01-script-loader.js');
 
-        let scriptPaths = new ScriptDefinitions().getScriptPaths();
-        let scriptLoader = new ScriptLoader(rootURI);
+    let scriptPaths = new ScriptDefinitions().getScriptPaths();
+    let scriptLoader = new ScriptLoader(rootURI);
 
-        await scriptLoader.loadScripts(scriptPaths);
-
-        first_startup = false;
-    }
+    await scriptLoader.loadScripts(scriptPaths);
 
     const directoryManager = new DirectoryManager();
     const outputManager = new OutputManager(directoryManager);
@@ -82,6 +77,7 @@ function shutdown()
 
     zotmoov = null;
     zotmoovMenus = null;
+    zotmoovBindings = null;
     Zotero.ZotMoov = null;
 }
 

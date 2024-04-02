@@ -1,6 +1,6 @@
 Components.utils.importGlobalProperties(['PathUtils', 'IOUtils']);
 
-class ZotMoov {
+var ZotMoov = class {
     constructor(id, version, wildcard, sanitizer, zotmoov_debugger) {
         this.id = id;
         this.version = version;
