@@ -48,7 +48,7 @@ When this is enabled, ZotMoov will automatically move files into a custom subdir
 
 ### Automatically Delete External Linked Files in the ZotMoov Directory
 
-When this is enabled, ZotMoov will automatically delete linked files in the ZotMoov directory. Meaning that when you trash/permanently delete a file with this option enabled in Zotero, and it is a linked file in the ZotMoov directory, it will also get deleted on your hard drive.
+When this is enabled, ZotMoov will automatically delete linked files in the ZotMoov directory. Meaning that when you permanently delete a linked file in Zotero, and that linked file points to a file in the ZotMoov directory, the file on your hard drive will be deleted.
 
 ### Allowed File Extensions
 
