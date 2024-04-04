@@ -56,7 +56,7 @@ By default the subdirectory string is `{%c}` which is by item collection. [Click
 
 ### Automatically Delete External Linked Files in the ZotMoov Directory
 
-When this is enabled, ZotMoov will automatically delete linked files in the ZotMoov directory. Meaning that when you permanently delete a linked file in Zotero, and that linked file points to a file in the ZotMoov directory, the file on your hard drive will be deleted. It will also delete any empty directories.
+When this is enabled, ZotMoov will automatically delete linked files in the ZotMoov directory. Meaning that when you permanently delete a linked file in Zotero, and that linked file points to a file in the ZotMoov directory, the file on your hard drive will be deleted. It will also delete any empty directories within the ZotMoov directory.
 
 ### Allowed File Extensions
 
