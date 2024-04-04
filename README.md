@@ -49,8 +49,8 @@ When this is enabled, ZotMoov will automatically move/copy files whenever they a
 ### Automatically Move/Copy Files to Subdirectory
 
 When this is enabled, ZotMoov will automatically move files into a custom subdirectory whenever
-- a file is moved via **Automatically Move/Copy Files When Added**
-- the Move Selected to Directory menu option is used
+- a file is moved/copied via **Automatically Move/Copy Files When Added**
+- the Move/Copy Selected to Directory menu option is used
 
 By default the subdirectory string is `{%c}` which is by item collection. [Click here for the formatting options](https://github.com/wileyyugioh/zotmoov/blob/master/docs/WILDCARD_INFO.md)
 
