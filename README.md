@@ -42,9 +42,17 @@ The base directory where ZotMoov will move/copy files
 
 By default ZotMoov will move and link your files. You can change the dropdown menu option to `copy` for ZotMoov to just make a back-up of your added files in the specified directory.
 
+### Automatically Move/Copy Files When Added
+
+When this is enabled, ZotMoov will automatically move/copy files whenever they are imported into Zotero. The types of files can be restricted by the **Allowed File Extensions** option.
+
 ### Automatically Move/Copy Files to Subdirectory
 
-When this is enabled, ZotMoov will automatically move files into a custom subdirectory. By default it is `{%c}` which is by item collection. [Click here for the formatting options](https://github.com/wileyyugioh/zotmoov/blob/master/docs/WILDCARD_INFO.md)
+When this is enabled, ZotMoov will automatically move files into a custom subdirectory whenever
+- a file is moved via **Automatically Move/Copy Files When Added**
+- the Move Selected to Directory menu option is used
+
+By default the subdirectory string is `{%c}` which is by item collection. [Click here for the formatting options](https://github.com/wileyyugioh/zotmoov/blob/master/docs/WILDCARD_INFO.md)
 
 ### Automatically Delete External Linked Files in the ZotMoov Directory
 
@@ -52,4 +60,4 @@ When this is enabled, ZotMoov will automatically delete linked files in the ZotM
 
 ### Allowed File Extensions
 
-By adding/removing entries to this table via the [+] and [-] buttons, you can choose which types of files ZotMoov will automatically move. If the table is empty, then all files will be moved regardless of their file extension.
+By adding/removing entries to this table via the [+] and [-] buttons, you can choose which types of files ZotMoov will automatically move via **Automatically Move/Copy Files When Added**. If the table is empty, then all files will be moved regardless of their file extension. *This setting is not used for files moved via Move Selected to Directory menu option.*
