@@ -58,7 +58,7 @@ var ZotMoovBindings = class {
                     }
 
                     // Just do the original delete on all linked files
-                    obj._eraseData = self._get_orig_func(orig_erase_data);
+                    obj._eraseData = self._patcher.get_orig_func(orig_erase_data);
                     obj.eraseTx({skipEditCheck: true, skipDeleteLog: true});
                 }
 
