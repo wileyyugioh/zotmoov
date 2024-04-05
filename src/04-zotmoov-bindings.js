@@ -3,6 +3,7 @@ var ZotMoovBindings = class {
     {
         this._zotmoov = zotmoov;
         this._callback = new ZotMoovNotifyCallback(zotmoov);
+        this._patcher = new ZotMoovPatcher();
 
         this._notifierID = Zotero.Notifier.registerObserver(this._callback, ['item'], 'zotmoov', 100);
         
@@ -10,7 +11,7 @@ var ZotMoovBindings = class {
         this._orig_funcs = [];
 
         let self = this;
-        this._monkey_patch(Zotero.Attachments, 'convertLinkedFileToStoredFile', function (orig) {
+        this._patcher.monkey_patch(Zotero.Attachments, 'convertLinkedFileToStoredFile', function (orig) {
             return async function(...args)
             {
                 self._callback.disable();
@@ -21,7 +22,7 @@ var ZotMoovBindings = class {
             };
         });
 
-        let orig_erase_data = this._monkey_patch(Zotero.Item.prototype, '_eraseData', function (orig) {
+        let orig_erase_data = this._patcher.monkey_patch(Zotero.Item.prototype, '_eraseData', function (orig) {
             return Zotero.Promise.coroutine(function* (...args) {
                 return orig.apply(this, args).then((val) =>
                 {
@@ -39,7 +40,7 @@ var ZotMoovBindings = class {
 
         // We do not want to delete the linked files upon sync
         // So we have to do this complicated stuff to preprocess the deleted files
-        this._monkey_patch(Zotero.Sync.APIClient.prototype, 'getDeleted', function (orig) {
+        this._patcher.monkey_patch(Zotero.Sync.APIClient.prototype, 'getDeleted', function (orig) {
             return Zotero.Promise.coroutine(function* (libraryType, ...other) {
                 let results = yield orig.apply(this, [libraryType, ...other]);
 
@@ -68,30 +69,10 @@ var ZotMoovBindings = class {
         });
     }
 
-    _monkey_patch(object, method, patcher)
-    {
-        let orig_func = object[method];
-        let new_func = patcher(orig_func);
-
-        let self = this;
-        object[method] = function(...args)
-        {
-            if (self._disabled) return orig_func.apply(this, args);
-            return new_func.apply(this, args)
-        };
-
-        return this._orig_funcs.push(orig_func) - 1;
-    }
-
-    _get_orig_func(id)
-    {
-        return this._orig_funcs[id];
-    }
-
     destroy()
     {
         Zotero.Notifier.unregisterObserver(this._notifierID);
         this._callback.destroy();
-        this._disabled = true;
+        this._patcher.destroy();
     }
 }
