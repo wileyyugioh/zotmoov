@@ -47,7 +47,7 @@ var ZotMoovBindings = class {
                 // Linked files only exist in user library
                 if (libraryType != 'user' || !Zotero.Prefs.get('extensions.zotmoov.delete_files', true)) return results;
 
-                let new_delete = []
+                let new_delete = [];
                 for (let key of results.deleted['items'])
                 {
                     let obj = Zotero.Items.getByLibraryAndKey(Zotero.Libraries.userLibraryID, key);
