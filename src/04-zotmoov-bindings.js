@@ -11,10 +11,10 @@ var ZotMoovBindings = class {
 
         let self = this;
         this._monkey_patch(Zotero.Attachments, 'convertLinkedFileToStoredFile', function (orig) {
-            return async function(item, options = {}, ...other)
+            return async function(...args)
             {
                 self._callback.disable();
-                let ret = await orig.apply(this, [item, options, ...other]);
+                let ret = await orig.apply(this, args);
                 self._callback.enable();
 
                 return ret;
@@ -22,8 +22,8 @@ var ZotMoovBindings = class {
         });
 
         let orig_erase_data = this._monkey_patch(Zotero.Item.prototype, '_eraseData', function (orig) {
-            return Zotero.Promise.coroutine(function* (env, ...other) {
-                return orig.apply(this, [env, ...other]).then((val) =>
+            return Zotero.Promise.coroutine(function* (...args) {
+                return orig.apply(this, args).then((val) =>
                 {
                     if (Zotero.Prefs.get('extensions.zotmoov.delete_files', true))
                     {
@@ -40,8 +40,8 @@ var ZotMoovBindings = class {
         // We do not want to delete the linked files upon sync
         // So we have to do this complicated stuff to preprocess the deleted files
         this._monkey_patch(Zotero.Sync.APIClient.prototype, 'getDeleted', function (orig) {
-            return Zotero.Promise.coroutine(function* (libraryType, libraryTypeID, since, ...other) {
-                let results = yield orig.apply(this, [libraryType, libraryTypeID, since, ...other]);
+            return Zotero.Promise.coroutine(function* (libraryType, ...other) {
+                let results = yield orig.apply(this, [libraryType, ...other]);
 
                 // Linked files only exist in user library
                 if (libraryType != 'user' || !Zotero.Prefs.get('extensions.zotmoov.delete_files', true)) return results;
