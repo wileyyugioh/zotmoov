@@ -18,7 +18,7 @@ var ZotMoovBindings = class {
                 self._callback.enable();
 
                 return ret;
-            }
+            };
         });
 
         let orig_erase_data = this._monkey_patch(Zotero.Item.prototype, '_eraseData', function (orig) {
@@ -75,7 +75,7 @@ var ZotMoovBindings = class {
 
         let self = this;
         object[method] = function(...args)
-        {;
+        {
             if (self._disabled) return orig_func.apply(this, args);
             return new_func.apply(this, args)
         };
