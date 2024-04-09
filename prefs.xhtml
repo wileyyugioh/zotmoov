@@ -45,18 +45,16 @@
     <groupbox>
         <vbox>
             <label><html:h2 data-l10n-id="zotmoov-settings-fileext-title"></html:h2></label>
-            <hbox>
-                <div style="height: 100px; width: 100%;">
-                    <tree id="zotmoov-settings-fileext-tree" flex="1" editable="true" hidecolumnpicker="true" onselect="Zotero.ZotMoov.Prefs.onFileExtTreeSelect();">
-                       <treecols>
-                            <treecol id="zotmoov-settings-fileext-title" flex="1" hideheader="true"/>
-                       </treecols>
-                       <treechildren id="zotmoov-settings-fileext-treechildren">
-                       </treechildren>
-                     </tree>
-                </div>
+            <hbox style="min-height: 100px;">
+                <tree id="zotmoov-settings-fileext-tree" flex="1" editable="true" hidecolumnpicker="true" onselect="Zotero.ZotMoov.Prefs.onFileExtTreeSelect();">
+                   <treecols>
+                        <treecol id="zotmoov-settings-fileext-title" flex="1" hideheader="true"/>
+                   </treecols>
+                   <treechildren id="zotmoov-settings-fileext-treechildren">
+                   </treechildren>
+                 </tree>
             </hbox>
-            <hbox width="100%" align="center" pack="end">
+            <hbox align="center" pack="end">
                 <label data-l10n-id="zotmoov-settings-fileext-about"></label>
                 <spacer flex="1"/>
                 <button id="zotmoov-fileext-table-delete" disabled="true" label="-" style="min-width: 80px;" oncommand="Zotero.ZotMoov.Prefs.removeFileExtEntries();"/>
