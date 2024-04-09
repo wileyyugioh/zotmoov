@@ -48,16 +48,20 @@ class ZotMoovPrefs {
     createFileExtEntry()
     {
         let dummy_value = 'New File Extension';
+        let tree = document.getElementById('zotmoov-settings-fileext-tree');
         let treechildren = document.getElementById('zotmoov-settings-fileext-treechildren');
-        
+
         let treeitem = document.createXULElement('treeitem');
         let treerow = document.createXULElement('treerow');
         let treecell = document.createXULElement('treecell');
-        treecell.setAttribute('label', 'New File Extension');
+        treecell.setAttribute('label', dummy_value);
 
         treerow.appendChild(treecell);
         treeitem.appendChild(treerow);
         treechildren.appendChild(treeitem);
+
+        tree.view.selection.select(treechildren.childElementCount - 1);
+        tree.startEditing(treechildren.childElementCount - 1, tree.columns.getColumnAt(0));
 
         let fileexts = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
         fileexts.push(dummy_value);
