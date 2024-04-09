@@ -1,11 +1,7 @@
-// ZotMoov
-// manifest.json
-// Written by Wiley Yu
-
 {
   "manifest_version": 2,
   "name": "ZotMoov",
-  "version": "0.0.6b8",
+  "version": "1.0.0.0",
   "description": "Mooves attachments and links them",
   "author": "Wiley Yu & Mr. Hoorn",
   "applications": {
