@@ -13,7 +13,7 @@
         <vbox>
             <label><html:h2 data-l10n-id="zotmoov-settings-filepath-intro"></html:h2></label>
             <hbox>
-                <html:input type="text" id="zotmoov-dst-dir" readonly="true" preference="extensions.zotmoov.dst_dir" style="-moz-box-flex: 1;"/>
+                <html:input type="text" id="zotmoov-dst-dir" readonly="true" preference="extensions.zotmoov.dst_dir" style="flex: 1;"/>
                 <button data-l10n-id="zotmoov-settings-filepath-button-label" oncommand="Zotero.ZotMoov.Prefs.pickDirectory();"/>
             </hbox>
         </vbox>
@@ -35,7 +35,7 @@
                 <checkbox native="true" preference="extensions.zotmoov.enable_subdir_move" data-l10n-id="zotmoov-settings-enable-subdir-move-label" oncommand="Zotero.ZotMoov.Prefs.onSubDirClick(this);"/>
                 <hbox align="center" style="margin-left: 30px;">
                     <label for="zotmoov-subdir-str" data-l10n-id="zotmoov-settings-subdir-str"/>
-                    <html:input type="text" data-l10n-id="zotmoov-settings-subdir-str" id="zotmoov-subdir-str" preference="extensions.zotmoov.subdirectory_string" style="-moz-box-flex: 1;" placeholder="%c"/>
+                    <html:input type="text" data-l10n-id="zotmoov-settings-subdir-str" id="zotmoov-subdir-str" preference="extensions.zotmoov.subdirectory_string" style="flex: 1;" placeholder="%c"/>
                     <label is="zotero-text-link" data-l10n-id="zotmoov-settings-subdir-about" href="https://github.com/wileyyugioh/zotmoov/blob/master/docs/WILDCARD_INFO.md"/>
                 </hbox>
             </vbox>
@@ -46,13 +46,15 @@
         <vbox>
             <label><html:h2 data-l10n-id="zotmoov-settings-fileext-title"></html:h2></label>
             <hbox>
-                <tree id="zotmoov-settings-fileext-tree" flex="1" height="100px" editable="true" hidecolumnpicker="true" onselect="Zotero.ZotMoov.Prefs.onFileExtTreeSelect();">
-                   <treecols>
-                        <treecol id="zotmoov-settings-fileext-title" flex="1" hideheader="true"/>
-                   </treecols>
-                   <treechildren id="zotmoov-settings-fileext-treechildren">
-                   </treechildren>
-                 </tree>
+                <div style="height: 100px; width: 100%;">
+                    <tree id="zotmoov-settings-fileext-tree" flex="1" editable="true" hidecolumnpicker="true" onselect="Zotero.ZotMoov.Prefs.onFileExtTreeSelect();">
+                       <treecols>
+                            <treecol id="zotmoov-settings-fileext-title" flex="1" hideheader="true"/>
+                       </treecols>
+                       <treechildren id="zotmoov-settings-fileext-treechildren">
+                       </treechildren>
+                     </tree>
+                </div>
             </hbox>
             <hbox width="100%" align="center" pack="end">
                 <label data-l10n-id="zotmoov-settings-fileext-about"></label>
