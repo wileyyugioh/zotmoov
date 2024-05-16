@@ -164,6 +164,7 @@ var ZotMoov = class {
             clone.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
             clone.attachmentPath = final_path;
             clone.setField('title', PathUtils.filename(final_path));
+            clone.dateAdded = item.dateAdded;
 
             promises.push(IOUtils.move(file_path, final_path, { noOverwrite: true }).then(async function(clone, item)
                 {
