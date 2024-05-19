@@ -28,6 +28,10 @@ It is highly recommended to
 
 I recommend using the [automatic file renaming functionality included in Zotero 7](https://www.zotero.org/support/file_renaming). It has support for custom patterns.
 
+### Moving Files in Group Libraries
+
+[Zotero does not support linked files for group libraries](https://www.zotero.org/support/attaching_files#linked_files), so ZotMoov can only move files in your personal library. Any linked files pointing to group libraries that are somehow created will be broken. The `copy` feature is unaffected by this limitation.
+
 ### Bugs/Feature Requests
 
 Both can be filed [here](https://github.com/wileyyugioh/zotmoov/issues). Please keep feature requests tightly focused on the extension's core purpose of mooving attachments and linking them!
