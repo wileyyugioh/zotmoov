@@ -183,7 +183,8 @@ var ZotMoovWildcard = class {
                 'publisher': item.getField('publisher', false, true),
                 'volume': item.getField('volume', false, true),
                 'issue': item.getField('issue', false, true),
-                'pages': item.getField('pages', false, true)
+                'pages': item.getField('pages', false, true),
+                'yearAdded': new Date(item.dateAdded).getFullYear()
             };
 
         return _item_fields
@@ -258,6 +259,9 @@ var ZotMoovWildcard = class {
             case '%c':
                 result = this._get_collection_paths(item);
                 break;
+            case '%Y':
+                result = item_fields['yearAdded']
+                break;
 
             default:
                 break;
@@ -328,7 +332,7 @@ var ZotMoovWildcard = class {
 
     _test(item)
     {
-        const str_to_test = '{%a/}{%b | %I/}{%F/}{%A/}{%d/}{%D/}{%L/}{%l/}{%y/}{%t/}{%T/}{%j/}{%p/}{%w/}{%s/}{%v/}{%e/}{%f/}{%c/}';
+        const str_to_test = '{%a/}{%b | %I/}{%Y/}{%F/}{%A/}{%d/}{%D/}{%L/}{%l/}{%y/}{%t/}{%T/}{%j/}{%p/}{%w/}{%s/}{%v/}{%e/}{%f/}{%c/}';
         return this.process_string(item, str_to_test);
     }
 }
