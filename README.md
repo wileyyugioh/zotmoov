@@ -1,13 +1,15 @@
 # ZotMoov
-A *simple* plugin for Zotero 7 that mooves attachments and links them.
+A *simple* plugin for managing attachments in Zotero 7
 
-ZotMoov can automatically move added attachments into the directory of your choosing, or you can opt to manually move and link each file via right-clicking.
+ZotMoov can:
+- Automatically move/copy imported attachments into a custom directory
+- Manually move/copy imported attachments into a custom directory via right-clicking
+- Automatically delete linked attachments from your computer when you delete them in Zotero
 
 ## Installation
 
 [Download the latest release here](https://github.com/wileyyugioh/zotmoov/releases/latest)
-
-Note that you have to right click the .xpi and save link as.
+- If using Firefox you have to right click the .xpi and save link as.
 
 To set up with 3rd party syncing services, set the Linked Attachment Base Directory to the synced folder.
 
@@ -19,7 +21,7 @@ Then point ZotMoov to that same folder.
 
 It is highly recommended to
 1. **[Make a local backup before mooving your library](https://www.zotero.org/support/zotero_data)**
-2. Give ZotMoov its own folder that other applications will not alter/access
+2. Give ZotMoov its own folder that other applications will not alter
 3. Uncheck "Sync attachment files in My Library" in the Sync settings if you do not plan to use Zotero's cloud file storage
 
 ## FAQ
