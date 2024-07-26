@@ -185,8 +185,7 @@ var ZotMoovWildcard = class {
                 'issue': item.getField('issue', false, true),
                 'pages': item.getField('pages', false, true),
                 'yearAdded': new Date(item.dateAdded).getFullYear(),
-                'month': Zotero.Date.strToDate(item.getField('date', false, true)).month,
-                'day': Zotero.Date.strToDate(item.getField('date', false, true)).day
+                'date': Zotero.Date.strToDate(item.getField('date', false, true))
             };
 
         return _item_fields
@@ -265,10 +264,10 @@ var ZotMoovWildcard = class {
                 result = item_fields['yearAdded'];
                 break;
             case '%m':
-                result = (item_fields['month']) ? String(item_fields['month'] + 1).padStart(2, '0') : '';
+                result = (item_fields['date'].month) ? String(item_fields['date'].month + 1).padStart(2, '0') : '';
                 break;
             case '%r':
-                result = (item_fields['day']) ? String(item_fields['day']).padStart(2, '0') : '';
+                result = (item_fields['date'].day) ? String(item_fields['date'].day).padStart(2, '0') : '';
                 break;
 
             default:
