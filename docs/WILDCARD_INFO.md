@@ -52,8 +52,12 @@ Insert the first wildcard that can be replaced. Note that characters between the
 
 Note that multiple empty slashes in a row are ignored in most operating systems.
 
-So `/{%y}/{%j (%s)}/{%A}` is functionally the same as `{/%y}{/%j (%s)}{/%A}`
+- So `/{%y}/{%j (%s)}/{%A}` is functionally the same as `{/%y}{/%j (%s)}{/%A}`
 
 This is helpful in fallback scenarios.
 
-`{%s}/{%y}{-%m}{-%r}/` can yield "AJS/2024-05-20/", "AJS/2024-05/", "AJS/2024/", or "AJS//" which acts like "AJS/"
+- `{%s}/{%y}{-%m}{-%r}/` can yield
+    - "AJS/2024-05-20/"
+    - "AJS/2024-05/"
+    - "AJS/2024/"
+    - "AJS//" which is effectively "AJS/"
