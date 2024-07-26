@@ -50,7 +50,7 @@ Insert the first wildcard that can be replaced. Note that characters between the
 
 ## Empty Slashes
 
-Note that multiple empty slashes in a row are ignored in most operating systems.
+Note that multiple empty slashes in a row are ignored.
 
 - So `/{%y}/{%j (%s)}/{%A}` is functionally the same as `{/%y}{/%j (%s)}{/%A}`
 
