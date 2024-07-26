@@ -56,8 +56,9 @@ Note that multiple empty slashes in a row are ignored in most operating systems.
 
 This is helpful in fallback scenarios.
 
-- `{%s}/{%y}{-%m}{-%r}/` can yield
-    - "AJS/2024-05-20/"
-    - "AJS/2024-05/"
-    - "AJS/2024/"
-    - "AJS//" which is effectively "AJS/"
+- `/{%s}/{%y}{-%m}{-%r}/` can yield
+    - "/AJS/2024-05-20/"
+    - "/AJS/2024-05/"
+    - "/AJS/2024/"
+    - "/AJS//" which is effectively "AJS/"
+    - "///" which is effectively "/" the base ZotMoov directory
