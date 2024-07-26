@@ -14,7 +14,7 @@ ZotMoov keeps many of the same wildcards that Zotfile has, as well as the condit
 - `%l` editor initials
 - `%y` year
 - `%m` month
-- `%r` day (one <u>r</u>evolution around the sun)
+- `%r` day (one <ins>r</ins>evolution around the sun)
 - `%t` title
 - `%T` item type (localized)
 - `%j` name of the journal
