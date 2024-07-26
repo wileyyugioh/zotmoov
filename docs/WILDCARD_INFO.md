@@ -27,6 +27,8 @@ ZotMoov keeps many of the same wildcards that Zotfile has, as well as the condit
 - `%c` collection path. If your item was in collection Top > Bottom > Item, %c will be substituted to "Top/Bottom" 
     - **Note that if an item is in multiple collections, the collection path will be pseudo-random!**
 - `%Y` year added to Zotero
+- `%M` month added to Zotero
+- `%R` day added to Zotero
 
 ## Conditional
 

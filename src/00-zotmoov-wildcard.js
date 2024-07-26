@@ -184,7 +184,7 @@ var ZotMoovWildcard = class {
                 'volume': item.getField('volume', false, true),
                 'issue': item.getField('issue', false, true),
                 'pages': item.getField('pages', false, true),
-                'yearAdded': new Date(item.dateAdded).getFullYear(),
+                'dateAdded': new Date(item.dateAdded),
                 'date': Zotero.Date.strToDate(item.getField('date', false, true))
             };
 
@@ -261,13 +261,19 @@ var ZotMoovWildcard = class {
                 result = this._get_collection_paths(item);
                 break;
             case '%Y':
-                result = item_fields['yearAdded'];
+                result = String(item_fields['dateAdded'].getFullYear());
                 break;
             case '%m':
                 result = (item_fields['date'].month) ? String(item_fields['date'].month + 1).padStart(2, '0') : '';
                 break;
             case '%r':
                 result = (item_fields['date'].day) ? String(item_fields['date'].day).padStart(2, '0') : '';
+                break;
+            case '%M':
+                result = String(item_fields['dateAdded'].getMonth() + 1).padStart(2, '0');
+                break;
+            case '%R':
+                result = String(item_fields['dateAdded'].getDay()).padStart(2, '0');
                 break;
 
             default:
@@ -339,7 +345,7 @@ var ZotMoovWildcard = class {
 
     _test(item)
     {
-        const str_to_test = '{%a/}{%b | %I/}{%Y/}{%F/}{%A/}{%d/}{%D/}{%L/}{%l/}{%y/}{%t/}{%T/}{%j/}{%p/}{%w/}{%s/}{%v/}{%e/}{%f/}{%c/}{%y}{-%m}{-%r}';
+        const str_to_test = '{%a}/{%b | %I}/{%Y}{-%M}{-%R}/{%F}/{%A}/{%d}/{%D}/{%L}/{%l}/{%y}/{%t}/{%T}/{%j}/{%p}/{%w}/{%s}/{%v}/{%e}/{%f}/{%c}/{%y}{-%m}{-%r}/';
         return this.process_string(item, str_to_test);
     }
 }
