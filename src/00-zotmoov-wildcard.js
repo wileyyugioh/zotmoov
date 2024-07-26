@@ -184,7 +184,7 @@ var ZotMoovWildcard = class {
                 'volume': item.getField('volume', false, true),
                 'issue': item.getField('issue', false, true),
                 'pages': item.getField('pages', false, true),
-                'dateAdded': new Date(item.dateAdded),
+                'dateAdded': new Date(item.dateAdded + 'Z'),
                 'date': Zotero.Date.strToDate(item.getField('date', false, true))
             };
 
