@@ -273,7 +273,7 @@ var ZotMoovWildcard = class {
                 result = String(item_fields['dateAdded'].getMonth() + 1).padStart(2, '0');
                 break;
             case '%R':
-                result = String(item_fields['dateAdded'].getDay()).padStart(2, '0');
+                result = String(item_fields['dateAdded'].getDate()).padStart(2, '0');
                 break;
 
             default:
