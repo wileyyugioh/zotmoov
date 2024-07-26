@@ -50,7 +50,7 @@ Insert the first wildcard that can be replaced. Note that characters between the
 
 ## Multiple Slashes
 
-Note that multiple empty slashes in a row are treated as one.
+Note that multiple slashes in a row are treated as one.
 
 - So `/{%y}/{%j (%s)}/{%A}` is functionally the same as `{/%y}{/%j (%s)}{/%A}`
 
