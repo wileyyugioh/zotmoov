@@ -60,5 +60,5 @@ This is helpful in fallback scenarios.
     - "/AJS/2024-05-20/"
     - "/AJS/2024-05/"
     - "/AJS/2024/"
-    - "/AJS//" which is effectively "AJS/"
+    - "/AJS//" which is effectively "/AJS/"
     - "///" which is effectively "/" the base ZotMoov directory
