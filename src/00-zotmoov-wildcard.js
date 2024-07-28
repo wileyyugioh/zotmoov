@@ -264,10 +264,10 @@ var ZotMoovWildcard = class {
                 result = String(item_fields['dateAdded'].getFullYear());
                 break;
             case '%m':
-                result = (item_fields['date'].month) ? String(item_fields['date'].month + 1).padStart(2, '0') : '';
+                result = (item_fields['date'].month != null) ? String(item_fields['date'].month + 1).padStart(2, '0') : '';
                 break;
             case '%r':
-                result = (item_fields['date'].day) ? String(item_fields['date'].day).padStart(2, '0') : '';
+                result = (item_fields['date'].day != null) ? String(item_fields['date'].day).padStart(2, '0') : '';
                 break;
             case '%M':
                 result = String(item_fields['dateAdded'].getMonth() + 1).padStart(2, '0');
