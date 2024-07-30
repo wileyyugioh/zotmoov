@@ -70,8 +70,8 @@ var ZotMoovBindings = class {
 
         // Don't process new files that are added
         this._patcher.monkey_patch(Zotero.Sync.Data.Local, '_saveObjectFromJSON', function (orig) {
-            return Zotero.Promise.coroutine(function* (obj, json, options) {
-                let results = yield orig.apply(this, [obj, json, options]);
+            return Zotero.Promise.coroutine(function* (...args) {
+                let results = yield orig.apply(this, [...args]);
 
                 if(!results.processed) return results;
 
