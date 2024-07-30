@@ -67,6 +67,18 @@ var ZotMoovBindings = class {
                 return results;
             });
         });
+
+        // Don't process new files that are added
+        this._patcher.monkey_patch(Zotero.Sync.Data.Local, '_saveObjectFromJSON', function (orig) {
+            return Zotero.Promise.coroutine(function* (obj, json, options) {
+                let results = yield orig.apply(this, [obj, json, options]);
+
+                if(!results.processed) return results;
+
+                self._callback.addKeysToIgnore([results.key]);
+                return results;
+            });
+        });
     }
 
     destroy()

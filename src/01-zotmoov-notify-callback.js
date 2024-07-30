@@ -1,6 +1,8 @@
 var ZotMoovNotifyCallback = class {
     constructor(zotmoov) {
         this._item_ids = [];
+        this._ignore_keys = [];
+
         this._timeoutID = 0;
         this._syncDelayHandle = null;
         this._zotmoov = zotmoov;
@@ -10,6 +12,12 @@ var ZotMoovNotifyCallback = class {
 
     enable() { this._enabled = true; }
     disable() { this._enabled = false; }
+
+    // Ignore these keys during the next ZotMoov update
+    addKeysToIgnore(keys)
+    {
+        this._ignore_keys.push(...keys);
+    }
 
     reenableSync()
     {
@@ -22,6 +30,8 @@ var ZotMoovNotifyCallback = class {
 
     async execute() {
         let ids = this._item_ids.slice();
+        let ignore_keys = this._ignore_keys.slice();
+
         if (ids.length == 0) return;
 
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
@@ -32,7 +42,11 @@ var ZotMoovNotifyCallback = class {
         // Pass null if empty
         allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext : null;
 
-        let items = Zotero.Items.get(ids);
+        let all_items = Zotero.Items.get(ids);
+        let items = all_items.filter((i) => {
+            return !(ignore_keys.includes(i.key));
+        });
+
         if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
             await this._zotmoov.move(items, dst_path, 
@@ -57,6 +71,12 @@ var ZotMoovNotifyCallback = class {
         {
             const index = this._item_ids.indexOf(id);
             if (index > -1) this._item_ids.splice(index, 1);
+        }
+
+        for (let key of ignore_keys)
+        {
+            const index = this._ignore_keys.indexOf(key);
+            if (index > -1) this._ignore_keys.splice(index, 1);
         }
 
         this.reenableSync();
