@@ -16,10 +16,10 @@ And set the ZotMoov directory to the folder you want to move/copy files to.
 <img src="res/Image2.png" width="500"/>
 
 It is highly recommended to
-1. **[Make a local backup before mooving your library](https://www.zotero.org/support/zotero_data)**
+1. **[Make a local backup before mooving your library](https://www.zotero.org/support/zotero_data#backing_up_your_zotero_data)**
 2. Give ZotMoov its own folder that other applications will not alter
 3. Uncheck "Sync attachment files in My Library" in the Sync settings if you do not plan to use Zotero's cloud file storage
-4. If planning to sync across multiple devices, set the [Linked Attachment Base Directory](res/Image1.png) to the synced folder on each computer.
+4. If planning to sync across multiple devices, set the [Linked Attachment Base Directory](https://www.zotero.org/support/preferences/advanced#linked_attachment_base_directory) to the synced folder on each computer.
 
 ## FAQ
 
