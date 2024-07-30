@@ -73,9 +73,8 @@ var ZotMoovBindings = class {
             return Zotero.Promise.coroutine(function* (...args) {
                 let results = yield orig.apply(this, [...args]);
 
-                if(!results.processed) return results;
+                if(results.processed) self._callback.addKeysToIgnore([results.key]);
 
-                self._callback.addKeysToIgnore([results.key]);
                 return results;
             });
         });
