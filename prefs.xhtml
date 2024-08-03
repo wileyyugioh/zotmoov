@@ -12,7 +12,7 @@
     <groupbox>
         <vbox>
             <label><html:h2 data-l10n-id="zotmoov-settings-filepath-intro"></html:h2></label>
-            <hbox>
+            <hbox align="center">
                 <html:input type="text" id="zotmoov-dst-dir" readonly="true" preference="extensions.zotmoov.dst_dir" style="flex: 1;"/>
                 <button data-l10n-id="zotmoov-settings-filepath-button-label" oncommand="Zotero.ZotMoov.Prefs.pickDirectory();"/>
             </hbox>
@@ -46,7 +46,7 @@
         <vbox>
             <label><html:h2 data-l10n-id="zotmoov-settings-fileext-title"></html:h2></label>
             <hbox style="min-height: 100px;">
-                <tree id="zotmoov-settings-fileext-tree" flex="1" editable="true" hidecolumnpicker="true" onselect="Zotero.ZotMoov.Prefs.onFileExtTreeSelect();">
+                <tree id="zotmoov-settings-fileext-tree" style="padding: 0; margin: 0;" flex="1" editable="true" hidecolumnpicker="true" onselect="Zotero.ZotMoov.Prefs.onFileExtTreeSelect();">
                    <treecols>
                         <treecol id="zotmoov-settings-fileext-title" flex="1" hideheader="true"/>
                    </treecols>
@@ -54,10 +54,11 @@
                    </treechildren>
                  </tree>
             </hbox>
+            <separator class="thin"/>
             <hbox align="center" pack="end">
                 <label data-l10n-id="zotmoov-settings-fileext-about"></label>
                 <spacer flex="1"/>
-                <button id="zotmoov-fileext-table-delete" disabled="true" label="-" style="min-width: 80px;" oncommand="Zotero.ZotMoov.Prefs.removeFileExtEntries();"/>
+                <button id="zotmoov-fileext-table-delete" disabled="true" label="-" style="min-width: 80px; margin-inline-end: 6px;" oncommand="Zotero.ZotMoov.Prefs.removeFileExtEntries();"/>
                 <button id="zotmoov-fileext-table-add" label="+" style="min-width: 80px;" oncommand="Zotero.ZotMoov.Prefs.createFileExtEntry();"/>
             </hbox>
         </vbox>
