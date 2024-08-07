@@ -13,7 +13,7 @@
         <vbox>
             <label><html:h2 data-l10n-id="zotmoov-settings-filepath-intro"></html:h2></label>
             <hbox align="center">
-                <html:input type="text" id="zotmoov-dst-dir" readonly="true" preference="extensions.zotmoov.dst_dir" style="flex: 1; padding-left: 0; margin-left: 0;"/>
+                <html:input type="text" id="zotmoov-dst-dir" readonly="true" preference="extensions.zotmoov.dst_dir" style="flex: 1; margin-left: 0;"/>
                 <button data-l10n-id="zotmoov-settings-filepath-button-label" oncommand="Zotero.ZotMoov.Prefs.pickDirectory();"/>
             </hbox>
         </vbox>
@@ -46,7 +46,7 @@
         <vbox>
             <label><html:h2 data-l10n-id="zotmoov-settings-fileext-title"></html:h2></label>
             <hbox style="min-height: 100px;">
-                <tree id="zotmoov-settings-fileext-tree" style="padding: 0; margin: 0;" flex="1" editable="true" hidecolumnpicker="true" onselect="Zotero.ZotMoov.Prefs.onFileExtTreeSelect();">
+                <tree id="zotmoov-settings-fileext-tree" style="margin: 0;" flex="1" editable="true" hidecolumnpicker="true" onselect="Zotero.ZotMoov.Prefs.onFileExtTreeSelect();">
                    <treecols>
                         <treecol id="zotmoov-settings-fileext-title" flex="1" hideheader="true"/>
                    </treecols>
