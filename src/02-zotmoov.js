@@ -166,7 +166,7 @@ var ZotMoov = class {
             clone.setField('title', PathUtils.filename(final_path));
             clone.dateAdded = item.dateAdded;
 
-            promises.push(IOUtils.move(file_path, final_path, { noOverwrite: true }).then(async function(clone, item)
+            promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }).then(async function(clone, item)
                 {
                     let id = null;
                     await Zotero.DB.executeTransaction(async function()
