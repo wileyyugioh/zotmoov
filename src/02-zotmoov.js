@@ -166,7 +166,7 @@ var ZotMoov = class {
             clone.setField('title', PathUtils.filename(final_path));
             clone.dateAdded = item.dateAdded;
 
-            promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }).then(async function (clone, item, final_path)
+            promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }).then(async function(clone, item, final_path)
                 {
                     let id = null;
                     try
