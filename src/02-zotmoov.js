@@ -168,21 +168,22 @@ var ZotMoov = class {
 
             promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }).then(async function (clone, item, final_path)
                 {
+                    let id = null;
                     try
                     {
-                        let id = null;
                         await Zotero.DB.executeTransaction(async function()
                         {
                             id = await clone.save();
                             await Zotero.Items.moveChildItems(item, clone);
                             await item.erase();
                         });
-                        Zotero.Fulltext.indexItems(id);// reindex clone after saved
                     } catch (error)
                     {
                         IOUtils.remove(final_path);
                         throw error;
                     }
+
+                    Zotero.Fulltext.indexItems(id);// reindex clone after saved
                 }.bind(null, clone, item, final_path))
             );
         }
