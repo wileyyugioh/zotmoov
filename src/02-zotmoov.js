@@ -166,17 +166,23 @@ var ZotMoov = class {
             clone.setField('title', PathUtils.filename(final_path));
             clone.dateAdded = item.dateAdded;
 
-            promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }).then(async function(clone, item)
-                {
-                    let id = null;
-                    await Zotero.DB.executeTransaction(async function()
+            promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true })
+                .then(async function (clone, item)
                     {
-                        id = await clone.save();
-                        await Zotero.Items.moveChildItems(item, clone);
-                        await item.erase();
-                    });
-                    Zotero.Fulltext.indexItems(id);// reindex clone after saved
-                }.bind(null, clone, item))
+                        let id = null;
+                        await Zotero.DB.executeTransaction(async function()
+                        {
+                            id = await clone.save();
+                            await Zotero.Items.moveChildItems(item, clone);
+                            await item.erase();
+                        });
+                        Zotero.Fulltext.indexItems(id);// reindex clone after saved
+                    }.bind(null, clone, item))
+                .catch(function(final_path, error)
+                {
+                    IOUtils.remove(final_path);
+                    throw error;
+                }.bind(null, final_path))
             );
         }
 
