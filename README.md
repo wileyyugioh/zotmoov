@@ -63,4 +63,4 @@ When this is enabled, ZotMoov will automatically delete linked files in the ZotM
 
 ### Allowed File Extensions
 
-By adding/removing entries to this table via the [+] and [-] buttons, you can choose which types of files ZotMoov will automatically move via **Automatically Move/Copy Files When Added**. If the table is empty, then all files will be moved regardless of their file extension. *This setting is not used for files moved via Move Selected to Directory menu option.*
+By adding/removing entries to this table via the [+] and [-] buttons, you can choose which types of files ZotMoov will move/copy. If the table is empty, then all files will be moved regardless of their file extension.

@@ -271,20 +271,39 @@ var ZotMoov = class {
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
         let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
         let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
+        let allowed_file_ext = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
+
+        // Pass null if empty
+        allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext : null;
 
         if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
-            await this.move(atts, dst_path, { ignore_linked: false, into_subfolder: subfolder_enabled, subdir_str: subdir_str });
+            await this.move(atts, dst_path,
+                {
+                    ignore_linked: false,
+                    into_subfolder: subfolder_enabled,
+                    subdir_str: subdir_str,
+                    allowed_file_ext: allowed_file_ext
+                });
         } else
         {
-            await this.copy(atts, dst_path, { into_subfolder: subfolder_enabled, subdir_str: subdir_str,
-                allow_group_libraries: true });
+            await this.copy(atts, dst_path,
+                {
+                    into_subfolder: subfolder_enabled,
+                    subdir_str: subdir_str,
+                    allowed_file_ext: allowed_file_ext,
+                    allow_group_libraries: true
+                });
         }
     }
 
     async moveSelectedItemsCustomDir()
     {
         let atts = this._getSelectedItems();
+        let allowed_file_ext = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
+
+        // Pass null if empty
+        allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext : null;
 
         let fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
         let wm = Services.wm;
@@ -300,10 +319,20 @@ var ZotMoov = class {
 
         if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
-            await this.move(atts, fp.file.path, { ignore_linked: false, into_subfolder: false });
+            await this.move(atts, fp.file.path,
+                {
+                    ignore_linked: false,
+                    into_subfolder: false,
+                    allowed_file_ext: allowed_file_ext
+                });
         } else
         {
-            await this.copy(atts, fp.file.path, { into_subfolder: false, allow_group_libraries: true });
+            await this.copy(atts, fp.file.path,
+                {
+                    into_subfolder: false,
+                    allow_group_libraries: true,
+                    allowed_file_ext: allowed_file_ext
+                });
         }
     }
 }
