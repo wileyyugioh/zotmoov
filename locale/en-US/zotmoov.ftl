@@ -2,6 +2,11 @@ zotmoov-settings-title = ZotMoov Settings
 
 zotmoov-settings-filepath-intro = Directory to Move Files To
 
+zotmoov-settings-attachment-search-intro = Source Folder for Attaching New Files
+
+zotmoov-settings-enable-attach-dir =
+    .label = Enable Attach New Files
+
 zotmoov-settings-filepath-button-label =
     .label = Choose Directory
 
@@ -20,6 +25,9 @@ zotmoov-context-copy-selected =
 
 zotmoov-context-copy-selected-custom-dir =
     .label = ZotMoov: Copy Selected to Custom Directory
+
+zotmoov-context-attach-new-file =
+    .label = ZotMoov: Attach New File
 
 zotmoov-settings-enable-automove-label =
     .label = Automatically Move/Copy Files When Added
