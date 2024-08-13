@@ -41,6 +41,14 @@ Both can be filed [here](https://github.com/wileyyugioh/zotmoov/issues). Please 
 
 The base directory where ZotMoov will move/copy files
 
+### Source Folder for Attaching New Files
+
+When checked this will enable the Attach New File menu item.
+
+<img src="res/Image3.png" width="500"/>
+
+When this button is clicked, the last modified file in the Source Folder will be attached to the selected item.
+
 ### File Behavior
 
 By default ZotMoov will move and link your files. You can change the dropdown menu option to `copy` for ZotMoov to just make a back-up of your added files in the specified directory.
