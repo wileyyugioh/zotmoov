@@ -211,7 +211,7 @@ var ZotMoovMenus = class {
             'file': lastFilePath,
             'fileBaseName': fileBaseName,
             'parentItemID': items[0].id,
-            'libraryID': Zotero.Libraries.userLibraryID,
+            'libraryID': items[0].libraryID,
         };
 
         return await Zotero.Attachments.importFromFile(options);
