@@ -1,9 +1,11 @@
 var ZotMoovMenus = class {
     constructor(zotmoov) {
-        this.menuseparator_id = 'zotmoov-context-menuseparator'
-        this.move_selected_item_id = 'zotmoov-context-move-selected'
-        this.move_selected_item_custom_id = 'zotmoov-context-move-selected-custom-dir'
-        this.zotmoov = zotmoov
+        this.menuseparator_id = 'zotmoov-context-menuseparator';
+        this.move_selected_item_id = 'zotmoov-context-move-selected';
+        this.move_selected_item_custom_id = 'zotmoov-context-move-selected-custom-dir';
+        this.attach_new_file_id = 'zotmoov-context-attach-new-file';
+        this.convert_linked_to_stored_id= 'zotmoov-context-convert-linked-to-stored';
+        this.zotmoov = zotmoov;
 
         this._popupShowing = this._doPopupShowing.bind(this);
     }
@@ -11,12 +13,16 @@ var ZotMoovMenus = class {
     _doPopupShowing(event)
     {
         let should_disabled = !this._hasAttachments();
+        let selection = Zotero.getActiveZoteroPane().getSelectedItems();
 
         let win = event.view;
         if(!win) return;
 
         win.document.getElementById(this.move_selected_item_id).disabled = should_disabled;
         win.document.getElementById(this.move_selected_item_custom_id).disabled = should_disabled;
+
+        const disable_attach_new_file_id = (selection.length != 1 || selection[0].isAttachment());
+        win.document.getElementById(this.attach_new_file_id).disabled = disable_attach_new_file_id;
     }
 
     _hasAttachments()
@@ -38,7 +44,6 @@ var ZotMoovMenus = class {
         move_selected_item.id = this.move_selected_item_id;
 
         let thisCache = this;
-
         move_selected_item.addEventListener('command', () =>
         {
             thisCache.zotmoov.moveSelectedItems();
@@ -52,12 +57,22 @@ var ZotMoovMenus = class {
             thisCache.zotmoov.moveSelectedItemsCustomDir();
         });
 
+        // Attach New File
+        let attach_new_file = doc.createXULElement('menuitem');
+        attach_new_file.id = this.attach_new_file_id;
+        attach_new_file.setAttribute('data-l10n-id', 'zotmoov-context-attach-new-file');
+        attach_new_file.addEventListener('command', () =>
+        {
+            thisCache.importLastModifiedFile();
+        });
+
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
         zotero_itemmenu.addEventListener('popupshowing', this._popupShowing);
 
         zotero_itemmenu.appendChild(menuseparator);
         zotero_itemmenu.appendChild(move_selected_item);
         zotero_itemmenu.appendChild(move_selected_item_custom);
+        zotero_itemmenu.appendChild(attach_new_file);
 
         if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
@@ -74,7 +89,7 @@ var ZotMoovMenus = class {
     setMove()
     {
         let windows = Zotero.getMainWindows();
-        for (let win of windows)
+        for(let win of windows)
         {
             if(!win.ZoteroPane) continue;
             win.document.getElementById(this.move_selected_item_id).setAttribute('data-l10n-id', 'zotmoov-context-move-selected');
@@ -124,5 +139,46 @@ var ZotMoovMenus = class {
             if(!win.ZoteroPane) continue;
             this.unload(win);
         }
+    }
+
+    async importLastModifiedFile()
+    {
+        const search_dir = Zotero.Prefs.get('extensions.zotmoov.attach_search_dir', true);
+
+        let items = Zotero.getActiveZoteroPane().getSelectedItems();
+        if(items.length != 1 || items[0].isAttachment()) return; // Only run if only one file is selected
+
+        let lastFilePath = null;
+        let lastDate = new Date(0);
+        let children = await IOUtils.getChildren(search_dir);
+        for(const path of children)
+        {
+            let { lastModified, type } = await IOUtils.stat(path);
+            if(type != 'regular') continue;
+
+            let lastModifiedDate = new Date(lastModified);
+            if(lastModifiedDate > lastDate)
+            {
+                lastDate = lastModifiedDate;
+                lastFilePath = path;
+            }
+        }
+
+        if(!lastFilePath) return;
+
+        let fileBaseName = false;
+        if (Zotero.Attachments.shouldAutoRenameFile())
+        {
+            fileBaseName = await Zotero.Attachments.getRenamedFileBaseNameIfAllowedType(items[0], lastFilePath);
+        }
+
+        const options = {
+            'file': lastFilePath,
+            'fileBaseName': fileBaseName,
+            'parentItemID': items[0].id,
+            'libraryID': Zotero.Libraries.userLibraryID,
+        };
+
+        return await Zotero.Attachments.importFromFile(options);
     }
 }

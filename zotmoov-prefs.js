@@ -9,6 +9,10 @@ class ZotMoovPrefs {
         let enable_subdir_move = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
         document.getElementById('zotmoov-subdir-str').disabled = !enable_subdir_move;
 
+        let enable_attach_dir = Zotero.Prefs.get('extensions.zotmoov.enable_attach_dir', true);
+        document.getElementById('zotmoov-attach-search-dir').disabled = !enable_attach_dir;
+        document.getElementById('zotmoov-attach-search-dir-button').disabled = !enable_attach_dir;
+
         this._loadFileExtTable()
     }
 
@@ -28,9 +32,31 @@ class ZotMoovPrefs {
         document.getElementById('zotmoov-dst-dir').value = fp.file.path;
     }
 
+    async pickSearchDirectory()
+    {
+        let fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
+
+        fp.init(window, Zotero.getString('dataDir.selectDir'), fp.modeGetFolder);
+        fp.appendFilters(fp.filterAll);
+        let rv = await new Zotero.Promise(function(resolve)
+        {
+            fp.open((returnConstant) => resolve(returnConstant));
+        });
+        if (rv != fp.returnOK) return '';
+
+        Zotero.Prefs.set('extensions.zotmoov.attach_search_dir', fp.file.path, true);
+        document.getElementById('zotmoov-attach-search-dir').value = fp.file.path;
+    }
+
     onSubDirClick(cb)
     {
         document.getElementById('zotmoov-subdir-str').disabled = !cb.checked;
+    }
+
+    onEnableSearchClick(cb)
+    {
+        document.getElementById('zotmoov-attach-search-dir').disabled = !cb.checked;
+        document.getElementById('zotmoov-attach-search-dir-button').disabled = !cb.checked;
     }
 
     updateMenuItems(item)
