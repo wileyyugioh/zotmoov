@@ -57,6 +57,14 @@ class ZotMoovPrefs {
     {
         document.getElementById('zotmoov-attach-search-dir').disabled = !cb.checked;
         document.getElementById('zotmoov-attach-search-dir-button').disabled = !cb.checked;
+
+        if(cb.checked)
+        {
+            this.zotmoovMenus.showAttachNewFile();
+        } else
+        {
+            this.zotmoovMenus.hideAttachNewFile();
+        }
     }
 
     updateMenuItems(item)
