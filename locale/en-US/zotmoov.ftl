@@ -30,7 +30,7 @@ zotmoov-context-attach-new-file =
     .label = ZotMoov: Attach New File
 
 zotmoov-context-convert-linked =
-    .label = ZotMoov: Convert Linked Files to Stored Files
+    .label = ZotMoov: Move Selected from Directory
 
 zotmoov-settings-enable-automove-label =
     .label = Automatically Move/Copy Files When Added

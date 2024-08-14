@@ -82,8 +82,8 @@ var ZotMoovMenus = class {
         zotero_itemmenu.appendChild(menuseparator);
         zotero_itemmenu.appendChild(move_selected_item);
         zotero_itemmenu.appendChild(move_selected_item_custom);
-        zotero_itemmenu.appendChild(attach_new_file);
         zotero_itemmenu.appendChild(convert_linked_to_stored);
+        zotero_itemmenu.appendChild(attach_new_file);
 
         if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
