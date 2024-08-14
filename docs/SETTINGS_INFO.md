@@ -8,7 +8,7 @@ The base directory where ZotMoov will move/copy files
 
 When checked this will enable the Attach New File menu item.
 
-<img src="res/Image3.png" width="300"/>
+<img src="../res/Image3.png" width="300"/>
 
 When this button is clicked, the last modified file in the Source Folder will be attached to the selected item.
 
