@@ -5,7 +5,7 @@ zotmoov-settings-filepath-intro = Directory to Move Files To
 zotmoov-settings-attachment-search-intro = Source Folder for Attaching New Files
 
 zotmoov-settings-enable-attach-dir =
-    .label = Enable Attach New Files
+    .label = Enable Attach New File
 
 zotmoov-settings-filepath-button-label =
     .label = Choose Directory
