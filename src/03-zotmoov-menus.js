@@ -24,6 +24,9 @@ var ZotMoovMenus = class {
 
         const disable_attach_new_file_id = (selection.length != 1 || selection[0].isAttachment());
         win.document.getElementById(this.attach_new_file_id).disabled = disable_attach_new_file_id;
+
+        const disable_convert_linked = !Array.from(this.zotmoov._getSelectedItems()).some(s => s.attachmentLinkMode == Zotero.Attachments.LINK_MODE_LINKED_FILE);
+        win.document.getElementById(this.convert_linked_to_stored_id).disabled = disable_convert_linked;
     }
 
     _hasAttachments()
