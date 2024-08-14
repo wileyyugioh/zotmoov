@@ -5,6 +5,7 @@ ZotMoov can:
 - Automatically move/copy imported attachments into a custom directory
 - Manually move/copy imported attachments into a custom directory via right-clicking
 - Automatically delete linked attachments from your computer when you delete them in Zotero
+- Easily attach the last modified file in a folder to a Zotero item
 
 ## Installation
 
