@@ -25,7 +25,7 @@ ZotMoov keeps many of the same wildcards that Zotfile has, as well as the condit
 - `%e` journal issue
 - `%f` pages
 - `%c` collection path. If your item was in collection Top > Bottom > Item, %c will be substituted to "Top/Bottom" 
-    - **Note that if an item is in multiple collections, the collection path will be pseudo-random!**
+    - **Note that if an item is in multiple collections, the collection that is opened in Zotero will be preferred**
 - `%Y` year added to Zotero
 - `%M` month added to Zotero
 - `%R` day added to Zotero
