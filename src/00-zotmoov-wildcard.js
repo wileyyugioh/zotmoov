@@ -114,7 +114,7 @@ var ZotMoovWildcard = class {
         return title;
     }
 
-    _get_collection_paths(item)
+    _get_collection_paths(item, preferred_collection = null)
     {
         // Get parent collection if parent is present
         let collection_ids = item.parentID ? item.parentItem.getCollections() : item.getCollections();
@@ -123,7 +123,10 @@ var ZotMoovWildcard = class {
         if(collection_ids.length)
         {
             let collections = Zotero.Collections.get(collection_ids);
-            let collection_names = this._getCollectionNamesHierarchy(collections[0]);
+            let collection_index = collections.findIndex((c) => c.id == preferred_collection);
+            if (collection_index == -1) collection_index = 0;
+
+            let collection_names = this._getCollectionNamesHierarchy(collections[collection_index]);
 
             for (let i = collection_names.length - 1; i >= 0; i--) // Iterate backwards
             {
@@ -152,8 +155,13 @@ var ZotMoovWildcard = class {
         return r;
     }
 
-    _get_fields(item)
+    _get_fields(item, arg_options = {})
     {
+        const default_options = {
+            preferred_collection: null
+        };
+        let options = {...default_options, ...arg_options};
+
         let item_type = item.itemTypeID;
         let item_type_name = Zotero.ItemTypes.getName(item_type);
         // get formated author strings
@@ -175,7 +183,7 @@ var ZotMoovWildcard = class {
                 "lastAuthor_lastInitial": authors[8],
                 "lastAuthor_lastf": authors[9],
                 "lastAuthor_initials": authors[10],
-                "collectionPaths": this._get_collection_paths(item),
+                "collectionPaths": this._get_collection_paths(item, options.preferred_collection),
                 "citekey": Zotero.BetterBibTeX ? item.getField('citationKey') : '',
                 'year': item.getField('year', false, true),
                 'journalAbbrev': item.getField('journalAbbreviation', false, true),
@@ -191,7 +199,7 @@ var ZotMoovWildcard = class {
         return _item_fields
     }
 
-    _sub(item, item_fields, wildcard)
+    _sub(item_fields, wildcard)
     {
         let result = wildcard;
         switch(wildcard)
@@ -258,7 +266,7 @@ var ZotMoovWildcard = class {
                 result = item_fields['pages'];
                 break;
             case '%c':
-                result = this._get_collection_paths(item);
+                result = item_fields['collectionPaths']
                 break;
             case '%Y':
                 result = String(item_fields['dateAdded'].getFullYear());
@@ -283,8 +291,13 @@ var ZotMoovWildcard = class {
         return result;
     }
 
-    process_string(item, string)
+    process_string(item, string, arg_options = {})
     {
+        const default_options = {
+            preferred_collection: null
+        };
+        let options = {...default_options, ...arg_options};
+
         let sub_brackets = [];
         let open_br = 0;
         let start_br = 0;
@@ -303,7 +316,7 @@ var ZotMoovWildcard = class {
 
         if (item.isAttachment() && item.parentItem) item = item.parentItem;
 
-        let item_fields = this._get_fields(item);
+        let item_fields = this._get_fields(item, { preferred_collection: options.preferred_collection });
         const sub_strs = sub_brackets.map((bracket) => this._process_wildcard(item, item_fields, bracket.slice(1, -1)));
 
         for (let i = 0; i < sub_brackets.length; i++)
@@ -313,7 +326,7 @@ var ZotMoovWildcard = class {
 
         string = string.replaceAll(/%[a-zA-Z]/g, (match) =>
         {
-            return this._sub(item, item_fields, match);
+            return this._sub(item_fields, match);
         });
 
         return string
@@ -331,7 +344,7 @@ var ZotMoovWildcard = class {
         for (const sub of sub_strings)
         {
             if (optional_processing && subbed_a_wildcard && sub[0] == '%') continue;
-            let result = this._sub(item, item_fields, sub);
+            let result = this._sub(item_fields, sub);
             if (result == '|') result = '';
             if (sub[0] == '%' && result != '') subbed_a_wildcard = true;
             if (!optional_processing && sub[0] == '%' && result == '') return ''; // Failed to sub
