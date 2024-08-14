@@ -31,7 +31,7 @@ The ZotMoov data directory can be the previous ZotFile directory if you don't mi
 
 One problem that might arise is the [Linked Attachment Base Directory](https://www.zotero.org/support/preferences/advanced#linked_attachment_base_directory). If you were using this feature before (check in Settings > Advanced > Files and Folders > Linked Attachment Base Directory) you may need to change the base directory to a folder that contains both the ZotFile files and the ZotMoov files.
 
-The easiest way to accomplish this is to simply reuse the ZotFile folder or put the ZotMoov folder inside the previous ZotFile one. For example, the ZotMoov data folder will be `ZotFile/` or `ZotFile/ZotMoov` respectively.
+The easiest way to accomplish this is to simply reuse the ZotFile folder or put the ZotMoov folder inside the previous ZotFile one. For example, the ZotMoov data folder will be `ZotFile/` or `ZotFile/ZotMoov/` respectively.
 
 ### File Renaming
 
