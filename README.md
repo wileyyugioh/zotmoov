@@ -45,4 +45,4 @@ I recommend using the [automatic file renaming functionality included in Zotero 
 
 Both can be filed [here](https://github.com/wileyyugioh/zotmoov/issues). Please keep feature requests tightly focused on the extension's core purpose of mooving attachments and linking them!
 
-### [Settings](docs/SETTINGS_INFO.md)
+## [Settings](docs/SETTINGS_INFO.md)
