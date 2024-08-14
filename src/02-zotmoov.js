@@ -10,8 +10,13 @@ var ZotMoov = class {
         this.zotmoov_debugger = zotmoov_debugger;
     }
 
-    _getCopyPath(item, dst_path, into_subfolder, subdir_str)
+    _getCopyPath(item, dst_path, into_subfolder, subdir_str, arg_options = {})
     {
+        const default_options = {
+            preferred_collection: null
+        };
+        let options = {...default_options, ...arg_options};
+
         let file_path = item.getFilePath();
         let file_name = file_path.split(/[\\/]/).pop();
         let local_dst_path = dst_path;
@@ -19,7 +24,7 @@ var ZotMoov = class {
         // Optionally add subdirectory folder here
         if (into_subfolder)
         {
-            let custom_dir = this.wildcard.process_string(item, subdir_str);
+            let custom_dir = this.wildcard.process_string(item, subdir_str, { preferred_collection: options.preferred_collection });
             let sanitized_custom_dir = custom_dir.split('/').map((dir) => this.sanitizer.sanitize(dir, '_'));
             local_dst_path = PathUtils.join(local_dst_path, ...sanitized_custom_dir);
         }
@@ -113,6 +118,7 @@ var ZotMoov = class {
             into_subfolder: false,
             subdir_str: '',
             allowed_file_ext: null,
+            preferred_collection: null,
         };
 
         let options = {...default_options, ...arg_options};
@@ -146,7 +152,7 @@ var ZotMoov = class {
                 if (!options.allowed_file_ext.includes(file_ext)) continue;
             }
 
-            let copy_path = this._getCopyPath(item, dst_path, options.into_subfolder, options.subdir_str);
+            let copy_path = this._getCopyPath(item, dst_path, options.into_subfolder, options.subdir_str, { preferred_collection: options.preferred_collection });
 
             // Have to check since later adding an entry triggers the
             // handler again
@@ -198,6 +204,7 @@ var ZotMoov = class {
             subdir_str: '',
             allow_group_libraries: false,
             allowed_file_ext: null,
+            preferred_collection: null,
         };
 
         let options = {...default_options, ...arg_options};
@@ -225,7 +232,7 @@ var ZotMoov = class {
                 if (!options.allowed_file_ext.includes(file_ext)) continue;
             }
 
-            let copy_path = this._getCopyPath(item, dst_path, options.into_subfolder, options.subdir_str);
+            let copy_path = this._getCopyPath(item, dst_path, options.into_subfolder, options.subdir_str, { preferred_collection: options.preferred_collection });
 
             if (file_path == copy_path) continue;
 
@@ -283,7 +290,8 @@ var ZotMoov = class {
                     ignore_linked: false,
                     into_subfolder: subfolder_enabled,
                     subdir_str: subdir_str,
-                    allowed_file_ext: allowed_file_ext
+                    allowed_file_ext: allowed_file_ext,
+                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection().id
                 });
         } else
         {
@@ -292,7 +300,8 @@ var ZotMoov = class {
                     into_subfolder: subfolder_enabled,
                     subdir_str: subdir_str,
                     allowed_file_ext: allowed_file_ext,
-                    allow_group_libraries: true
+                    allow_group_libraries: true,
+                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection().id
                 });
         }
     }
@@ -323,7 +332,8 @@ var ZotMoov = class {
                 {
                     ignore_linked: false,
                     into_subfolder: false,
-                    allowed_file_ext: allowed_file_ext
+                    allowed_file_ext: allowed_file_ext,
+                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection().id
                 });
         } else
         {
@@ -331,7 +341,8 @@ var ZotMoov = class {
                 {
                     into_subfolder: false,
                     allow_group_libraries: true,
-                    allowed_file_ext: allowed_file_ext
+                    allowed_file_ext: allowed_file_ext,
+                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection().id
                 });
         }
     }
