@@ -23,6 +23,16 @@ It is highly recommended to
 
 ## FAQ
 
+### Migrating from ZotFile
+
+ZotMoov should not break any existing linked files from ZotFile. But to be sure, before updating to Zotero 7 [make a local backup of your library](https://www.zotero.org/support/zotero_data#backing_up_your_zotero_data) and of your ZotFile folder.
+
+The ZotMoov data directory can be the previous ZotFile directory if you don't mind new files being mixed with the old ones, or a brand new data directory if you like to keep things separate.
+
+One problem that might arise is the [Linked Attachment Base Directory](https://www.zotero.org/support/preferences/advanced#linked_attachment_base_directory). If you were using this feature before (check in Settings > Advanced > Files and Folders > Linked Attachment Base Directory) you may need to change the base directory to a folder that contains both the ZotFile files and the ZotMoov files.
+
+The easiest way to accomplish this is to simply reuse the ZotFile folder or put the ZotMoov folder inside the previous ZotFile one. For example, the ZotMoov data folder will be `ZotFile/` or `ZotFile/ZotMoov` respectively.
+
 ### File Renaming
 
 I recommend using the [automatic file renaming functionality included in Zotero 7](https://www.zotero.org/support/file_renaming). It has support for custom patterns.
@@ -35,40 +45,4 @@ I recommend using the [automatic file renaming functionality included in Zotero 
 
 Both can be filed [here](https://github.com/wileyyugioh/zotmoov/issues). Please keep feature requests tightly focused on the extension's core purpose of mooving attachments and linking them!
 
-## Settings
-
-### Directory to Move Files To
-
-The base directory where ZotMoov will move/copy files
-
-### Source Folder for Attaching New Files
-
-When checked this will enable the Attach New File menu item.
-
-<img src="res/Image3.png" width="300"/>
-
-When this button is clicked, the last modified file in the Source Folder will be attached to the selected item.
-
-### File Behavior
-
-By default ZotMoov will move and link your files. You can change the dropdown menu option to `copy` for ZotMoov to just make a back-up of your added files in the specified directory.
-
-### Automatically Move/Copy Files When Added
-
-When this is enabled, ZotMoov will automatically move/copy files whenever they are imported into Zotero. The types of files can be restricted by the **Allowed File Extensions** option.
-
-### Automatically Move/Copy Files to Subdirectory
-
-When this is enabled, ZotMoov will automatically move files into a custom subdirectory whenever
-- a file is moved/copied via **Automatically Move/Copy Files When Added**
-- the Move/Copy Selected to Directory menu option is used
-
-By default the subdirectory string is `{%c}` which is by item collection. [Click here for the formatting options](https://github.com/wileyyugioh/zotmoov/blob/master/docs/WILDCARD_INFO.md)
-
-### Automatically Delete External Linked Files in the ZotMoov Directory
-
-When this is enabled, ZotMoov will automatically delete linked files in the ZotMoov directory. Meaning that when you permanently delete a linked file in Zotero, and that linked file points to a file in the ZotMoov directory, the file on your hard drive will be deleted. It will also delete any empty directories within the ZotMoov directory.
-
-### Allowed File Extensions
-
-By adding/removing entries to this table via the [+] and [-] buttons, you can choose which types of files ZotMoov will move/copy. If the table is empty, then all files will be moved regardless of their file extension.
+### [Settings](docs/SETTINGS_INFO.md)
