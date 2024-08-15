@@ -26,7 +26,7 @@ When this is enabled, ZotMoov will automatically move files into a custom subdir
 - a file is moved/copied via **Automatically Move/Copy Files When Added**
 - the Move/Copy Selected to Directory menu option is used
 
-By default the subdirectory string is `{%c}` which is by item collection. [Click here for the formatting options](docs/WILDCARD_INFO.md)
+By default the subdirectory string is `{%c}` which is by item collection. [Click here for the formatting options](WILDCARD_INFO.md)
 
 ## Automatically Delete External Linked Files in the ZotMoov Directory
 
