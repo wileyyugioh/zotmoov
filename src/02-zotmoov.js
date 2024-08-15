@@ -291,7 +291,7 @@ var ZotMoov = class {
                     into_subfolder: subfolder_enabled,
                     subdir_str: subdir_str,
                     allowed_file_ext: allowed_file_ext,
-                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection().id
+                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null
                 });
         } else
         {
@@ -301,7 +301,7 @@ var ZotMoov = class {
                     subdir_str: subdir_str,
                     allowed_file_ext: allowed_file_ext,
                     allow_group_libraries: true,
-                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection().id
+                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null
                 });
         }
     }
@@ -333,7 +333,7 @@ var ZotMoov = class {
                     ignore_linked: false,
                     into_subfolder: false,
                     allowed_file_ext: allowed_file_ext,
-                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection().id
+                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null
                 });
         } else
         {
@@ -342,7 +342,7 @@ var ZotMoov = class {
                     into_subfolder: false,
                     allow_group_libraries: true,
                     allowed_file_ext: allowed_file_ext,
-                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection().id
+                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null
                 });
         }
     }
