@@ -54,7 +54,7 @@ var ZotMoovNotifyCallback = class {
                 into_subfolder: subfolder_enabled,
                 subdir_str: subdir_str,
                 allowed_file_ext: allowed_file_ext,
-                preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection().id
+                preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null
             });
         } else
         {
@@ -65,7 +65,7 @@ var ZotMoovNotifyCallback = class {
                 subdir_str: subdir_str,
                 allow_group_libraries: allow_group_libraries,
                 allowed_file_ext: allowed_file_ext,
-                preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection().id
+                preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null
             });
         }
 
