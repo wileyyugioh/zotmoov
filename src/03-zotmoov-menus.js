@@ -191,8 +191,11 @@ var ZotMoovMenus = class {
         let children = await IOUtils.getChildren(search_dir);
         for(const path of children)
         {
-            let { lastModified, type } = await IOUtils.stat(path);
+            const { lastModified, type } = await IOUtils.stat(path);
+            const filename = PathUtils.filename(path);
+
             if(type != 'regular') continue;
+            if(['.DS_Store', 'Thumbs.db'].includes(filename)) continue;
 
             let lastModifiedDate = new Date(lastModified);
             if(lastModifiedDate > lastDate)
