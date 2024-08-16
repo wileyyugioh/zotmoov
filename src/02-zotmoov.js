@@ -87,7 +87,7 @@ var ZotMoov = class {
                         // Filter out .DS_Store and Thumbs.db
                         let filter_children = children.filter((c) => {
                             let filename = PathUtils.filename(c);
-                            return !(['.DS_Store', 'Thumbs.db'].includes(filename));
+                            return !(['.DS_Store', 'Thumbs.db', 'desktop.ini'].includes(filename));
                         });
 
                         if (filter_children.length > 0) return;
