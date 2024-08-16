@@ -22,7 +22,7 @@ var ZotMoovMenus = class {
         win.document.getElementById(this.move_selected_item_custom_id).disabled = should_disabled;
         win.document.getElementById(this.convert_linked_to_stored_id).disabled = should_disabled;
 
-        const disable_attach_new_file_id = (selection.length != 1 || selection[0].isAttachment());
+        const disable_attach_new_file_id = (selection.length != 1 || !selection[0].isRegularItem());
         win.document.getElementById(this.attach_new_file_id).disabled = disable_attach_new_file_id;
 
         const disable_convert_linked = !Array.from(this.zotmoov._getSelectedItems()).some(s => s.attachmentLinkMode == Zotero.Attachments.LINK_MODE_LINKED_FILE);
@@ -184,7 +184,7 @@ var ZotMoovMenus = class {
         const search_dir = Zotero.Prefs.get('extensions.zotmoov.attach_search_dir', true);
 
         let items = Zotero.getActiveZoteroPane().getSelectedItems();
-        if(items.length != 1 || items[0].isAttachment()) return; // Only run if only one file is selected
+        if(items.length != 1 || !items[0].isRegularItem()) return; // Only run if only one file is selected
 
         let lastFilePath = null;
         let lastDate = new Date(0);
