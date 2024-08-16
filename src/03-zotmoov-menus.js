@@ -12,7 +12,9 @@ var ZotMoovMenus = class {
 
     _doPopupShowing(event)
     {
-        let should_disabled = !this._hasAttachments();
+        let should_disabled = (!this._hasAttachments() ||
+            (Zotero.getActiveZoteroPane().getSelectedLibraryID() != Zotero.Libraries.userLibraryID && Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
+        );
         let selection = Zotero.getActiveZoteroPane().getSelectedItems();
 
         let win = event.view;
