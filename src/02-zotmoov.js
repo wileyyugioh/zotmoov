@@ -181,6 +181,7 @@ var ZotMoov = class {
                         {
                             id = await clone.save();
                             await Zotero.Items.moveChildItems(item, clone);
+                            await IOUtils.remove(file_path); // Include this in case moving another linked file
                             await item.erase();
                         });
                     } catch (error)
