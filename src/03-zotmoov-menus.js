@@ -195,7 +195,7 @@ var ZotMoovMenus = class {
             const filename = PathUtils.filename(path);
 
             if(type != 'regular') continue;
-            if(['.DS_Store', 'Thumbs.db'].includes(filename)) continue;
+            if(['.DS_Store', 'Thumbs.db', 'desktop.ini'].includes(filename)) continue;
 
             let lastModifiedDate = new Date(lastModified);
             if(lastModifiedDate > lastDate)
