@@ -22,7 +22,9 @@ It is highly recommended to
 3. Uncheck "Sync attachment files in My Library" in the Sync settings if you do not plan to use Zotero's cloud file storage
 4. If planning to sync across multiple devices, set the [Linked Attachment Base Directory](https://www.zotero.org/support/preferences/advanced#linked_attachment_base_directory) to the synced folder on each computer.
 
-## [Settings](docs/SETTINGS_INFO.md)
+## Settings
+
+[Click here for a complete description of the ZotMoov settings](docs/SETTINGS_INFO.md)
 
 ## FAQ
 
