@@ -22,6 +22,8 @@ It is highly recommended to
 3. Uncheck "Sync attachment files in My Library" in the Sync settings if you do not plan to use Zotero's cloud file storage
 4. If planning to sync across multiple devices, set the [Linked Attachment Base Directory](https://www.zotero.org/support/preferences/advanced#linked_attachment_base_directory) to the synced folder on each computer.
 
+## [Settings](docs/SETTINGS_INFO.md)
+
 ## FAQ
 
 ### Migrating from ZotFile
@@ -47,5 +49,3 @@ I recommend using the [automatic file renaming functionality included in Zotero 
 ### Bugs/Feature Requests
 
 Both can be filed [here](https://github.com/wileyyugioh/zotmoov/issues). Please keep feature requests tightly focused on the extension's core purpose of mooving attachments and linking them!
-
-## [Settings](docs/SETTINGS_INFO.md)
