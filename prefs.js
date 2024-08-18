@@ -14,3 +14,4 @@ pref('extensions.zotmoov.allowed_fileext', JSON.stringify(['pdf', 'epub', 'docx'
 pref('extensions.zotmoov.delete_files', false);
 pref('extensions.zotmoov.prune_empty_dir', true);
 pref('extensions.zotmoov.enable_attach_dir', false);
+pref('extensions.zotmoov.rename_title', true);
