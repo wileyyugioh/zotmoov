@@ -222,10 +222,29 @@ var ZotMoovMenus = class {
             'libraryID': items[0].libraryID,
         };
 
-        let att = yield Zotero.Attachments.importFromFile(options);
+        let att = await Zotero.Attachments.importFromFile(options);
 
         if (att.getFilePath() != lastFilePath) IOUtils.remove(lastFilePath);
 
-        return att;
+        if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
+        {
+
+            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
+            let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
+            let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
+            let allowed_file_ext = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
+
+            // Pass null if empty
+            allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext : null;
+
+            await Zotero.ZotMoov.move([att], dst_path,
+                {
+                    ignore_linked: false,
+                    into_subfolder: subfolder_enabled,
+                    subdir_str: subdir_str,
+                    allowed_file_ext: allowed_file_ext,
+                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null
+                });
+        }
     }
 }

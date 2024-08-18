@@ -119,6 +119,7 @@ var ZotMoov = class {
             subdir_str: '',
             allowed_file_ext: null,
             preferred_collection: null,
+            rename_title: true
         };
 
         let options = {...default_options, ...arg_options};
@@ -169,7 +170,7 @@ var ZotMoov = class {
             let clone = item.clone(null, { includeCollections: true });
             clone.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
             clone.attachmentPath = final_path;
-            clone.setField('title', PathUtils.filename(final_path));
+            if(options.rename_title) clone.setField('title', PathUtils.filename(final_path));
             clone.dateAdded = item.dateAdded;
 
             promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }).then(async function(clone, item, final_path)
