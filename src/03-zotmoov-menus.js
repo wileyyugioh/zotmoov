@@ -184,6 +184,7 @@ var ZotMoovMenus = class {
     async importLastModifiedFile()
     {
         const search_dir = Zotero.Prefs.get('extensions.zotmoov.attach_search_dir', true);
+        const rename_title = Zotero.Prefs.get('extensions.zotmoov.rename_title', true);
 
         let items = Zotero.getActiveZoteroPane().getSelectedItems();
         if(items.length != 1 || !items[0].isRegularItem()) return; // Only run if only one file is selected
@@ -210,7 +211,7 @@ var ZotMoovMenus = class {
         if(!lastFilePath) return;
 
         let fileBaseName = false;
-        if (Zotero.Attachments.shouldAutoRenameFile())
+        if (Zotero.Attachments.shouldAutoRenameFile() && rename_title)
         {
             fileBaseName = await Zotero.Attachments.getRenamedFileBaseNameIfAllowedType(items[0], lastFilePath);
         }
@@ -237,13 +238,14 @@ var ZotMoovMenus = class {
             // Pass null if empty
             allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext : null;
 
-            await Zotero.ZotMoov.move([att], dst_path,
+            await this.zotmoov.move([att], dst_path,
                 {
                     ignore_linked: false,
                     into_subfolder: subfolder_enabled,
                     subdir_str: subdir_str,
                     allowed_file_ext: allowed_file_ext,
-                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null
+                    preferred_collection: (Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null),
+                    rename_title: rename_title
                 });
         }
     }
