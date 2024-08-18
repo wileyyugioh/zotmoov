@@ -185,6 +185,10 @@ var ZotMoovMenus = class {
     {
         const search_dir = Zotero.Prefs.get('extensions.zotmoov.attach_search_dir', true);
         const rename_title = Zotero.Prefs.get('extensions.zotmoov.rename_title', true);
+        let allowed_file_ext = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
+
+        // Pass null if empty
+        allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext.map(ext => ext.toLowerCase()) : null;
 
         let items = Zotero.getActiveZoteroPane().getSelectedItems();
         if(items.length != 1 || !items[0].isRegularItem()) return; // Only run if only one file is selected
@@ -199,6 +203,13 @@ var ZotMoovMenus = class {
 
             if(type != 'regular') continue;
             if(['.DS_Store', 'Thumbs.db', 'desktop.ini'].includes(filename)) continue;
+
+            // Ignore invalid file extensions
+            if (Array.isArray(allowed_file_ext))
+            {
+                let file_ext = filename.split('.').pop().toLowerCase();
+                if (!allowed_file_ext.includes(file_ext)) continue;
+            }
 
             let lastModifiedDate = new Date(lastModified);
             if(lastModifiedDate > lastDate)
@@ -233,10 +244,6 @@ var ZotMoovMenus = class {
             let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
             let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
             let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
-            let allowed_file_ext = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
-
-            // Pass null if empty
-            allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext : null;
 
             await this.zotmoov.move([att], dst_path,
                 {
