@@ -222,6 +222,10 @@ var ZotMoovMenus = class {
             'libraryID': items[0].libraryID,
         };
 
-        return await Zotero.Attachments.importFromFile(options);
+        let att = yield Zotero.Attachments.importFromFile(options);
+
+        if (att.getFilePath() != lastFilePath) IOUtils.remove(lastFilePath);
+
+        return att;
     }
 }
