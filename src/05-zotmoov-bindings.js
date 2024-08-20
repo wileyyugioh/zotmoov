@@ -23,7 +23,7 @@ var ZotMoovBindings = class {
             };
         });
 
-        let orig_erase_data = this._patcher.monkey_patch(Zotero.Item.prototype, '_eraseData', function (orig) {
+        this._patcher.monkey_patch(Zotero.Item.prototype, '_eraseData', function (orig) {
             return Zotero.Promise.coroutine(function* (...args) {
                 return orig.apply(this, args).then((val) =>
                 {
