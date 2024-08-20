@@ -9,6 +9,7 @@ var ZotMoovBindings = class {
         
         this._disabled = false;
         this._orig_funcs = [];
+        this._del_ignore = [];
 
         let self = this;
         this._patcher.monkey_patch(Zotero.Attachments, 'convertLinkedFileToStoredFile', function (orig) {
@@ -26,6 +27,13 @@ var ZotMoovBindings = class {
             return Zotero.Promise.coroutine(function* (...args) {
                 return orig.apply(this, args).then((val) =>
                 {
+                    const del_index = self._del_ignore.indexOf(this.key);
+                    if (del_index > -1)
+                    {
+                        self._del_ignore.splice(del_index, 1);
+                        return val;
+                    }
+
                     if (Zotero.Prefs.get('extensions.zotmoov.delete_files', true))
                     {
                         let prune_empty_dir = Zotero.Prefs.get('extensions.zotmoov.prune_empty_dir', true);
@@ -46,23 +54,15 @@ var ZotMoovBindings = class {
 
                 // Linked files only exist in user library
                 if (libraryType != 'user' || !Zotero.Prefs.get('extensions.zotmoov.delete_files', true)) return results;
-
-                let new_delete = [];
                 for (let key of results.deleted['items'])
                 {
                     let obj = Zotero.Items.getByLibraryAndKey(Zotero.Libraries.userLibraryID, key);
-                    if (!obj || !obj.isFileAttachment() || obj.attachmentLinkMode != Zotero.Attachments.LINK_MODE_LINKED_FILE)
-                    {
-                        new_delete.push(key);
-                        continue;
-                    }
+                    if (!obj || !obj.isFileAttachment() || obj.attachmentLinkMode != Zotero.Attachments.LINK_MODE_LINKED_FILE) continue;
 
-                    // Just do the original delete on all linked files
-                    obj._eraseData = self._patcher.get_orig_func(orig_erase_data);
-                    obj.eraseTx({skipEditCheck: true, skipDeleteLog: true});
+                    // Add to ignore list
+                    self._del_ignore.push(key);
                 }
 
-                results.deleted['items'] = new_delete;
 
                 return results;
             });
