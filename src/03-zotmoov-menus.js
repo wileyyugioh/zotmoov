@@ -240,12 +240,12 @@ var ZotMoovMenus = class {
 
         if (att.getFilePath() != lastFilePath) IOUtils.remove(lastFilePath);
 
-        let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
-        let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
-        let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
-
         if(should_move)
         {
+            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
+            let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
+            let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
+
             await this.zotmoov.move([att], dst_path,
                 {
                     ignore_linked: false,
