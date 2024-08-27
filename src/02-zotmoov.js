@@ -299,12 +299,13 @@ var ZotMoov = class {
                 });
         } else
         {
+            let allow_group_libraries = Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true);
             await this.copy(atts, dst_path,
                 {
                     into_subfolder: subfolder_enabled,
                     subdir_str: subdir_str,
                     allowed_file_ext: allowed_file_ext,
-                    allow_group_libraries: true,
+                    allow_group_libraries: allow_group_libraries,
                     preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null
                 });
         }
@@ -343,10 +344,11 @@ var ZotMoov = class {
                 });
         } else
         {
+            let allow_group_libraries = Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true);
             await this.copy(atts, fp.file.path,
                 {
                     into_subfolder: false,
-                    allow_group_libraries: true,
+                    allow_group_libraries: allow_group_libraries,
                     allowed_file_ext: allowed_file_ext,
                     preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null
                 });
