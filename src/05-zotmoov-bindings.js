@@ -27,17 +27,10 @@ var ZotMoovBindings = class {
             return Zotero.Promise.coroutine(function* (...args) {
                 return orig.apply(this, args).then((val) =>
                 {
-                    const del_index = self._del_ignore.indexOf(this.key);
-                    if (del_index > -1)
-                    {
-                        self._del_ignore.splice(del_index, 1);
-                        return val;
-                    }
-
+                    if (self._del_ignore.includes(this.key)) return val;
                     if (Zotero.Prefs.get('extensions.zotmoov.delete_files', true))
                     {
                         let prune_empty_dir = Zotero.Prefs.get('extensions.zotmoov.prune_empty_dir', true);
-
                         self._zotmoov.delete([this], Zotero.Prefs.get('extensions.zotmoov.dst_dir', true), { prune_empty_dir: prune_empty_dir });
                     }
 
@@ -51,6 +44,11 @@ var ZotMoovBindings = class {
         this._patcher.monkey_patch(Zotero.Sync.APIClient.prototype, 'getDeleted', function (orig) {
             return Zotero.Promise.coroutine(function* (libraryType, ...other) {
                 let results = yield orig.apply(this, [libraryType, ...other]);
+
+                // Sometimes when syncing _eraseData can be called twice
+                // Once when the parent item is deleted, and another time when the child attachment is deleted
+                // Asssume that getDeleted is atomic?
+                self._del_ignore = [];
 
                 // Linked files only exist in user library
                 if (libraryType != 'user' || !Zotero.Prefs.get('extensions.zotmoov.delete_files', true)) return results;
