@@ -25,8 +25,13 @@ var ZotMoovPatcher = class {
         return this._orig_funcs[id];
     }
 
-    destroy()
+    disable()
     {
         this._disabled = true;
+    }
+
+    enable()
+    {
+        this._disabled = false;
     }
 }
