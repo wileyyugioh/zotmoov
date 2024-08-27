@@ -47,7 +47,6 @@ var ZotMoovBindings = class {
 
                 // Sometimes when syncing _eraseData can be called twice
                 // Once when the parent item is deleted, and another time when the child attachment is deleted
-                // Asssume that getDeleted is atomic?
                 self._del_ignore = [];
 
                 // Linked files only exist in user library
