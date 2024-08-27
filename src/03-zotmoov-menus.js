@@ -1,11 +1,13 @@
 var ZotMoovMenus = class {
-    constructor(zotmoov) {
+    constructor(zotmoov, bindings) {
         this.menuseparator_id = 'zotmoov-context-menuseparator';
         this.move_selected_item_id = 'zotmoov-context-move-selected';
         this.move_selected_item_custom_id = 'zotmoov-context-move-selected-custom-dir';
         this.attach_new_file_id = 'zotmoov-context-attach-new-file';
         this.convert_linked_to_stored_id = 'zotmoov-context-convert-linked-to-stored';
-        this.zotmoov = zotmoov;
+
+        this._zotmoov = zotmoov;
+        this._zotmoovBindings = bindings;
 
         this._popupShowing = this._doPopupShowing.bind(this);
     }
@@ -27,13 +29,13 @@ var ZotMoovMenus = class {
         const disable_attach_new_file_id = (selection.length != 1 || !selection[0].isRegularItem());
         win.document.getElementById(this.attach_new_file_id).disabled = disable_attach_new_file_id;
 
-        const disable_convert_linked = !Array.from(this.zotmoov._getSelectedItems()).some(s => s.attachmentLinkMode == Zotero.Attachments.LINK_MODE_LINKED_FILE);
+        const disable_convert_linked = !Array.from(this._zotmoov._getSelectedItems()).some(s => s.attachmentLinkMode == Zotero.Attachments.LINK_MODE_LINKED_FILE);
         win.document.getElementById(this.convert_linked_to_stored_id).disabled = disable_convert_linked;
     }
 
     _hasAttachments()
     {
-        let items = this.zotmoov._getSelectedItems();
+        let items = this._zotmoov._getSelectedItems();
         return (items.size != 0);
     }
 
@@ -233,20 +235,22 @@ var ZotMoovMenus = class {
             'fileBaseName': fileBaseName,
             'parentItemID': items[0].id,
             'libraryID': items[0].libraryID,
-            'saveOptions': (should_move ? { skipNotifier: true } : null)
         };
 
+        this._zotmoovBindings.disable();
         let att = await Zotero.Attachments.importFromFile(options);
+        this._zotmoovBindings.enable();
 
         if (att.getFilePath() != lastFilePath) IOUtils.remove(lastFilePath);
 
+
+        let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
+        let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
+        let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
+
         if(should_move)
         {
-            let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
-            let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
-            let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
-
-            await this.zotmoov.move([att], dst_path,
+            await this._zotmoov.move([att], dst_path,
                 {
                     ignore_linked: false,
                     into_subfolder: subfolder_enabled,
@@ -254,6 +258,17 @@ var ZotMoovMenus = class {
                     allowed_file_ext: allowed_file_ext,
                     preferred_collection: (Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null),
                     rename_title: rename_title
+                });
+        } else
+        {
+            let allow_group_libraries = Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true);
+            await this._zotmoov.copy([att], dst_path,
+                {
+                    into_subfolder: subfolder_enabled,
+                    subdir_str: subdir_str,
+                    allowed_file_ext: allowed_file_ext,
+                    allow_group_libraries: allow_group_libraries,
+                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null
                 });
         }
     }

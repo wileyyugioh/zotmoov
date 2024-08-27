@@ -7,7 +7,6 @@ var ZotMoovBindings = class {
 
         this._notifierID = Zotero.Notifier.registerObserver(this._callback, ['item'], 'zotmoov', 100);
         
-        this._disabled = false;
         this._orig_funcs = [];
         this._del_ignore = [];
 
@@ -15,9 +14,9 @@ var ZotMoovBindings = class {
         this._patcher.monkey_patch(Zotero.Attachments, 'convertLinkedFileToStoredFile', function (orig) {
             return async function(...args)
             {
-                self._callback.disable();
+                self.disable();
                 let ret = await orig.apply(this, args);
-                self._callback.enable();
+                self.enable();
 
                 return ret;
             };
@@ -77,10 +76,22 @@ var ZotMoovBindings = class {
         });
     }
 
+    disable()
+    {
+        this._callback.disable();
+        this._patcher.disable();
+    }
+
+    enable()
+    {
+        this._callback.enable();
+        this._patcher.enable();
+    }
+
     destroy()
     {
         Zotero.Notifier.unregisterObserver(this._notifierID);
         this._callback.destroy();
-        this._patcher.destroy();
+        this._patcher.disable();
     }
 }
