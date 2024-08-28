@@ -7,7 +7,7 @@ var ZotMoovMenus = class {
         this.convert_linked_to_stored_id = 'zotmoov-context-convert-linked-to-stored';
 
         this._zotmoov = zotmoov;
-        this._zotmoovBindings = bindings;
+        this._zotmoov_bindings = bindings;
 
         this._popupShowing = this._doPopupShowing.bind(this);
     }
@@ -80,7 +80,7 @@ var ZotMoovMenus = class {
         convert_linked_to_stored.setAttribute('data-l10n-id', 'zotmoov-context-convert-linked');
         convert_linked_to_stored.addEventListener('command', () =>
         {
-            Zotero.getActiveZoteroPane().convertLinkedFilesToStoredFiles();
+            self._zotmoov.moveFromDirectory();
         });
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
@@ -237,9 +237,8 @@ var ZotMoovMenus = class {
             'libraryID': items[0].libraryID,
         };
 
-        this._zotmoovBindings.disable();
         let att = await Zotero.Attachments.importFromFile(options);
-        this._zotmoovBindings.enable();
+        this._zotmoov_bindings.ignoreAdd([att.key]);
 
         if (att.getFilePath() != lastFilePath) IOUtils.remove(lastFilePath);
 
