@@ -190,7 +190,7 @@ var ZotMoov = class {
                         {
                             await Zotero.DB.executeTransaction(async function()
                             {
-                                await Zotero.Fulltext.transferItemIndex(item, newItem);
+                                await Zotero.Fulltext.transferItemIndex(item, clone);
                             });
                         }
                         catch (e)
