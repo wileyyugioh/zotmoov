@@ -206,8 +206,6 @@ var ZotMoov = class {
                         IOUtils.remove(final_path);
                         throw error;
                     }
-
-                    Zotero.Fulltext.indexItems(id);// reindex clone after saved
                 }.bind(null, clone, item, final_path))
             );
         }
