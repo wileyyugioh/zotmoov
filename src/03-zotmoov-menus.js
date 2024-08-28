@@ -237,8 +237,12 @@ var ZotMoovMenus = class {
             'libraryID': items[0].libraryID,
         };
 
-        let att = await Zotero.Attachments.importFromFile(options);
-        this._zotmoov_bindings.ignoreAdd([att.key]);
+        let att = null;
+        await this._zotmoov_bindings.lock(async () =>
+        {
+            att = await Zotero.Attachments.importFromFile(options);
+            this._zotmoov_bindings.ignoreAdd([att.key]);
+        });
 
         if (att.getFilePath() != lastFilePath) IOUtils.remove(lastFilePath);
 
