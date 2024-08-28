@@ -182,9 +182,25 @@ var ZotMoov = class {
                         {
                             id = await clone.save();
                             await Zotero.Items.moveChildItems(item, clone);
-                            await IOUtils.remove(file_path); // Include this in case moving another linked file
-                            await item.erase();
                         });
+
+                        await Zotero.Relations.copyObjectSubjectRelations(item, clone);
+
+                        try
+                        {
+                            await Zotero.DB.executeTransaction(async function()
+                            {
+                                await Zotero.Fulltext.transferItemIndex(item, newItem);
+                            });
+                        }
+                        catch (e)
+                        {
+                            Zotero.logError(e);
+                        }
+
+                        await IOUtils.remove(file_path); // Include this in case moving another linked file
+                        await item.eraseTx();
+
                     } catch (error)
                     {
                         IOUtils.remove(final_path);
