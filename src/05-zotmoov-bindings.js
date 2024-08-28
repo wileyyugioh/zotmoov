@@ -86,14 +86,10 @@ var ZotMoovBindings = class {
 
     async lock(func)
     {
+        this._callback.needToProcess();
         try
         {
-            this._callback.needToProcess();
             await func();
-        }
-        catch (e)
-        {
-            throw e;
         }
         finally
         {
