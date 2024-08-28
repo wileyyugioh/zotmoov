@@ -51,10 +51,10 @@ var ZotMoovMenus = class {
         let move_selected_item = doc.createXULElement('menuitem');
         move_selected_item.id = this.move_selected_item_id;
 
-        let thisCache = this;
+        let self = this;
         move_selected_item.addEventListener('command', () =>
         {
-            thisCache.zotmoov.moveSelectedItems();
+            self._zotmoov.moveSelectedItems();
         });
 
         // Custom Dir Menu item
@@ -62,7 +62,7 @@ var ZotMoovMenus = class {
         move_selected_item_custom.id = this.move_selected_item_custom_id;
         move_selected_item_custom.addEventListener('command', () =>
         {
-            thisCache.zotmoov.moveSelectedItemsCustomDir();
+            self._zotmoov.moveSelectedItemsCustomDir();
         });
 
         // Attach New File
@@ -71,7 +71,7 @@ var ZotMoovMenus = class {
         attach_new_file.setAttribute('data-l10n-id', 'zotmoov-context-attach-new-file');
         attach_new_file.addEventListener('command', () =>
         {
-            thisCache.importLastModifiedFile();
+            self.importLastModifiedFile();
         });
 
         // Convert Linked to Stored File
