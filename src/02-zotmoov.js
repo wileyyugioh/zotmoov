@@ -311,6 +311,26 @@ var ZotMoov = class {
         }
     }
 
+    async moveFromDirectory()
+    {
+        let atts = this._getSelectedItems();
+        atts = Array.from(atts).filter((a) => { return a.isLinkedFileAttachment(); });
+
+        for (let item of atts)
+        {
+            try
+            {
+                let converted = await Zotero.Attachments.convertLinkedFileToStoredFile(item, { move: true });
+            }
+            catch (e)
+            {
+                Zotero.logError(e);
+                continue;
+            }
+        }
+
+    }
+
     async moveSelectedItemsCustomDir()
     {
         let atts = this._getSelectedItems();
