@@ -173,7 +173,7 @@ var ZotMoov = class {
             if(options.rename_title) clone.setField('title', PathUtils.filename(final_path));
             clone.dateAdded = item.dateAdded;
 
-            promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }).then(async function(clone, item, final_path)
+            promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }).then(async function(clone, item, file_path, final_path)
                     {
                         await Zotero.DB.executeTransaction(async function()
                         {
@@ -190,7 +190,7 @@ var ZotMoov = class {
                             await IOUtils.remove(file_path); // Include this in case moving another linked file
                         }).catch((e) => { IOUtils.remove(final_path); });
 
-                    }.bind(null, clone, item, final_path))
+                    }.bind(null, clone, item, file_path, final_path))
             );
         }
 
