@@ -174,43 +174,23 @@ var ZotMoov = class {
             clone.dateAdded = item.dateAdded;
 
             promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }).then(async function(clone, item, final_path)
-                {
-                    let id = null;
-                    try
                     {
                         await Zotero.DB.executeTransaction(async function()
                         {
-                            id = await clone.save();
+                            let id = await clone.save();
                             await Zotero.Items.moveChildItems(item, clone);
-                        });
+                            await Zotero.Relations.copyObjectSubjectRelations(item, clone);
+                            await Zotero.Fulltext.transferItemIndex(item, clone).catch((e) => { Zotero.logError(e); });
 
-                        await Zotero.Relations.copyObjectSubjectRelations(item, clone);
+                            // Update timestamps
+                            const file_info = await IOUtils.stat(file_path);
+                            IOUtils.setModificationTime(final_path, file_info.lastModified);
 
-                        try
-                        {
-                            await Zotero.DB.executeTransaction(async function()
-                            {
-                                await Zotero.Fulltext.transferItemIndex(item, clone);
-                            });
-                        }
-                        catch (e)
-                        {
-                            Zotero.logError(e);
-                        }
+                            await item.erase();
+                            await IOUtils.remove(file_path); // Include this in case moving another linked file
+                        }).catch((e) => { IOUtils.remove(final_path); });
 
-                        // Update timestamps
-                        const file_info = await IOUtils.stat(file_path);
-                        IOUtils.setModificationTime(final_path, file_info.lastModified);
-
-                        await IOUtils.remove(file_path); // Include this in case moving another linked file
-                        await item.eraseTx();
-
-                    } catch (error)
-                    {
-                        IOUtils.remove(final_path);
-                        throw error;
-                    }
-                }.bind(null, clone, item, final_path))
+                    }.bind(null, clone, item, final_path))
             );
         }
 
