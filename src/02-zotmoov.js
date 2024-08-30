@@ -198,6 +198,10 @@ var ZotMoov = class {
                             Zotero.logError(e);
                         }
 
+                        // Update timestamps
+                        const file_info = await IOUtils.stat(file_path);
+                        IOUtils.setModificationTime(final_path, file_info.lastModified);
+
                         await IOUtils.remove(file_path); // Include this in case moving another linked file
                         await item.eraseTx();
 
