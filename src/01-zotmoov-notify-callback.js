@@ -10,8 +10,21 @@ var ZotMoovNotifyCallback = class {
         this._need_to_process = 0;
     }
 
-    needToProcess() { this._need_to_process++; }
-    freeToProcess() { this._need_to_process--; }
+    _needToProcess() { this._need_to_process++; }
+    _freeToProcess() { this._need_to_process--; }
+
+    async lock(func)
+    {
+        this._needToProcess();
+        try
+        {
+            await func();
+        }
+        finally
+        {
+            this._freeToProcess();
+        }
+    }
 
     // Ignore these keys during the next ZotMoov update
     addKeysToIgnore(keys)
@@ -28,14 +41,8 @@ var ZotMoovNotifyCallback = class {
         }
     }
 
-    async execute() {
-        if (this._need_to_process > 0)
-        {
-            clearTimeout(this._timeoutID);
-            this._timeoutID = setTimeout(this.execute.bind(this), Zotero.Prefs.get('extensions.zotmoov.auto_process_delay', true));
-            return;
-        }
-
+    async _doExecute()
+    {
         let ids = this._item_ids.slice();
         let ignore_keys = this._ignore_keys.slice();
 
@@ -91,6 +98,17 @@ var ZotMoovNotifyCallback = class {
         }
 
         this.reenableSync();
+    }
+
+    async execute() {
+        if (this._need_to_process > 0)
+        {
+            clearTimeout(this._timeoutID);
+            this._timeoutID = setTimeout(this.execute.bind(this), Zotero.Prefs.get('extensions.zotmoov.auto_process_delay', true));
+            return;
+        }
+
+        this.lock(this._doExecute.bind(this));
     }
 
     async addCallback(event, ids, extraData) {
