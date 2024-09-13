@@ -10,12 +10,14 @@ var ZotMoovBindings = class {
         this._orig_funcs = [];
         this._del_ignore = [];
 
+        this.lock = this._callback.lock.bind(this._callback);
+
         let self = this;
         this._patcher.monkey_patch(Zotero.Attachments, 'convertLinkedFileToStoredFile', function (orig) {
             return async function(...args)
             {
                 let ret = null;
-                await self.lock(async () =>
+                await self._callback.lock(async () =>
                 {
                     ret = await orig.apply(this, args);
                     self.ignoreAdd([ret.key]);
@@ -82,19 +84,6 @@ var ZotMoovBindings = class {
     ignoreAdd(keys)
     {
         this._callback.addKeysToIgnore(keys);
-    }
-
-    async lock(func)
-    {
-        this._callback.needToProcess();
-        try
-        {
-            await func();
-        }
-        finally
-        {
-            this._callback.freeToProcess();
-        }
     }
 
     destroy()
