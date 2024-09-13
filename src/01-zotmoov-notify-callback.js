@@ -108,7 +108,7 @@ var ZotMoovNotifyCallback = class {
             return;
         }
 
-        this.lock(this._doExecute.bind(this));
+        await this.lock(this._doExecute.bind(this));
     }
 
     async addCallback(event, ids, extraData) {
