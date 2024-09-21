@@ -283,6 +283,9 @@ var ZotMoovWildcard = class {
             case '%R':
                 result = String(item_fields['dateAdded'].getDate()).padStart(2, '0');
                 break;
+            case '%U':
+                result = 'undefined';
+                break;
 
             default:
                 break;
