@@ -41,3 +41,4 @@ By adding/removing entries to this table via the [+] and [-] buttons, you can ch
 [Hidden preferences can be accessed/modified to change some of ZotMoov's behavior](https://www.zotero.org/support/preferences/hidden_preferences)
 
 ```extensions.zotmoov.rename_title```: Enable/disable custom title renaming over the Zotero default
+```extensions.zotmoov.undefined_str```: The string of the `%U` wildcard
