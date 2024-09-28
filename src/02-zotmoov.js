@@ -185,6 +185,7 @@ var ZotMoov = class {
             clone.attachmentPath = final_path;
             if(options.rename_title) clone.setField('title', PathUtils.filename(final_path));
             clone.dateAdded = item.dateAdded;
+            clone.addTag('zotmoov');
 
             promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }).then(async function()
                     {
