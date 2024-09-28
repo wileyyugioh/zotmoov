@@ -15,7 +15,8 @@ var ZotMoov = class {
         const default_options = {
             into_subfolder: false,
             subdir_str: '',
-            preferred_collection: null
+            preferred_collection: null,
+            undefined_str: 'undefined'
         };
         let options = {...default_options, ...arg_options};
 
@@ -26,7 +27,10 @@ var ZotMoov = class {
         // Optionally add subdirectory folder here
         if (options.into_subfolder)
         {
-            let custom_dir = this.wildcard.process_string(item, options.subdir_str, { preferred_collection: options.preferred_collection });
+            let custom_dir = this.wildcard.process_string(item, options.subdir_str, {
+                preferred_collection: options.preferred_collection,
+                undefined_str: options.undefined_str
+            });
             let sanitized_custom_dir = custom_dir.split('/').map((dir) => this.sanitizer.sanitize(dir, '_'));
             local_dst_path = PathUtils.join(local_dst_path, ...sanitized_custom_dir);
         }
@@ -121,7 +125,8 @@ var ZotMoov = class {
             subdir_str: '',
             allowed_file_ext: null,
             preferred_collection: null,
-            rename_title: true
+            rename_title: true,
+            undefined_str: 'undefined'
         };
 
         let options = {...default_options, ...arg_options};
@@ -159,7 +164,8 @@ var ZotMoov = class {
                 {
                     into_subfolder: options.into_subfolder,
                     subdir_str: options.subdir_str,
-                    preferred_collection: options.preferred_collection
+                    preferred_collection: options.preferred_collection,
+                    undefined_str: options.undefined_str
             });
 
             // Have to check since later adding an entry triggers the
@@ -212,6 +218,7 @@ var ZotMoov = class {
             allow_group_libraries: false,
             allowed_file_ext: null,
             preferred_collection: null,
+            undefined_str: 'undefined'
         };
 
         let options = {...default_options, ...arg_options};
@@ -242,7 +249,8 @@ var ZotMoov = class {
             let copy_path = this._getCopyPath(item, dst_path, {
                     into_subfolder: options.into_subfolder,
                     subdir_str: options.subdir_str,
-                    preferred_collection: options.preferred_collection
+                    preferred_collection: options.preferred_collection,
+                    undefined_str: options.undefined_str
             });
 
             if (file_path == copy_path) continue;
