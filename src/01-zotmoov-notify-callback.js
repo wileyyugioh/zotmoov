@@ -49,40 +49,20 @@ var ZotMoovNotifyCallback = class {
         if (ids.length == 0) return;
 
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
-        let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
-        let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
-        let allowed_file_ext = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
-        let rename_title = Zotero.Prefs.get('extensions.zotmoov.rename_title', true);
-
-        // Pass null if empty
-        allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext : null;
 
         let all_items = Zotero.Items.get(ids);
         let items = all_items.filter((i) => {
             return !(ignore_keys.includes(i.key));
         });
 
+        let pref = this._zotmoov.getBasePrefs();
+        pref.ignore_linked = true;
         if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
-            await this._zotmoov.move(items, dst_path, 
-            {
-                into_subfolder: subfolder_enabled,
-                subdir_str: subdir_str,
-                allowed_file_ext: allowed_file_ext,
-                preferred_collection: (Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null),
-                rename_title: rename_title
-            });
+            await this._zotmoov.move(items, dst_path, pref);
         } else
         {
-            let allow_group_libraries = Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true);
-            await this._zotmoov.copy(items, dst_path,
-            {
-                into_subfolder: subfolder_enabled,
-                subdir_str: subdir_str,
-                allow_group_libraries: allow_group_libraries,
-                allowed_file_ext: allowed_file_ext,
-                preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null
-            });
+            await this._zotmoov.copy(items, dst_path, pref);
         }
 
         for (let id of ids)
