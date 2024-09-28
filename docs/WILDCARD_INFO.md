@@ -29,6 +29,7 @@ ZotMoov keeps many of the same wildcards that Zotfile has, as well as the condit
 - `%Y` year added to Zotero
 - `%M` month added to Zotero
 - `%R` day added to Zotero
+- `%U` the string "undefined"
 
 ## Conditional
 
