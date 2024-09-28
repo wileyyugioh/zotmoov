@@ -188,6 +188,11 @@ var ZotMoovMenus = class {
         const should_move = Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move';
         const search_dir = Zotero.Prefs.get('extensions.zotmoov.attach_search_dir', true);
 
+        const rename_title = Zotero.Prefs.get('extensions.zotmoov.rename_title', true);
+        let allowed_file_ext = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
+        // Pass null if empty
+        allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext : null;
+
         let items = Zotero.getActiveZoteroPane().getSelectedItems();
         if(items.length != 1 || !items[0].isRegularItem()) return; // Only run if only one file is selected
 
