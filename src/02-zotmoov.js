@@ -10,9 +10,11 @@ var ZotMoov = class {
         this.zotmoov_debugger = zotmoov_debugger;
     }
 
-    _getCopyPath(item, dst_path, into_subfolder, subdir_str, arg_options = {})
+    _getCopyPath(item, dst_path, arg_options = {})
     {
         const default_options = {
+            into_subfolder: false,
+            subdir_str: '',
             preferred_collection: null
         };
         let options = {...default_options, ...arg_options};
@@ -22,9 +24,9 @@ var ZotMoov = class {
         let local_dst_path = dst_path;
 
         // Optionally add subdirectory folder here
-        if (into_subfolder)
+        if (options.into_subfolder)
         {
-            let custom_dir = this.wildcard.process_string(item, subdir_str, { preferred_collection: options.preferred_collection });
+            let custom_dir = this.wildcard.process_string(item, options.subdir_str, { preferred_collection: options.preferred_collection });
             let sanitized_custom_dir = custom_dir.split('/').map((dir) => this.sanitizer.sanitize(dir, '_'));
             local_dst_path = PathUtils.join(local_dst_path, ...sanitized_custom_dir);
         }
@@ -114,7 +116,7 @@ var ZotMoov = class {
     async move(items, dst_path, arg_options = {})
     {
         const default_options = {
-            ignore_linked: true,
+            ignore_linked: false,
             into_subfolder: false,
             subdir_str: '',
             allowed_file_ext: null,
@@ -153,7 +155,12 @@ var ZotMoov = class {
                 if (!options.allowed_file_ext.includes(file_ext)) continue;
             }
 
-            let copy_path = this._getCopyPath(item, dst_path, options.into_subfolder, options.subdir_str, { preferred_collection: options.preferred_collection });
+            let copy_path = this._getCopyPath(item, dst_path,
+                {
+                    into_subfolder: options.into_subfolder,
+                    subdir_str: options.subdir_str,
+                    preferred_collection: options.preferred_collection
+            });
 
             // Have to check since later adding an entry triggers the
             // handler again
@@ -232,7 +239,11 @@ var ZotMoov = class {
                 if (!options.allowed_file_ext.includes(file_ext)) continue;
             }
 
-            let copy_path = this._getCopyPath(item, dst_path, options.into_subfolder, options.subdir_str, { preferred_collection: options.preferred_collection });
+            let copy_path = this._getCopyPath(item, dst_path, {
+                    into_subfolder: options.into_subfolder,
+                    subdir_str: options.subdir_str,
+                    preferred_collection: options.preferred_collection
+            });
 
             if (file_path == copy_path) continue;
 
@@ -276,36 +287,17 @@ var ZotMoov = class {
     {
         let atts = this._getSelectedItems();
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
-        let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
-        let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
-        let allowed_file_ext = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
-        let rename_title = Zotero.Prefs.get('extensions.zotmoov.rename_title', true);
 
         // Pass null if empty
         allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext : null;
 
+        let pref = this.getBasePrefs();
         if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
-            await this.move(atts, dst_path,
-                {
-                    ignore_linked: false,
-                    into_subfolder: subfolder_enabled,
-                    subdir_str: subdir_str,
-                    allowed_file_ext: allowed_file_ext,
-                    preferred_collection: (Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null),
-                    rename_title: rename_title
-                });
+            await this.move(atts, dst_path, pref);
         } else
         {
-            let allow_group_libraries = Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true);
-            await this.copy(atts, dst_path,
-                {
-                    into_subfolder: subfolder_enabled,
-                    subdir_str: subdir_str,
-                    allowed_file_ext: allowed_file_ext,
-                    allow_group_libraries: allow_group_libraries,
-                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null
-                });
+            await this.copy(atts, dst_path, pref);
         }
     }
 
@@ -332,11 +324,6 @@ var ZotMoov = class {
     async moveSelectedItemsCustomDir()
     {
         let atts = this._getSelectedItems();
-        let allowed_file_ext = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
-        let rename_title = Zotero.Prefs.get('extensions.zotmoov.rename_title', true);
-
-        // Pass null if empty
-        allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext : null;
 
         let fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
         let wm = Services.wm;
@@ -350,27 +337,33 @@ var ZotMoov = class {
         });
         if (rv != fp.returnOK) return '';
 
+        let pref = this.getBasePrefs();
+        pref.into_subfolder = false;
         if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
-            await this.move(atts, fp.file.path,
-                {
-                    ignore_linked: false,
-                    into_subfolder: false,
-                    allowed_file_ext: allowed_file_ext,
-                    preferred_collection: (Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null),
-                    rename_title: rename_title
-                });
+            await this.move(atts, fp.file.path, pref);
         } else
         {
-            let allow_group_libraries = Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true);
-            await this.copy(atts, fp.file.path,
-                {
-                    into_subfolder: false,
-                    allow_group_libraries: allow_group_libraries,
-                    allowed_file_ext: allowed_file_ext,
-                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null
-                });
+            await this.copy(atts, fp.file.path, pref);
         }
+    }
+
+    getBasePrefs()
+    {
+        let allowed_file_ext = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
+        // Pass null if empty
+        allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext : null;
+
+        return {
+            ignore_linked: false,
+            into_subfolder: Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true),
+            subdir_str: Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true),
+            rename_title: Zotero.Prefs.get('extensions.zotmoov.rename_title', true),
+            allowed_file_ext: allowed_file_ext,
+            preferred_collection: (Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null),
+            undefined_str: Zotero.Prefs.get('extensions.zotmoov.undefined_str', true),
+            allow_group_libraries: Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true)
+        };
     }
 }
 

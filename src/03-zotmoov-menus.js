@@ -187,11 +187,6 @@ var ZotMoovMenus = class {
     {
         const should_move = Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move';
         const search_dir = Zotero.Prefs.get('extensions.zotmoov.attach_search_dir', true);
-        const rename_title = Zotero.Prefs.get('extensions.zotmoov.rename_title', true);
-        let allowed_file_ext = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
-
-        // Pass null if empty
-        allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext.map(ext => ext.toLowerCase()) : null;
 
         let items = Zotero.getActiveZoteroPane().getSelectedItems();
         if(items.length != 1 || !items[0].isRegularItem()) return; // Only run if only one file is selected
@@ -248,31 +243,14 @@ var ZotMoovMenus = class {
 
 
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
-        let subfolder_enabled = Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true);
-        let subdir_str = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
 
+        let pref = this._zotmoov.getBasePrefs();
         if(should_move)
         {
-            await this._zotmoov.move([att], dst_path,
-                {
-                    ignore_linked: false,
-                    into_subfolder: subfolder_enabled,
-                    subdir_str: subdir_str,
-                    allowed_file_ext: allowed_file_ext,
-                    preferred_collection: (Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null),
-                    rename_title: rename_title
-                });
+            await this._zotmoov.move([att], dst_path, pref);
         } else
         {
-            let allow_group_libraries = Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true);
-            await this._zotmoov.copy([att], dst_path,
-                {
-                    into_subfolder: subfolder_enabled,
-                    subdir_str: subdir_str,
-                    allowed_file_ext: allowed_file_ext,
-                    allow_group_libraries: allow_group_libraries,
-                    preferred_collection: Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null
-                });
+            await this._zotmoov.copy([att], dst_path, pref);
         }
     }
 }

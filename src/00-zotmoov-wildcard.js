@@ -199,7 +199,7 @@ var ZotMoovWildcard = class {
         return _item_fields
     }
 
-    _sub(item_fields, wildcard)
+    _sub(item_fields, wildcard, undefined_str = 'undefined')
     {
         let result = wildcard;
         switch(wildcard)
@@ -284,7 +284,7 @@ var ZotMoovWildcard = class {
                 result = String(item_fields['dateAdded'].getDate()).padStart(2, '0');
                 break;
             case '%U':
-                result = 'undefined';
+                result = undefined_str;
                 break;
 
             default:
@@ -297,7 +297,8 @@ var ZotMoovWildcard = class {
     process_string(item, string, arg_options = {})
     {
         const default_options = {
-            preferred_collection: null
+            preferred_collection: null,
+            undefined_str: 'undefined'
         };
         let options = {...default_options, ...arg_options};
 
@@ -320,7 +321,7 @@ var ZotMoovWildcard = class {
         if (item.isAttachment() && item.parentItem) item = item.parentItem;
 
         let item_fields = this._get_fields(item, { preferred_collection: options.preferred_collection });
-        const sub_strs = sub_brackets.map((bracket) => this._process_wildcard(item, item_fields, bracket.slice(1, -1)));
+        const sub_strs = sub_brackets.map((bracket) => this._process_wildcard(item, item_fields, bracket.slice(1, -1), { undefined_str: options.undefined_str }));
 
         for (let i = 0; i < sub_brackets.length; i++)
         {
@@ -329,14 +330,19 @@ var ZotMoovWildcard = class {
 
         string = string.replaceAll(/%[a-zA-Z]/g, (match) =>
         {
-            return this._sub(item_fields, match);
+            return this._sub(item_fields, match, options.undefined_str);
         });
 
         return string
     }
 
-    _process_wildcard(item, item_fields, wildcard)
+    _process_wildcard(item, item_fields, wildcard, arg_options = {})
     {
+        const default_options = {
+            undefined_str: 'undefined'
+        };
+        let options = {...default_options, ...arg_options};
+
         let preprocess = wildcard.replaceAll(/(%[a-zA-Z])([^\|]*)\|/g, '$1|');
         preprocess = preprocess.replaceAll(/\|([^%]*)(%[a-zA-Z])/g, '|$2');
         let sub_strings = preprocess.split(/(%[a-zA-Z]|\|)/);
@@ -347,7 +353,7 @@ var ZotMoovWildcard = class {
         for (const sub of sub_strings)
         {
             if (optional_processing && subbed_a_wildcard && sub[0] == '%') continue;
-            let result = this._sub(item_fields, sub);
+            let result = this._sub(item_fields, sub, options.undefined_str);
             if (result == '|') result = '';
             if (sub[0] == '%' && result != '') subbed_a_wildcard = true;
             if (!optional_processing && sub[0] == '%' && result == '') return ''; // Failed to sub
