@@ -288,9 +288,6 @@ var ZotMoov = class {
         let atts = this._getSelectedItems();
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
 
-        // Pass null if empty
-        allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext : null;
-
         let pref = this.getBasePrefs();
         if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
