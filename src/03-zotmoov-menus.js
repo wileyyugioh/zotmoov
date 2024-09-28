@@ -191,7 +191,7 @@ var ZotMoovMenus = class {
         const rename_title = Zotero.Prefs.get('extensions.zotmoov.rename_title', true);
         let allowed_file_ext = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
         // Pass null if empty
-        allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext : null;
+        allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext.map(ext => ext.toLowerCase()) : null;
 
         let items = Zotero.getActiveZoteroPane().getSelectedItems();
         if(items.length != 1 || !items[0].isRegularItem()) return; // Only run if only one file is selected
