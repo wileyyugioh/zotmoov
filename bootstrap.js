@@ -43,7 +43,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
     const sanitizer = new Sanitizer();
     const zotmoovWildcard = new ZotMoovWildcard(sanitizer);
 
-    zotmoov = new ZotMoov(id, version, zotmoovWildcard, sanitizer, zotmoovDebugger);
+    zotmoov = new ZotMoov(id, version, rootURI, zotmoovWildcard, sanitizer, zotmoovDebugger);
     zotmoovBindings = new ZotMoovBindings(zotmoov);
     zotmoovMenus = new ZotMoovMenus(zotmoov, zotmoovBindings);
 
@@ -51,8 +51,8 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
         {
             id: 'zotmoov_basic',
             pluginID: 'zotmoov@wileyy.com',
-            src: rootURI + 'prefs.xhtml',
-            scripts: [rootURI + 'zotmoov-prefs.js']
+            src: rootURI + 'preferences/prefs.xhtml',
+            scripts: [rootURI + 'preferences/zotmoov-prefs.js']
     });
 
     Zotero.PreferencePanes.register(
@@ -60,7 +60,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
             id: 'zotmoov_advanced',
             pluginID: 'zotmoov@wileyy.com',
             parent: 'zotmoov_basic',
-            src: rootURI + 'adv_prefs.xhtml',
+            src: rootURI + 'preferences/adv_prefs.xhtml',
     });
 
     zotmoovMenus.loadAll();
