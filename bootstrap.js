@@ -49,10 +49,19 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 
     Zotero.PreferencePanes.register(
         {
+            id: 'zotmoov_basic',
             pluginID: 'zotmoov@wileyy.com',
             src: rootURI + 'prefs.xhtml',
             scripts: [rootURI + 'zotmoov-prefs.js']
-        });
+    });
+
+    Zotero.PreferencePanes.register(
+        {
+            id: 'zotmoov_advanced',
+            pluginID: 'zotmoov@wileyy.com',
+            parent: 'zotmoov_basic',
+            src: rootURI + 'adv_prefs.xhtml',
+    });
 
     zotmoovMenus.loadAll();
 

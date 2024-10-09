@@ -55,14 +55,8 @@
     <groupbox>
         <vbox>
             <label><html:h2 data-l10n-id="zotmoov-settings-fileext-title"></html:h2></label>
-            <hbox style="min-height: 100px;">
-                <tree id="zotmoov-settings-fileext-tree" style="margin: 0;" flex="1" editable="true" hidecolumnpicker="true" onselect="Zotero.ZotMoov.Prefs.onFileExtTreeSelect();">
-                   <treecols>
-                        <treecol id="zotmoov-settings-fileext-title" flex="1" hideheader="true"/>
-                   </treecols>
-                   <treechildren id="zotmoov-settings-fileext-treechildren">
-                   </treechildren>
-                 </tree>
+            <hbox class="virtualized-table-container" flex="1" style="min-height: 100px;">
+                <html:div id="zotmoov-settings-fileext-tree-2"/>
             </hbox>
             <separator class="thin"/>
             <hbox align="center" pack="end">
@@ -72,5 +66,8 @@
                 <button id="zotmoov-fileext-table-add" label="+" style="min-width: 80px;" oncommand="Zotero.ZotMoov.Prefs.createFileExtEntry();"/>
             </hbox>
         </vbox>
+    </groupbox>
+    <groupbox>
+        <button id="zotmoov-adv-prefs-button" data-l10n-id="zotmoov-settings-advanced-config" oncommand="Zotero.Utilities.Internal.openPreferences('zotmoov_advanced');"/>
     </groupbox>
 </vbox>

@@ -1,7 +1,64 @@
+var React = require('react');
+var ReactDOM = require('react-dom');
+var VirtualizedTable = require('components/virtualized-table');
+
 class ZotMoovPrefs {
-    constructor(zotmoovMenus)
+    constructor(zotmoovMenus, rootURI)
     {
         this.zotmoovMenus = zotmoovMenus;
+        this._fileexts = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
+    }
+
+    createFileExtTree()
+    {
+        const columns = [
+            {
+                dataKey: 'fileext',
+                label: 'fileext'
+            }
+        ];
+        
+        let renderItem = (index, selection, oldDiv=null, columns) => {
+            const ext = this._fileexts[index];
+            let div;
+
+            if (oldDiv)
+            {
+                div = oldDiv;
+                div.innerHTML = '';
+            } else {
+                div = document.createElement('div');
+                div.className = 'row';
+            }
+
+            div.classList.toggle('selected', selection.isSelected(index));
+
+            for (let column of columns)
+            {
+                if (column.dataKey != 'fileext') continue;
+
+                let span = document.createElement('span');
+                span.className = 'cell';
+                span.innerText = ext;
+                div.appendChild(span);
+                break;
+            }
+
+            return div;
+        };
+
+        ReactDOM.createRoot(document.getElementById('zotmoov-settings-fileext-tree-2')).render(React.createElement(VirtualizedTable, {
+            getRowCount: () => this._fileexts.length,
+            id: 'zotmoov-settings-fileext-tree-2-treechildren',
+            ref: (ref) => { this._fileext_tree = ref; },
+            renderItem: renderItem,
+            onSelectionChange: (selection) => Zotero.log(selection),
+            showHeader: false,
+            columns: columns,
+            staticColumns: true,
+            multiSelect: true,
+            disableFontSizeScaling: true
+        }));
     }
 
     init()
@@ -13,7 +70,7 @@ class ZotMoovPrefs {
         document.getElementById('zotmoov-attach-search-dir').disabled = !enable_attach_dir;
         document.getElementById('zotmoov-attach-search-dir-button').disabled = !enable_attach_dir;
 
-        this._loadFileExtTable()
+        this.createFileExtTree();
     }
 
     async pickDirectory()
@@ -82,24 +139,9 @@ class ZotMoovPrefs {
     createFileExtEntry()
     {
         let dummy_value = 'New File Extension';
-        let tree = document.getElementById('zotmoov-settings-fileext-tree');
-        let treechildren = document.getElementById('zotmoov-settings-fileext-treechildren');
-
-        let treeitem = document.createXULElement('treeitem');
-        let treerow = document.createXULElement('treerow');
-        let treecell = document.createXULElement('treecell');
-        treecell.setAttribute('label', dummy_value);
-
-        treerow.appendChild(treecell);
-        treeitem.appendChild(treerow);
-        treechildren.appendChild(treeitem);
-
-        tree.view.selection.select(treechildren.childElementCount - 1);
-        tree.startEditing(treechildren.childElementCount - 1, tree.columns.getColumnAt(0));
-
-        let fileexts = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
-        fileexts.push(dummy_value);
-        Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(fileexts), true);
+        this._fileexts.push(dummy_value);
+        this._fileext_tree.invalidate();
+        Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(this._fileexts), true);
     }
 
     removeFileExtEntries()
@@ -151,52 +193,6 @@ class ZotMoovPrefs {
         }
 
         remove_button.disabled = true;
-    }
-
-    _loadFileExtTable()
-    {
-        let fileexts = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
-
-        let treechildren = document.getElementById('zotmoov-settings-fileext-treechildren');
-        for (let fileext of fileexts)
-        {
-            let treeitem = document.createXULElement('treeitem');
-            let treerow = document.createXULElement('treerow');
-            let treecell = document.createXULElement('treecell');
-            treecell.setAttribute('label', fileext);
-
-            treerow.appendChild(treecell);
-            treeitem.appendChild(treerow);
-            treechildren.appendChild(treeitem);
-        }
-
-        const config = {
-            attributes: true,
-            subtree: true,
-            attributeFilter: ['label'],
-            attributeOldValue: true
-        };
-
-        const callback = (mutationList) =>
-        {
-            for (const mutation of mutationList)
-            {
-                if (mutation.type == 'attributes')
-                {
-                    let fileexts = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
-
-                    const index = fileexts.indexOf(mutation.oldValue);
-                    if (index > -1)
-                    {
-                        fileexts[index] = mutation.target.getAttribute(mutation.attributeName);
-                        Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(fileexts), true);
-                    }
-                }
-              }
-        }
-
-        const observer = new MutationObserver(callback);
-        observer.observe(treechildren, config);
     }
 }
 
