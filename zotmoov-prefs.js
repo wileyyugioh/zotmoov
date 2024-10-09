@@ -2,15 +2,27 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var VirtualizedTable = require('components/virtualized-table');
 
+// Needed to fix Zotero bug where on initial load all of the elements are not
+// loaded because of faulty race-condition when calculating div height
+class FixedVirtualizedTable extends VirtualizedTable {
+    _getWindowedListOptions() {
+        let v = super._getWindowedListOptions();
+        v.overscanCount = 10;
+
+        return v;
+    }
+}
+
 class ZotMoovPrefs {
-    constructor(zotmoovMenus, rootURI)
+    constructor(zotmoovMenus)
     {
         this.zotmoovMenus = zotmoovMenus;
-        this._fileexts = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
     }
 
     createFileExtTree()
     {
+        this._fileexts = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
+
         const columns = [
             {
                 dataKey: 'fileext',
@@ -47,12 +59,12 @@ class ZotMoovPrefs {
             return div;
         };
 
-        ReactDOM.createRoot(document.getElementById('zotmoov-settings-fileext-tree-2')).render(React.createElement(VirtualizedTable, {
+        ReactDOM.createRoot(document.getElementById('zotmoov-settings-fileext-tree-2')).render(React.createElement(FixedVirtualizedTable, {
             getRowCount: () => this._fileexts.length,
             id: 'zotmoov-settings-fileext-tree-2-treechildren',
             ref: (ref) => { this._fileext_tree = ref; },
             renderItem: renderItem,
-            onSelectionChange: (selection) => Zotero.log(selection),
+            onSelectionChange: (selection) => this.onFileExtTreeSelect(selection),
             showHeader: false,
             columns: columns,
             staticColumns: true,
@@ -146,47 +158,26 @@ class ZotMoovPrefs {
 
     removeFileExtEntries()
     {
-        let tree = document.getElementById('zotmoov-settings-fileext-tree');
-        let treechildren = document.getElementById('zotmoov-settings-fileext-treechildren');
+        let selection = this._fileext_tree.selection;
 
-        let start = {};
-        let end = {};
-        let num_ranges = tree.view.selection.getRangeCount();
-        let selected_text = [];
-        let children = [];
+        let fileexts = this._fileexts;
+        let to_remove = Array.from(selection.selected).map(i => this._fileexts[i]);
 
-        for (let t = 0; t < num_ranges; t++)
-        {
-            tree.view.selection.getRangeAt(t, start, end);
-            for (let v = start.value; v <= end.value; v++)
-            {
-                let text = tree.view.getCellText(v, tree.columns.getColumnAt(0));
-                selected_text.push(text);
-                children.push(treechildren.children[v]);
-            }
-        }
-
-        let fileexts = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.allowed_fileext', true));
-        for (let text of selected_text)
+        for (let text of to_remove)
         {
             const index = fileexts.indexOf(text);
             if (index > -1) fileexts.splice(index, 1);
         }
-        Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(fileexts), true);
 
-        for (let child of children)
-        {
-            child.remove();
-        }
+        this._fileext_tree.invalidate();
+        Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(fileexts), true);
+        document.getElementById('zotmoov-fileext-table-delete').disabled = true;
     }
 
-    onFileExtTreeSelect()
+    onFileExtTreeSelect(selection)
     {
-        let tree = document.getElementById('zotmoov-settings-fileext-tree');
-        let sel = tree.view.selection.currentIndex;
-
         let remove_button = document.getElementById('zotmoov-fileext-table-delete');
-        if (sel > -1)
+        if (selection.count > 0)
         {
             remove_button.disabled = false;
             return;
