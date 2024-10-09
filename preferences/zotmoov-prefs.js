@@ -150,10 +150,62 @@ class ZotMoovPrefs {
 
     createFileExtEntry()
     {
+    }
+
+    spawnFileExtDialog() {
+        // Change to const later
+        var win = await window.openDialog('about:blank', '_blank', 'chrome,centerscreen');
+
+        win.addEventListener('DOMContentLoaded', () => {
+            const doc = win.document;
+
+            doc.title = 'ZotMoov';
+
+            const ss_link = doc.createElement('link');
+            ss_link.rel = 'stylesheet';
+            ss_link.href = 'chrome://zotero-platform/content/zotero.css';
+            doc.head.appendChild(ss_link);
+
+            const vbox = doc.createXULElement('vbox');
+
+            const title_label = doc.createXULElement('label');
+            title_label.innerHTML = 'New File Extension';
+
+            const text_input = doc.createElement('input');
+            text_input.type = 'text';
+
+            const hbox = doc.createXULElement('hbox');
+            hbox.align = 'center';
+            hbox.pack = 'end';
+
+            const sp = doc.createXULElement('spacer');
+            sp.flex = '1';
+
+            const no_button = doc.createElement('button');
+            no_button.innerHTML = 'Cancel';
+            no_button.style = 'min-width: 80px; margin-inline-end: 6px;';
+
+            const yes_button = doc.createElement('button');
+            yes_button.innerHTML = 'Ok';
+            yes_button.style = 'style="min-width: 80px;';
+
+            hbox.appendChild(sp);
+            hbox.appendChild(no_button);
+            hbox.appendChild(yes_button);
+
+            vbox.appendChild(title_label);
+            vbox.appendChild(text_input);
+            vbox.appendChild(hbox);
+
+
+            doc.body.appendChild(vbox);
+        });
+        /*
         let dummy_value = 'New File Extension';
         this._fileexts.push(dummy_value);
         this._fileext_tree.invalidate();
         Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(this._fileexts), true);
+        */
     }
 
     removeFileExtEntries()
