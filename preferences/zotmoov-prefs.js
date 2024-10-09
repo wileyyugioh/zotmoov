@@ -153,8 +153,7 @@ class ZotMoovPrefs {
     }
 
     spawnFileExtDialog() {
-        // Change to const later
-        var win = await window.openDialog('about:blank', '_blank', 'chrome,centerscreen');
+        var win = window.openDialog('about:blank', '_blank', 'chrome,centerscreen,resizable=no');
 
         win.addEventListener('DOMContentLoaded', () => {
             const doc = win.document;
@@ -175,21 +174,21 @@ class ZotMoovPrefs {
             text_input.type = 'text';
 
             const hbox = doc.createXULElement('hbox');
-            hbox.align = 'center';
-            hbox.pack = 'end';
-
-            const sp = doc.createXULElement('spacer');
-            sp.flex = '1';
+            hbox.display = 'flex';
+            hbox.width = '100%';
+            hbox.style = 'margin-top: 20px;';
 
             const no_button = doc.createElement('button');
-            no_button.innerHTML = 'Cancel';
-            no_button.style = 'min-width: 80px; margin-inline-end: 6px;';
+            no_button.innerHTML = Zotero.getString('zotero.general.cancel');
+            no_button.style = 'min-width: 80px; margin-inline-end: 6px; margin-left: auto;';
+            no_button.addEventListener('click', (e) => {
+                e.target.ownerDocument.defaultView.close();
+            });
 
             const yes_button = doc.createElement('button');
-            yes_button.innerHTML = 'Ok';
-            yes_button.style = 'style="min-width: 80px;';
+            yes_button.innerHTML = Zotero.getString('zotero.general.ok');
+            yes_button.style = 'min-width: 80px;';
 
-            hbox.appendChild(sp);
             hbox.appendChild(no_button);
             hbox.appendChild(yes_button);
 
@@ -200,12 +199,6 @@ class ZotMoovPrefs {
 
             doc.body.appendChild(vbox);
         });
-        /*
-        let dummy_value = 'New File Extension';
-        this._fileexts.push(dummy_value);
-        this._fileext_tree.invalidate();
-        Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(this._fileexts), true);
-        */
     }
 
     removeFileExtEntries()
