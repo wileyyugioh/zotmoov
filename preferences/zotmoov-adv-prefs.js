@@ -17,6 +17,7 @@ class ZotMoovAdvancedPrefs {
     async createCWTree()
     {
         const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value;
+        Zotero.log(wc_menu_sel_val)
         const wc_commands =  this._savedcommands[wc_menu_sel_val];
 
         const columns = [
@@ -113,7 +114,7 @@ class ZotMoovAdvancedPrefs {
 
 
         this._cw_tree.invalidate();
-        Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(wc_commands), true);
+        Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
     }
 
     onCWTreeSelect(selection)
