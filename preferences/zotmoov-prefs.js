@@ -44,16 +44,11 @@ class ZotMoovPrefs {
             }
 
             div.classList.toggle('selected', selection.isSelected(index));
+            div.classList.toggle('focused', selection.focused == index);
 
             for (let column of columns)
             {
-                if (column.dataKey != 'fileext') continue;
-
-                let span = document.createElement('span');
-                span.className = 'cell';
-                span.innerText = ext;
-                div.appendChild(span);
-                break;
+                div.appendChild(VirtualizedTable.renderCell(index, ext, column));
             }
 
             return div;

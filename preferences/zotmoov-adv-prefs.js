@@ -17,7 +17,6 @@ class ZotMoovAdvancedPrefs {
     async createCWTree()
     {
         const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value;
-        Zotero.log(wc_menu_sel_val)
         const wc_commands =  this._savedcommands[wc_menu_sel_val];
 
         const columns = [
@@ -49,15 +48,13 @@ class ZotMoovAdvancedPrefs {
             }
 
             div.classList.toggle('selected', selection.isSelected(index));
+            div.classList.toggle('focused', selection.focused == index);
 
             const cd = Zotero.ZotMoov.Commands.Parser.parse(command).getColumnData();
-            Zotero.log(cd);
             for (let column of columns)
             {
-                let span = document.createElement('span');
-                span.className = 'cell';
-                span.innerText = (column.dataKey == 'index') ? index.toString() : cd[column.dataKey];
-                div.appendChild(span);
+                const data = (column.dataKey == 'index') ? index.toString() : cd[column.dataKey];
+                div.appendChild(VirtualizedTable.renderCell(index, data, column));
             }
 
             return div;
@@ -71,7 +68,7 @@ class ZotMoovAdvancedPrefs {
             onSelectionChange: (selection) => this.onCWTreeSelect(selection),
             showHeader: true,
             columns: columns,
-            staticColumns: true,
+            staticColumns: false,
             multiSelect: false,
             disableFontSizeScaling: true
         }));
@@ -115,6 +112,8 @@ class ZotMoovAdvancedPrefs {
 
         this._cw_tree.invalidate();
         Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
+
+        if (wc_commands.length == 0) document.getElementById('zotmoov-adv-settings-cw-delete').disabled = true;
     }
 
     onCWTreeSelect(selection)
