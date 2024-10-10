@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://zotero/skin/preferences.css"?>
+
+<!DOCTYPE window SYSTEM "chrome://zotero/locale/zotero.dtd">
+
+<window
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    title="ZotMoov"
+    drawintitlebar-platforms="mac"
+    class="zotero-dialog"
+    style="min-width: 300px;"
+    onload="myOnLoad();">
+<dialog buttons="cancel,accept" id="zotmoov-cw-dialog">
+    <script src="chrome://zotero/content/include.js"/>
+
+    <linkset><html:link rel="localization" href="zotmoov.ftl"/></linkset>
+
+    <vbox style='margin-bottom: 10px;'>
+        <hbox align="center">
+            <label data-l10n-id="zotmoov-adv-settings-wc-command"/>
+            <menulist native="true" id="zotmoov-adv-settings-wc-sel-menu">
+                <menupopup>
+                    <menuitem value="text" label="text"/>
+                    <menuitem value="toLowerCase" label="toLowerCase"/>
+                    <menuitem value="toUpperCase" label="toUpperCase"/>
+                    <menuitem value="trim" label="trim"/>
+                    <menuitem value="exec" label="exec"/>
+                    <menuitem value="replace" label="replace"/>
+                </menupopup>
+            </menulist>
+        </hbox>
+        <vbox>
+            <hbox><label><html:h3 id="zotmoov-cw-label1"/></label></hbox>
+            <hbox><html:input id="zotmoov-cw-text-input1" type="text" style="flex: 1;"/></hbox>
+        </vbox>
+        <vbox>
+            <hbox><label><html:h3 id="zotmoov-cw-label2"/></label></hbox>
+            <hbox><html:input id="zotmoov-cw-text-input2" type="text" style="flex: 1;"/></hbox>
+            <hbox><html:input id="zotmoov-cw-text-input2" type="number" style="flex: 1;" min="1"/></hbox>
+        </vbox>
+        <vbox>
+            <hbox><label><html:h3 id="zotmoov-cw-label3"/></label></hbox>
+            <hbox><html:input id="zotmoov-cw-text-input3" type="text" style="flex: 1;"/></hbox>
+        </vbox>
+    </vbox>
+
+    <script>
+    <![CDATA[
+        document.addEventListener('dialogaccept', () => myOnAccept());
+
+        function myOnLoad()
+        {
+            document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = true;
+        }
+
+        function myOnAccept()
+        {
+            const text = document.getElementById('zotmoov-file-ext-dialog-input').value;
+            Zotero.ZotMoov.Prefs.Advanced.createCWEntry(text);
+        }
+
+        function myOnInput(event)
+        {
+            document.getElementById('zotmoov-file-ext-dialog').getButton('accept').disabled = event.target.value.trim() === '';
+        }
+
+    ]]>
+    </script>
+</dialog>
+</window>
