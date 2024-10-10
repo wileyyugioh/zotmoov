@@ -20,6 +20,8 @@ zotmoov-adv-settings-wc-sel-prefix = Wildcard
 
 zotmoov-adv-settings-wc-command = Wildcard Command
 
+zotmoov-adv-settings-text-label1 = Text
+
 zotmoov-context-move-selected =
     .label = ZotMoov: Move Selected to Directory
 
