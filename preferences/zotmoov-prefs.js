@@ -148,57 +148,17 @@ class ZotMoovPrefs {
         }
     }
 
-    createFileExtEntry()
+    createFileExtEntry(ext)
     {
+        this._fileexts.push(ext);
+        this._fileext_tree.invalidate();
+        Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(this._fileexts), true);
+
     }
 
-    spawnFileExtDialog() {
-        var win = window.openDialog('about:blank', '_blank', 'chrome,centerscreen,resizable=no');
-
-        win.addEventListener('DOMContentLoaded', () => {
-            const doc = win.document;
-
-            doc.title = 'ZotMoov';
-
-            const ss_link = doc.createElement('link');
-            ss_link.rel = 'stylesheet';
-            ss_link.href = 'chrome://zotero-platform/content/zotero.css';
-            doc.head.appendChild(ss_link);
-
-            const vbox = doc.createXULElement('vbox');
-
-            const title_label = doc.createXULElement('label');
-            title_label.innerHTML = 'New File Extension';
-
-            const text_input = doc.createElement('input');
-            text_input.type = 'text';
-
-            const hbox = doc.createXULElement('hbox');
-            hbox.display = 'flex';
-            hbox.width = '100%';
-            hbox.style = 'margin-top: 20px;';
-
-            const no_button = doc.createElement('button');
-            no_button.innerHTML = Zotero.getString('zotero.general.cancel');
-            no_button.style = 'min-width: 80px; margin-inline-end: 6px; margin-left: auto;';
-            no_button.addEventListener('click', (e) => {
-                e.target.ownerDocument.defaultView.close();
-            });
-
-            const yes_button = doc.createElement('button');
-            yes_button.innerHTML = Zotero.getString('zotero.general.ok');
-            yes_button.style = 'min-width: 80px;';
-
-            hbox.appendChild(no_button);
-            hbox.appendChild(yes_button);
-
-            vbox.appendChild(title_label);
-            vbox.appendChild(text_input);
-            vbox.appendChild(hbox);
-
-
-            doc.body.appendChild(vbox);
-        });
+    spawnFileExtDialog()
+    {
+        window.openDialog('chrome://zotmoov/content/file-ext-dialog.xhtml', 'zotmoov-file-ext-dialog-window', 'chrome,centerscreen,resizable=no,modal');
     }
 
     removeFileExtEntries()
