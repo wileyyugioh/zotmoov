@@ -2,10 +2,10 @@ class ZotMoovCWParser
 {
     static TextCommand = class
     {
-        constructor(data)
+        constructor(text)
         {
-            this.text = data.text;
-            this.command_name = 'Text';
+            this.text = text;
+            this.command_name = 'text';
         }
 
         getColumnData()
@@ -87,11 +87,11 @@ class ZotMoovCWParser
 
     static ExecCommand = class
     {
-        constructor(data)
+        constructor(regex, group, flags)
         {
-            this.regex = data.regex;
-            this.group = data.group ? data.group : 0;
-            this.flags = data.flags ? data.flags : 'g';
+            this.regex = regex;
+            this.group = group ? group : 0;
+            this.flags = flags ? flags : 'g';
 
             this.command_name = 'exec';
         }
@@ -113,11 +113,11 @@ class ZotMoovCWParser
 
     static ReplaceCommand = class
     {
-        constructor(data)
+        constructor(regex, replace, flags)
         {
-            this.regex = data.regex;
-            this.replace = data.replace;
-            this.flags = data.flags;
+            this.regex = regex;
+            this.replace = replace;
+            this.flags = flags ? flags : 'g';
 
             this.command_name = 'replace';
         }
@@ -152,17 +152,17 @@ class ZotMoovCWParser
         switch(obj.command_name)
         {
             case 'text':
-                return this.constructor.TextCommand(obj.text);
+                return new this.TextCommand(obj.text);
             case 'toLowerCase':
-                return this.constructor.LowercaseCommand();
+                return new this.LowercaseCommand();
             case 'toUpperCase':
-                return this.constructor.UppercaseCommand();
+                return new this.UppercaseCommand();
             case 'trim':
-                return this.constructor.TrimCommand();
+                return new this.TrimCommand();
             case 'exec':
-                return this.constructor.ExecCommand(obj.regex, obj.group, obj.flags)
+                return new this.ExecCommand(obj.regex, obj.group, obj.flags)
             case 'replace':
-                return this.constructor.ReplaceCommand(obj.regex, obj.replace, obj.flags)
+                return new this.ReplaceCommand(obj.regex, obj.replace, obj.flags)
             default:
                 break;
         }
@@ -173,17 +173,17 @@ class ZotMoovCWParser
         switch(command_name)
         {
             case 'text':
-                return this.constructor.TextCommand(...args);
+                return new this.TextCommand(...args);
             case 'toLowerCase':
-                return this.constructor.LowercaseCommand(...args);
+                return new this.LowercaseCommand(...args);
             case 'toUpperCase':
-                return this.constructor.UppercaseCommand(...args);
+                return new this.UppercaseCommand(...args);
             case 'trim':
-                return this.constructor.TrimCommand(...args);
+                return new this.TrimCommand(...args);
             case 'exec':
-                return this.constructor.ExecCommand(...args)
+                return new this.ExecCommand(...args)
             case 'replace':
-                return this.constructor.ReplaceCommand(...args)
+                return new this.ReplaceCommand(...args)
             default:
                 break;
         }

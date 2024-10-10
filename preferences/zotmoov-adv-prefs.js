@@ -50,20 +50,20 @@ class ZotMoovAdvancedPrefs {
             div.classList.toggle('selected', selection.isSelected(index));
 
             const cd = Zotero.ZotMoov.Commands.Parser.parse(command).getColumnData();
+            Zotero.log(cd);
             for (let column of columns)
             {
                 let span = document.createElement('span');
                 span.className = 'cell';
                 span.innerText = (column.dataKey == 'index') ? index.toString() : cd[column.dataKey];
                 div.appendChild(span);
-                break;
             }
 
             return div;
         };
 
         ReactDOM.createRoot(document.getElementById('zotmoov-adv-settings-cw-tree')).render(React.createElement(this.constructor.FixedVirtualizedTable, {
-            getRowCount: () => this._savedcommands.length,
+            getRowCount: () => wc_commands.length,
             id: 'zotmoov-adv-settings-cw-tree-treechildren',
             ref: (ref) => { this._cw_tree = ref; },
             renderItem: renderItem,
@@ -84,7 +84,7 @@ class ZotMoovAdvancedPrefs {
 
     createCWEntry(wc, command_name, ...args)
     {
-        this._savedcommands[wc].push(Zotero.ZotMoov.Commands.Parser.create(command_name, args))
+        this._savedcommands[wc].push(Zotero.ZotMoov.Commands.Parser.create(command_name, ...args))
         this._cw_tree.invalidate();
         Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
 
@@ -92,24 +92,28 @@ class ZotMoovAdvancedPrefs {
 
     spawnCWDialog()
     {
-        window.openDialog('chrome://zotmoov/content/custom-wc-dialog.xhtml', 'zotmoov-custom-wc-dialog-window', 'chrome,centerscreen,resizable=yes,modal');
+        window.openDialog('chrome://zotmoov/content/custom-wc-dialog.xhtml',
+            'zotmoov-custom-wc-dialog-window',
+            'chrome,centerscreen,resizable=no,modal',
+            document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value
+        );
     }
 
     removeCWEntries()
     {
         let selection = this._cw_tree.selection;
 
-        let fileexts = this._fileexts;
-        let to_remove = Array.from(selection.selected).map(i => this._fileexts[i]);
+        const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value;
+        let wc_commands =  this._savedcommands[wc_menu_sel_val];
 
-        for (let text of to_remove)
+        for (let index of selection.selected)
         {
-            const index = fileexts.indexOf(text);
-            if (index > -1) fileexts.splice(index, 1);
+            wc_commands.splice(index, 1);
         }
 
-        this._fileext_tree.invalidate();
-        Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(fileexts), true);
+
+        this._cw_tree.invalidate();
+        Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(wc_commands), true);
     }
 
     onCWTreeSelect(selection)

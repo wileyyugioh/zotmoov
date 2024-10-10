@@ -22,7 +22,7 @@
             <label data-l10n-id="zotmoov-adv-settings-wc-command"/>
             <menulist native="true" id="zotmoov-adv-settings-wc-sel-menu">
                 <menupopup>
-                    <menuitem value="text" label="text"/>
+                    <menuitem value="text" label="text" oncommand="loadState(TextState);"/>
                     <menuitem value="toLowerCase" label="toLowerCase"/>
                     <menuitem value="toUpperCase" label="toUpperCase"/>
                     <menuitem value="trim" label="trim"/>
@@ -32,38 +32,77 @@
             </menulist>
         </hbox>
         <vbox>
-            <hbox><label><html:h3 id="zotmoov-cw-label1"/></label></hbox>
-            <hbox><html:input id="zotmoov-cw-text-input1" type="text" style="flex: 1;"/></hbox>
+            <hbox><label id="zotmoov-cw-label1"></label></hbox>
+            <hbox><html:input id="zotmoov-cw-text-input1" type="text" style="flex: 1; display: none;"/></hbox>
         </vbox>
         <vbox>
-            <hbox><label><html:h3 id="zotmoov-cw-label2"/></label></hbox>
-            <hbox><html:input id="zotmoov-cw-text-input2" type="text" style="flex: 1;"/></hbox>
-            <hbox><html:input id="zotmoov-cw-text-input2" type="number" style="flex: 1;" min="1"/></hbox>
+            <hbox><label id="zotmoov-cw-label2"></label></hbox>
+            <hbox><html:input id="zotmoov-cw-text-input2" type="text" style="flex: 1; display: none;"/></hbox>
+            <hbox><html:input id="zotmoov-cw-number-input2" type="number" style="flex: 1; display: none;" min="1"/></hbox>
         </vbox>
         <vbox>
-            <hbox><label><html:h3 id="zotmoov-cw-label3"/></label></hbox>
-            <hbox><html:input id="zotmoov-cw-text-input3" type="text" style="flex: 1;"/></hbox>
+            <hbox><label id="zotmoov-cw-label3"></label></hbox>
+            <hbox><html:input id="zotmoov-cw-text-input3" type="text" style="flex: 1; display: none;"/></hbox>
         </vbox>
     </vbox>
 
     <script>
     <![CDATA[
         document.addEventListener('dialogaccept', () => myOnAccept());
+        let wc;
+
+        class TextState
+        {
+            static load()
+            {
+                document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', 'zotmoov-adv-settings-text-label1')
+
+                let txt_input = document.getElementById('zotmoov-cw-text-input1');
+                txt_input.style.display = '';
+                txt_input.setAttribute('oninput', 'TextState.onInput();');
+            }
+
+            static unload()
+            {
+                document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', '')
+
+                let txt_input = document.getElementById('zotmoov-cw-text-input1');
+                txt_input.style.display = 'none';
+                txt_input.setAttribute('oninput', '');
+            }
+
+            static onAccept()
+            {
+                const text = document.getElementById('zotmoov-cw-text-input1').value;
+                Zotero.ZotMoov.Prefs.Advanced.createCWEntry(wc, 'text', text);
+            }
+
+            static onInput()
+            {
+                document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = event.target.value.trim() === '';
+            }
+        }
+
+        {
+            let current_state;
+            function loadState(state)
+            {
+                if (current_state) current_state.unload();
+                state.load();
+                current_state = state;
+            }
+
+            function myOnAccept()
+            {
+                current_state.onAccept();
+            }
+        }
 
         function myOnLoad()
         {
+            if (window.arguments) wc = window.arguments[0];
             document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = true;
-        }
-
-        function myOnAccept()
-        {
-            const text = document.getElementById('zotmoov-file-ext-dialog-input').value;
-            Zotero.ZotMoov.Prefs.Advanced.createCWEntry(text);
-        }
-
-        function myOnInput(event)
-        {
-            document.getElementById('zotmoov-file-ext-dialog').getButton('accept').disabled = event.target.value.trim() === '';
+            loadState(TextState);
         }
 
     ]]>

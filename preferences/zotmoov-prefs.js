@@ -164,18 +164,13 @@ class ZotMoovPrefs {
     removeFileExtEntries()
     {
         let selection = this._fileext_tree.selection;
-
-        let fileexts = this._fileexts;
-        let to_remove = Array.from(selection.selected).map(i => this._fileexts[i]);
-
-        for (let text of to_remove)
+        for (let index of selection.selected)
         {
-            const index = fileexts.indexOf(text);
-            if (index > -1) fileexts.splice(index, 1);
+            this._fileexts.splice(index, 1);
         }
 
         this._fileext_tree.invalidate();
-        Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(fileexts), true);
+        Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(this._fileexts), true);
         document.getElementById('zotmoov-fileext-table-delete').disabled = true;
     }
 
