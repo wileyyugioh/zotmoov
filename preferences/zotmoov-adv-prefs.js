@@ -2,19 +2,19 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var VirtualizedTable = require('components/virtualized-table');
 
-// Needed to fix Zotero bug where on initial load all of the elements are not
-// loaded because of faulty race-condition when calculating div height
-class FixedVirtualizedTable extends VirtualizedTable {
-    _getWindowedListOptions() {
-        let v = super._getWindowedListOptions();
-        v.overscanCount = 10;
-
-        return v;
-    }
-}
-
 class ZotMoovAdvancedPrefs {
-    createCWTree()
+    // Needed to fix Zotero bug where on initial load all of the elements are not
+    // loaded because of faulty race-condition when calculating div height
+    static FixedVirtualizedTable  = class extends VirtualizedTable {
+        _getWindowedListOptions() {
+            let v = super._getWindowedListOptions();
+            v.overscanCount = 10;
+
+            return v;
+        }
+    }
+
+    async createCWTree()
     {
         const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value;
         const wc_commands =  this._savedcommands[wc_menu_sel_val];
@@ -62,7 +62,7 @@ class ZotMoovAdvancedPrefs {
             return div;
         };
 
-        ReactDOM.createRoot(document.getElementById('zotmoov-adv-settings-cw-tree')).render(React.createElement(FixedVirtualizedTable, {
+        ReactDOM.createRoot(document.getElementById('zotmoov-adv-settings-cw-tree')).render(React.createElement(this.constructor.FixedVirtualizedTable, {
             getRowCount: () => this._savedcommands.length,
             id: 'zotmoov-adv-settings-cw-tree-treechildren',
             ref: (ref) => { this._cw_tree = ref; },
@@ -71,7 +71,7 @@ class ZotMoovAdvancedPrefs {
             showHeader: true,
             columns: columns,
             staticColumns: true,
-            multiSelect: true,
+            multiSelect: false,
             disableFontSizeScaling: true
         }));
     }
@@ -110,7 +110,6 @@ class ZotMoovAdvancedPrefs {
 
         this._fileext_tree.invalidate();
         Zotero.Prefs.set('extensions.zotmoov.allowed_fileext', JSON.stringify(fileexts), true);
-        document.getElementById('zotmoov-fileext-table-delete').disabled = true;
     }
 
     onCWTreeSelect(selection)
@@ -123,6 +122,12 @@ class ZotMoovAdvancedPrefs {
         }
 
         remove_button.disabled = true;
+    }
+
+    changeSelectedWildcard(item)
+    {
+        document.getElementById('zotmoov-adv-settings-cw-tree').replaceChildren();
+        this.createCWTree();
     }
 }
 

@@ -16,4 +16,4 @@ pref('extensions.zotmoov.prune_empty_dir', true);
 pref('extensions.zotmoov.enable_attach_dir', false);
 pref('extensions.zotmoov.rename_title', true);
 pref('extensions.zotmoov.undefined_str', 'undefined');
-pref('extensions.zotmoov.cwc_commands', JSON.stringify({'%1': [], '%2': [], '%3': [], '%4': [], '%5': [] '%6': [], '%7': [], '%8': [], '%9': [],}))
+pref('extensions.zotmoov.cwc_commands', JSON.stringify({'%1': [], '%2': [], '%3': [], '%4': [], '%5': [], '%6': [], '%7': [], '%8': [], '%9': []}));

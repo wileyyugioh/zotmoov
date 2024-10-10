@@ -1,142 +1,142 @@
-class TextCommand
-{
-    constructor(data)
-    {
-        this.text = data.text;
-        this.command_name = 'Text';
-    }
-
-    function getColumnData()
-    {
-        return {
-            'command_name': this.command_name,
-            'desc': this.text
-        };
-    }
-
-    function apply(text)
-    {
-        return this.text;
-    }
-}
-
-class LowercaseCommand
-{
-    constructor()
-    {
-        this.command_name = 'toLowerCase';
-    }
-
-    function getColumnData()
-    {
-        return {
-            'command_name': this.command_name,
-            'desc': ''
-        };
-    }
-
-    function apply(text)
-    {
-        return text.toLowerCase();
-    }
-}
-
-class UppercaseCommand
-{
-    constructor()
-    {
-        this.command_name = 'toUpperCase';
-    }
-
-    function getColumnData()
-    {
-        return {
-            'command_name': this.command_name,
-            'desc': ''
-        };
-    }
-
-    function apply(text)
-    {
-        return text.toUpperCase();
-    }
-}
-
-class TrimCommand
-{
-    constructor()
-    {
-        this.command_name = 'trim';
-    }
-
-    function getColumnData()
-    {
-        return {
-            'command_name': this.command_name,
-            'desc': ''
-        };
-    }
-
-    function apply(text)
-    {
-        return text.trim();
-    }
-}
-
-class ExecCommand
-{
-    constructor(data)
-    {
-        this.regex = data.regex;
-        this.group = data.group ? data.group : 0;
-        this.flags = data.flags ? data.flags : 'g';
-
-        this.command_name = 'exec';
-    }
-
-    function getColumnData()
-    {
-        return {
-            'command_name': this.command_name,
-            'desc': this.regex
-        };
-    }
-
-    function apply(text)
-    {
-        const reg = RegExp(this.regex, this.flags);
-        return reg.exec(text)[group];
-    }
-}
-
-class ReplaceCommand
-{
-    constructor(data)
-    {
-        this.regex = data.regex;
-        this.replace = data.replace;
-        this.flags = data.flags;
-
-        this.command_name = 'replace';
-    }
-
-    function getColumnData()
-    {
-        return {
-            'command_name': this.command_name,
-            'desc': this.regex
-        };
-    }
-
-    function apply(text)
-    {
-        const reg = RegExp(this.regex, this.flags);
-        return text.replace(reg, this.replace);
-    }
-}
-
 class ZotMoovCWParser
 {
+    static TextCommand = class
+    {
+        constructor(data)
+        {
+            this.text = data.text;
+            this.command_name = 'Text';
+        }
+
+        getColumnData()
+        {
+            return {
+                'command_name': this.command_name,
+                'desc': this.text
+            };
+        }
+
+        apply(text)
+        {
+            return this.text;
+        }
+    }
+
+    static LowercaseCommand = class
+    {
+        constructor()
+        {
+            this.command_name = 'toLowerCase';
+        }
+
+        getColumnData()
+        {
+            return {
+                'command_name': this.command_name,
+                'desc': ''
+            };
+        }
+
+        apply(text)
+        {
+            return text.toLowerCase();
+        }
+    }
+
+    static UppercaseCommand = class
+    {
+        constructor()
+        {
+            this.command_name = 'toUpperCase';
+        }
+
+        getColumnData()
+        {
+            return {
+                'command_name': this.command_name,
+                'desc': ''
+            };
+        }
+
+        apply(text)
+        {
+            return text.toUpperCase();
+        }
+    }
+
+    static TrimCommand = class
+    {
+        constructor()
+        {
+            this.command_name = 'trim';
+        }
+
+        getColumnData()
+        {
+            return {
+                'command_name': this.command_name,
+                'desc': ''
+            };
+        }
+
+        apply(text)
+        {
+            return text.trim();
+        }
+    }
+
+    static ExecCommand = class
+    {
+        constructor(data)
+        {
+            this.regex = data.regex;
+            this.group = data.group ? data.group : 0;
+            this.flags = data.flags ? data.flags : 'g';
+
+            this.command_name = 'exec';
+        }
+
+        getColumnData()
+        {
+            return {
+                'command_name': this.command_name,
+                'desc': this.regex
+            };
+        }
+
+        apply(text)
+        {
+            const reg = RegExp(this.regex, this.flags);
+            return reg.exec(text)[group];
+        }
+    }
+
+    static ReplaceCommand = class
+    {
+        constructor(data)
+        {
+            this.regex = data.regex;
+            this.replace = data.replace;
+            this.flags = data.flags;
+
+            this.command_name = 'replace';
+        }
+
+        getColumnData()
+        {
+            return {
+                'command_name': this.command_name,
+                'desc': this.regex
+            };
+        }
+
+        apply(text)
+        {
+            const reg = RegExp(this.regex, this.flags);
+            return text.replace(reg, this.replace);
+        }
+    }
+
     constructor(json_obj = {})
     {
         this._cws = {};
@@ -147,54 +147,54 @@ class ZotMoovCWParser
         }
     }
 
-    static function parse(obj)
+    static parse(obj)
     {
         switch(obj.command_name)
         {
             case 'text':
-                return TextCommand(obj.text);
+                return this.constructor.TextCommand(obj.text);
             case 'toLowerCase':
-                return LowercaseCommand();
+                return this.constructor.LowercaseCommand();
             case 'toUpperCase':
-                return UppercaseCommand();
+                return this.constructor.UppercaseCommand();
             case 'trim':
-                return TrimCommand();
+                return this.constructor.TrimCommand();
             case 'exec':
-                return ExecCommand(obj.regex, obj.group, obj.flags)
+                return this.constructor.ExecCommand(obj.regex, obj.group, obj.flags)
             case 'replace':
-                return ReplaceCommand(obj.regex, obj.replace, obj.flags)
+                return this.constructor.ReplaceCommand(obj.regex, obj.replace, obj.flags)
             default:
                 break;
         }
     }
 
-    static function create(command_name, ...args)
+    static create(command_name, ...args)
     {
         switch(command_name)
         {
             case 'text':
-                return TextCommand(...args);
+                return this.constructor.TextCommand(...args);
             case 'toLowerCase':
-                return LowercaseCommand(...args);
+                return this.constructor.LowercaseCommand(...args);
             case 'toUpperCase':
-                return UppercaseCommand(...args);
+                return this.constructor.UppercaseCommand(...args);
             case 'trim':
-                return TrimCommand(...args);
+                return this.constructor.TrimCommand(...args);
             case 'exec':
-                return ExecCommand(...args)
+                return this.constructor.ExecCommand(...args)
             case 'replace':
-                return ReplaceCommand(...args)
+                return this.constructor.ReplaceCommand(...args)
             default:
                 break;
         }
     }
 
-    function apply(key, text)
+    apply(key, text)
     {
         return this._cws[key].reduce((new_text, cmd) => cmd.apply(new_text), text);
     }
 
-    function data()
+    data()
     {
         return this._cws;
     }

@@ -2,18 +2,18 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var VirtualizedTable = require('components/virtualized-table');
 
-// Needed to fix Zotero bug where on initial load all of the elements are not
-// loaded because of faulty race-condition when calculating div height
-class FixedVirtualizedTable extends VirtualizedTable {
-    _getWindowedListOptions() {
-        let v = super._getWindowedListOptions();
-        v.overscanCount = 10;
-
-        return v;
-    }
-}
-
 class ZotMoovPrefs {
+    // Needed to fix Zotero bug where on initial load all of the elements are not
+    // loaded because of faulty race-condition when calculating div height
+    static FixedVirtualizedTable = class extends VirtualizedTable {
+        _getWindowedListOptions() {
+            let v = super._getWindowedListOptions();
+            v.overscanCount = 10;
+
+            return v;
+        }
+    }
+
     constructor(zotmoovMenus)
     {
         this.zotmoovMenus = zotmoovMenus;
@@ -59,7 +59,7 @@ class ZotMoovPrefs {
             return div;
         };
 
-        ReactDOM.createRoot(document.getElementById('zotmoov-settings-fileext-tree-2')).render(React.createElement(FixedVirtualizedTable, {
+        ReactDOM.createRoot(document.getElementById('zotmoov-settings-fileext-tree-2')).render(React.createElement(this.constructor.FixedVirtualizedTable, {
             getRowCount: () => this._fileexts.length,
             id: 'zotmoov-settings-fileext-tree-2-treechildren',
             ref: (ref) => { this._fileext_tree = ref; },
