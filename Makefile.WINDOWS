@@ -7,7 +7,7 @@ RELEASE := $(shell powershell -File "get_version.ps1")
 
 zotmoov.xpi: FORCE
 	if exist $@ del /F /Q $@
-	"$(ComSpec)" /c "powershell -Command Compress-Archive -Path bootstrap.js, locale, manifest.json, prefs.js, preferences, src, lib, init -DestinationPath temp.zip -Force -CompressionLevel Optimal"
+	"$(ComSpec)" /c "powershell -Command Compress-Archive -Path bootstrap.js, locale, manifest.json, prefs.js, chrome, preferences, src, lib, init -DestinationPath temp.zip -Force -CompressionLevel Optimal"
 	ren temp.zip $@
 
 zotmoov-%-fx.xpi: zotmoov.xpi

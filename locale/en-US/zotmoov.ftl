@@ -58,5 +58,7 @@ zotmoov-settings-fileext-about = Defaults to all file extensions if empty
 zotmoov-settings-delete-files-label =
     .label = Automatically Delete External Linked Files in the ZotMoov Directory
 
+zotmoov-settings-new-file-ext = New File Extension
+
 zotmoov-settings-advanced-config =
     .label = Advanced Config

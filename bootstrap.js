@@ -6,6 +6,7 @@
 let zotmoov = null;
 let zotmoovMenus = null;
 let zotmoovBindings = null;
+let chromeHandle = null;
 
 function log(msg)
 {
@@ -68,6 +69,12 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
     // Need to expose our addon to rest of Zotero
     Zotero.ZotMoov = zotmoov;
     Zotero.ZotMoov.Menus = zotmoovMenus;
+
+    let aomStartup = Cc['@mozilla.org/addons/addon-manager-startup;1'].getService(Ci.amIAddonManagerStartup);
+    let manifestURI = Services.io.newURI(rootURI + 'manifest.json');
+    chromeHandle = aomStartup.registerChrome(manifestURI, [
+        ['content', 'zotmoov', 'chrome/content/']
+    ]);
 }
 
 function onMainWindowLoad({ window }) {
@@ -88,6 +95,9 @@ function shutdown()
     zotmoovMenus = null;
     zotmoovBindings = null;
     Zotero.ZotMoov = null;
+
+    chromeHandle.destruct();
+    chromeHandle = null;
 }
 
 function uninstall()
