@@ -14,6 +14,10 @@ zotmoov-settings-other-settings = Other Settings
 
 zotmoov-settings-fileext-title = Allowed File Extensions
 
+zotmoov-adv-settings-custom-wildcard-title = Custom Wildcards
+
+zotmoov-adv-settings-wc-sel-prefix = Wildcard
+
 zotmoov-context-move-selected =
     .label = ZotMoov: Move Selected to Directory
 
