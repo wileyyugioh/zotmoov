@@ -1,8 +1,8 @@
 class ZotMoovCWParser
 {
-    static Commands = class
+    static Commands =
     {
-        static TextCommand = class
+        TextCommand: class
         {
             static COMMAND_NAME = 'text';
 
@@ -26,9 +26,9 @@ class ZotMoovCWParser
             {
                 return Zotero.ZotMoov.wildcard.process_string(item, this.text);
             }
-        }
+        },
 
-        static FieldCommand = class
+        FieldCommand: class
         {
             static COMMAND_NAME = 'field';
 
@@ -52,9 +52,9 @@ class ZotMoovCWParser
             {
                 return item.getField(this.field, false, true);
             }
-        }
+        },
 
-        static LowercaseCommand = class
+        LowercaseCommand: class
         {
             static COMMAND_NAME = 'toLowerCase';
 
@@ -75,9 +75,9 @@ class ZotMoovCWParser
             {
                 return text.toLowerCase();
             }
-        }
+        },
 
-        static UppercaseCommand = class
+        UppercaseCommand: class
         {
             static COMMAND_NAME = 'toUpperCase';
 
@@ -98,9 +98,9 @@ class ZotMoovCWParser
             {
                 return text.toUpperCase();
             }
-        }
+        },
 
-        static TrimCommand = class
+        TrimCommand: class
         {
             static COMMAND_NAME = 'trim';
 
@@ -121,9 +121,9 @@ class ZotMoovCWParser
             {
                 return text.trim();
             }
-        }
+        },
 
-        static ExecCommand = class
+        ExecCommand: class
         {
             static COMMAND_NAME = 'exec';
 
@@ -151,9 +151,9 @@ class ZotMoovCWParser
                 const reg = RegExp(this.regex, this.flags);
                 return reg.exec(text)[group];
             }
-        }
+        },
 
-        static ReplaceCommand = class
+        ReplaceCommand: class
         {
             static COMMAND_NAME = 'replace';
 
@@ -182,7 +182,7 @@ class ZotMoovCWParser
                 const reg = RegExp(this.regex, this.flags);
                 return text.replace(reg, this.replace);
             }
-        }
+        },
     }
 
     constructor(json_obj = {})
