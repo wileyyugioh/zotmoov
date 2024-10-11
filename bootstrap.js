@@ -70,7 +70,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
     // Need to expose our addon to rest of Zotero
     Zotero.ZotMoov = zotmoov;
     Zotero.ZotMoov.Menus = zotmoovMenus;
-    Zotero.ZotMoov.Commands = { 'Parser': ZotMoovCWParser };
+    Zotero.ZotMoov.Commands = { 'Parser': ZotMoovCWParser, 'Commands': ZotMoovCWParser.Commands };
 
     let aomStartup = Cc['@mozilla.org/addons/addon-manager-startup;1'].getService(Ci.amIAddonManagerStartup);
     let manifestURI = Services.io.newURI(rootURI + 'manifest.json');

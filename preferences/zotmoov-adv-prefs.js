@@ -82,10 +82,14 @@ class ZotMoovAdvancedPrefs {
         this.createCWTree();
     }
 
-    createCWEntryFromDialog(wc, command_name, index, ...args)
+    createCWEntryFromDialog(wc, command_name, index, data_obj)
     {
+        // Validate that first input is text
+        const COMMAND_STRUCT = Zotero.ZotMoov.Commands.Commands;
+        if (index == 0 && !([COMMAND_STRUCT.TextCommand.COMMAND_NAME, COMMAND_STRUCT.FieldCommand.COMMAND_NAME].includes(command_name))) return;
+
         const wc_commands = this._savedcommands[wc];
-        wc_commands.splice(index, 0, Zotero.ZotMoov.Commands.Parser.create(command_name, ...args));
+        wc_commands.splice(index, 0, Zotero.ZotMoov.Commands.Parser.parse({...data_obj, command_name: command_name}));
 
         let selection = this._cw_tree.selection;
         for (let i of selection.selected)
@@ -100,9 +104,9 @@ class ZotMoovAdvancedPrefs {
 
     }
 
-    editCWEntryFromDialog(wc, command_name, index, ...args)
+    editCWEntryFromDialog(wc, command_name, index, data_obj)
     {
-        this._savedcommands[wc][index] = Zotero.ZotMoov.Commands.Parser.create(command_name, ...args);
+        this._savedcommands[wc][index] = Zotero.ZotMoov.Commands.Parser.parse({...data_obj, command_name: command_name});
 
         this._cw_tree.invalidate();
         Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true); 
@@ -116,10 +120,12 @@ class ZotMoovAdvancedPrefs {
         window.openDialog('chrome://zotmoov/content/custom-wc-dialog.xhtml',
             'zotmoov-custom-wc-dialog-window',
             'chrome,centerscreen,resizable=no,modal',
-            document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value,
-            index,
-            operation,
-            data
+            {
+                wc: document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value,
+                index: index,
+                operation: operation,
+                data: data,
+            }
         );
     }
 

@@ -28,6 +28,8 @@ zotmoov-adv-settings-wc-command = Wildcard Command
 
 zotmoov-adv-settings-text-label1 = Text
 
+zotmoov-adv-settings-field-label1 = Field
+
 zotmoov-adv-settings-exec-label1 = Regular Expression
 
 zotmoov-adv-settings-exec-label2 = Capturing Group
@@ -83,4 +85,4 @@ zotmoov-settings-delete-files-label =
 zotmoov-settings-new-file-ext = New File Extension
 
 zotmoov-settings-advanced-config =
-    .label = Advanced Config
+    .label = Advanced Options

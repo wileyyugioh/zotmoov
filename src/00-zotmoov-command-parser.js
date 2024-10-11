@@ -1,139 +1,187 @@
 class ZotMoovCWParser
 {
-    static TextCommand = class
+    static Commands = class
     {
-        constructor(text)
+        static TextCommand = class
         {
-            this.text = text;
-            this.command_name = 'text';
+            static COMMAND_NAME = 'text';
+
+            constructor(data_obj)
+            {
+                this.text = data_obj.text;
+                this.command_name = this.constructor.COMMAND_NAME;
+
+                if(this.text == null) throw new TypeError('TextCommand: text is not defined');
+            }
+
+            getColumnData()
+            {
+                return {
+                    'command_name': this.command_name,
+                    'desc': this.text
+                };
+            }
+
+            apply(text)
+            {
+                return this.text;
+            }
         }
 
-        getColumnData()
+        static FieldCommand = class
         {
-            return {
-                'command_name': this.command_name,
-                'desc': this.text
-            };
+            static COMMAND_NAME = 'field';
+
+            constructor(data_obj)
+            {
+                this.field = data_obj.field;
+                this.command_name = this.constructor.COMMAND_NAME;
+
+                if(this.field == null) throw new TypeError('FieldCommand: field is not defined');
+            }
+
+            getColumnData()
+            {
+                return {
+                    'command_name': this.command_name,
+                    'desc': this.field
+                };
+            }
+
+            apply(text)
+            {
+                return this.text;
+            }
         }
 
-        apply(text)
+        static LowercaseCommand = class
         {
-            return this.text;
-        }
-    }
+            static COMMAND_NAME = 'toLowerCase';
 
-    static LowercaseCommand = class
-    {
-        constructor()
-        {
-            this.command_name = 'toLowerCase';
-        }
+            constructor()
+            {
+                this.command_name = this.constructor.COMMAND_NAME;
+            }
 
-        getColumnData()
-        {
-            return {
-                'command_name': this.command_name,
-                'desc': ''
-            };
-        }
+            getColumnData()
+            {
+                return {
+                    'command_name': this.command_name,
+                    'desc': ''
+                };
+            }
 
-        apply(text)
-        {
-            return text.toLowerCase();
-        }
-    }
-
-    static UppercaseCommand = class
-    {
-        constructor()
-        {
-            this.command_name = 'toUpperCase';
+            apply(text)
+            {
+                return text.toLowerCase();
+            }
         }
 
-        getColumnData()
+        static UppercaseCommand = class
         {
-            return {
-                'command_name': this.command_name,
-                'desc': ''
-            };
+            static COMMAND_NAME = 'toUpperCase';
+
+            constructor()
+            {
+                this.command_name = this.constructor.COMMAND_NAME;
+            }
+
+            getColumnData()
+            {
+                return {
+                    'command_name': this.command_name,
+                    'desc': ''
+                };
+            }
+
+            apply(text)
+            {
+                return text.toUpperCase();
+            }
         }
 
-        apply(text)
+        static TrimCommand = class
         {
-            return text.toUpperCase();
-        }
-    }
+            static COMMAND_NAME = 'trim';
 
-    static TrimCommand = class
-    {
-        constructor()
-        {
-            this.command_name = 'trim';
-        }
+            constructor()
+            {
+                this.command_name = this.constructor.COMMAND_NAME;
+            }
 
-        getColumnData()
-        {
-            return {
-                'command_name': this.command_name,
-                'desc': ''
-            };
-        }
+            getColumnData()
+            {
+                return {
+                    'command_name': this.command_name,
+                    'desc': ''
+                };
+            }
 
-        apply(text)
-        {
-            return text.trim();
-        }
-    }
-
-    static ExecCommand = class
-    {
-        constructor(regex, group, flags)
-        {
-            this.regex = regex;
-            this.group = group ? Number(group) : 0;
-            this.flags = flags ? flags : 'g';
-
-            this.command_name = 'exec';
+            apply(text)
+            {
+                return text.trim();
+            }
         }
 
-        getColumnData()
+        static ExecCommand = class
         {
-            return {
-                'command_name': this.command_name,
-                'desc': this.regex
-            };
+            static COMMAND_NAME = 'exec';
+
+            constructor(data_obj)
+            {
+                this.regex = data_obj.regex;
+                this.group = data_obj.group ? Number(data_obj.group) : 0;
+                this.flags = data_obj.flags ? data_obj.flags : 'g';
+
+                this.command_name = this.constructor.COMMAND_NAME;
+
+                if(this.regex == null) throw new TypeError('ExecCommand: regex is not defined');
+            }
+
+            getColumnData()
+            {
+                return {
+                    'command_name': this.command_name,
+                    'desc': this.regex
+                };
+            }
+
+            apply(text)
+            {
+                const reg = RegExp(this.regex, this.flags);
+                return reg.exec(text)[group];
+            }
         }
 
-        apply(text)
+        static ReplaceCommand = class
         {
-            const reg = RegExp(this.regex, this.flags);
-            return reg.exec(text)[group];
-        }
-    }
+            static COMMAND_NAME = 'replace';
 
-    static ReplaceCommand = class
-    {
-        constructor(regex, replace, flags)
-        {
-            this.regex = regex;
-            this.replace = replace;
-            this.flags = flags ? flags : 'g';
+            constructor(data_obj)
+            {
+                this.regex = data_obj.regex;
+                this.replace = data_obj.replace;
+                this.flags = data_obj.flags ? data_obj.flags : 'g';
 
-            this.command_name = 'replace';
-        }
+                this.command_name = this.constructor.COMMAND_NAME;
 
-        getColumnData()
-        {
-            return {
-                'command_name': this.command_name,
-                'desc': this.regex
-            };
-        }
+                if(this.regex == null) throw new TypeError('ReplaceCommand: regex is not defined');
+                if(this.replace == null) throw new TypeError('ReplaceCommand: replace is not defined');
+            }
 
-        apply(text)
-        {
-            const reg = RegExp(this.regex, this.flags);
-            return text.replace(reg, this.replace);
+            getColumnData()
+            {
+                return {
+                    'command_name': this.command_name,
+                    'desc': this.regex
+                };
+            }
+
+            apply(text)
+            {
+                const reg = RegExp(this.regex, this.flags);
+                return text.replace(reg, this.replace);
+            }
         }
     }
 
@@ -151,39 +199,20 @@ class ZotMoovCWParser
     {
         switch(obj.command_name)
         {
-            case 'text':
-                return new this.TextCommand(obj.text);
-            case 'toLowerCase':
-                return new this.LowercaseCommand();
-            case 'toUpperCase':
-                return new this.UppercaseCommand();
-            case 'trim':
-                return new this.TrimCommand();
-            case 'exec':
-                return new this.ExecCommand(obj.regex, obj.group, obj.flags)
-            case 'replace':
-                return new this.ReplaceCommand(obj.regex, obj.replace, obj.flags)
-            default:
-                break;
-        }
-    }
-
-    static create(command_name, ...args)
-    {
-        switch(command_name)
-        {
-            case 'text':
-                return new this.TextCommand(...args);
-            case 'toLowerCase':
-                return new this.LowercaseCommand(...args);
-            case 'toUpperCase':
-                return new this.UppercaseCommand(...args);
-            case 'trim':
-                return new this.TrimCommand(...args);
-            case 'exec':
-                return new this.ExecCommand(...args)
-            case 'replace':
-                return new this.ReplaceCommand(...args)
+            case this.Commands.TextCommand.COMMAND_NAME:
+                return new this.Commands.TextCommand(obj);
+            case this.Commands.FieldCommand.COMMAND_NAME:
+                return new this.Commands.FieldCommand(obj);
+            case this.Commands.LowercaseCommand.COMMAND_NAME:
+                return new this.Commands.LowercaseCommand(obj);
+            case this.Commands.UppercaseCommand.COMMAND_NAME:
+                return new this.Commands.UppercaseCommand(obj);
+            case this.Commands.TrimCommand.COMMAND_NAME:
+                return new this.Commands.TrimCommand(obj);
+            case this.Commands.ExecCommand.COMMAND_NAME:
+                return new this.Commands.ExecCommand(obj)
+            case this.Commands.ReplaceCommand.COMMAND_NAME:
+                return new this.Commands.ReplaceCommand(obj)
             default:
                 break;
         }
