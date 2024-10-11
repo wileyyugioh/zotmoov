@@ -22,9 +22,9 @@ class ZotMoovCWParser
                 };
             }
 
-            apply(text)
+            apply(item)
             {
-                return this.text;
+                return Zotero.ZotMoov.wildcard.process_string(item, this.text);
             }
         }
 
@@ -48,9 +48,9 @@ class ZotMoovCWParser
                 };
             }
 
-            apply(text)
+            apply(item)
             {
-                return this.text;
+                return item.getField(this.field, false, true);
             }
         }
 
