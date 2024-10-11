@@ -4,7 +4,7 @@ class ZotMoovCWParser
     {
         TextCommand: class
         {
-            static COMMAND_NAME = 'text';
+            static get COMMAND_NAME() { return 'text'; };
 
             constructor(data_obj)
             {
@@ -30,7 +30,7 @@ class ZotMoovCWParser
 
         FieldCommand: class
         {
-            static COMMAND_NAME = 'field';
+            static get COMMAND_NAME() { return 'field'; };
 
             constructor(data_obj)
             {
@@ -56,7 +56,7 @@ class ZotMoovCWParser
 
         LowercaseCommand: class
         {
-            static COMMAND_NAME = 'toLowerCase';
+            static get COMMAND_NAME() { return 'toLowerCase'; };
 
             constructor()
             {
@@ -79,7 +79,7 @@ class ZotMoovCWParser
 
         UppercaseCommand: class
         {
-            static COMMAND_NAME = 'toUpperCase';
+            static get COMMAND_NAME() { return 'toUpperCase'; };
 
             constructor()
             {
@@ -102,7 +102,7 @@ class ZotMoovCWParser
 
         TrimCommand: class
         {
-            static COMMAND_NAME = 'trim';
+            static get COMMAND_NAME() { return 'trim'; };
 
             constructor()
             {
@@ -125,7 +125,7 @@ class ZotMoovCWParser
 
         ExecCommand: class
         {
-            static COMMAND_NAME = 'exec';
+            static get COMMAND_NAME() { return 'exec'; };
 
             constructor(data_obj)
             {
@@ -155,7 +155,7 @@ class ZotMoovCWParser
 
         ReplaceCommand: class
         {
-            static COMMAND_NAME = 'replace';
+            static get COMMAND_NAME() { return 'replace'; };
 
             constructor(data_obj)
             {
