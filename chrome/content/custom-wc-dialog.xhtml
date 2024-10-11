@@ -49,19 +49,19 @@
     <script>
     <![CDATA[
         document.addEventListener('dialogaccept', () => myOnAccept());
+        let cwentry_todo = Zotero.ZotMoov.Prefs.Advanced.createCWEntry.bind(Zotero.ZotMoov.Prefs.Advanced);
         let window_args =
         {
             wc: '%1',
             data: null,
             index: null,
+            operation: 'create'
         };
 
         class TextState
         {
             static load(data)
             {
-                document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = true;
-
                 document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', 'zotmoov-adv-settings-text-label1')
 
                 let txt_input = document.getElementById('zotmoov-cw-text-input1');
@@ -72,6 +72,8 @@
                 {
                     txt_input.value = data.text;
                 }
+
+                document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = txt_input.value.trim() === '';
             }
 
             static unload()
@@ -90,7 +92,7 @@
             static onAccept()
             {
                 const text = document.getElementById('zotmoov-cw-text-input1').value;
-                Zotero.ZotMoov.Prefs.Advanced.createCWEntry(window_args.wc, 'text', window_args.index, text);
+                cwentry_todo(window_args.wc, 'text', window_args.index, text);
             }
 
             static onInput()
@@ -105,7 +107,7 @@
             static unload() {}
             static onAccept()
             {
-                Zotero.ZotMoov.Prefs.Advanced.createCWEntry(window_args.wc, 'toLowerCase', window_args.index);
+                cwentry_todo(window_args.wc, 'toLowerCase', window_args.index);
             }
         }
 
@@ -115,7 +117,7 @@
             static unload() {}
             static onAccept()
             {
-                Zotero.ZotMoov.Prefs.Advanced.createCWEntry(window_args.wc, 'toUpperCase', window_args.index);
+                cwentry_todo(window_args.wc, 'toUpperCase', window_args.index);
             }
         }
 
@@ -125,7 +127,7 @@
             static unload() {}
             static onAccept()
             {
-                Zotero.ZotMoov.Prefs.Advanced.createCWEntry(window_args.wc, 'trim');
+                cwentry_todo(window_args.wc, 'trim', window_args.index);
             }
         }
 
@@ -133,8 +135,6 @@
         {
             static load(data)
             {
-                document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = true;
-
                 document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', 'zotmoov-adv-settings-exec-label1')
                 document.getElementById('zotmoov-cw-label2').setAttribute('data-l10n-id', 'zotmoov-adv-settings-exec-label2')
                 document.getElementById('zotmoov-cw-label3').setAttribute('data-l10n-id', 'zotmoov-adv-settings-exec-label3')
@@ -155,6 +155,8 @@
                     num_input.value = data.group;
                     txt_input3.value = data.flags;
                 }
+
+                document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = txt_input.value.trim() === '';
             }
 
             static unload()
@@ -189,7 +191,7 @@
                 const group = document.getElementById('zotmoov-cw-number-input2').value;
                 const flags = document.getElementById('zotmoov-cw-text-input3').value;
 
-                Zotero.ZotMoov.Prefs.Advanced.createCWEntry(window_args.wc, 'exec', window_args.index, regex, group, flags);
+                cwentry_todo(window_args.wc, 'exec', window_args.index, regex, group, flags);
             }
 
             static onInput()
@@ -202,8 +204,6 @@
         {
             static load(data)
             {
-                document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = true;
-
                 document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', 'zotmoov-adv-settings-exec-label1')
                 document.getElementById('zotmoov-cw-label2').setAttribute('data-l10n-id', 'zotmoov-adv-settings-replace-label2')
                 document.getElementById('zotmoov-cw-label3').setAttribute('data-l10n-id', 'zotmoov-adv-settings-exec-label3')
@@ -212,9 +212,9 @@
                 txt_input.style.display = '';
                 txt_input.setAttribute('oninput', 'ReplaceState.onInput();');
 
-                let num_input = document.getElementById('zotmoov-cw-text-input2');
-                num_input.style.display = '';
-                num_input.setAttribute('oninput', 'ReplaceState.onInput();');
+                let txt_input2 = document.getElementById('zotmoov-cw-text-input2');
+                txt_input2.style.display = '';
+                txt_input2.setAttribute('oninput', 'ReplaceState.onInput();');
 
                 let txt_input3 = document.getElementById('zotmoov-cw-text-input3');
                 txt_input3.style.display = '';
@@ -222,9 +222,11 @@
                 if(data)
                 {
                     txt_input.value = data.regex;
-                    num_input.value = data.replace;
+                    txt_input2.value = data.replace;
                     txt_input3.value = data.flags;
                 }
+
+                document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = (txt_input.value.trim() === '') || (txt_input2.value.trim() === '');
             }
 
             static unload()
@@ -259,7 +261,7 @@
                 const replace_str = document.getElementById('zotmoov-cw-text-input2').value;
                 const flags = document.getElementById('zotmoov-cw-text-input3').value;
 
-                Zotero.ZotMoov.Prefs.Advanced.createCWEntry(window_args.wc, 'replace', window_args.index, regex, replace_str, flags);
+                cwentry_todo(window_args.wc, 'replace', window_args.index, regex, replace_str, flags);
             }
 
             static onInput()
@@ -276,6 +278,7 @@
             function loadState(state, data)
             {
                 if (current_state) current_state.unload();
+                current_state = null;
                 state.load(data);
                 current_state = state;
             }
@@ -292,29 +295,38 @@
             {
                 window_args.wc = window.arguments[0];
                 if(window.arguments[1]) window_args.index = window.arguments[1];
-                if(window.arguments[2]) window_args.data = window.arguments[2];
+                if(window.arguments[2]) window_args.operation = window.arguments[2];
+                if(window.arguments[3]) window_args.data = window.arguments[3];
             }
 
             if(!window_args.data) return loadState(TextState);
+            if(window_args.operation == 'edit') cwentry_todo = Zotero.ZotMoov.Prefs.Advanced.editCWEntryFromDialog.bind(Zotero.ZotMoov.Prefs.Advanced);
 
+            let sel_menu = document.getElementById('zotmoov-adv-settings-wc-sel-menu');
             switch(window_args.data.command_name)
             {
                 case 'text':
+                    sel_menu.selectedIndex = 0;
                     loadState(TextState, window_args.data);
                     break;
                 case 'toLowerCase':
+                    sel_menu.selectedIndex = 1;
                     loadState(LowercaseState, window_args.data);
                     break;
                 case 'toUpperCase':
+                    sel_menu.selectedIndex = 2;
                     loadState(UppercaseState, window_args.data);
                     break;
                 case 'trim':
+                    sel_menu.selectedIndex = 3;
                     loadState(TrimState, window_args.data);
                     break;
                 case 'exec':
+                    sel_menu.selectedIndex = 4;
                     loadState(ExecState, window_args.data);
                     break;
                 case 'replace':
+                    sel_menu.selectedIndex = 5;
                     loadState(ReplaceState, window_args.data);
                     break;
                 default:

@@ -84,29 +84,48 @@ class ZotMoovAdvancedPrefs {
 
     createCWEntry(wc, command_name, index, ...args)
     {
-        const new_command = Zotero.ZotMoov.Commands.Parser.create(command_name, ...args);
+        const wc_commands = this._savedcommands[wc];
+        const length = wc_commands.push(Zotero.ZotMoov.Commands.Parser.create(command_name, ...args));
 
-        if (index)
+        let selection = this._cw_tree.selection;
+        for (let index of selection.selected)
         {
-            this._savedcommands[wc][index] = new_command;
-        }
-        else
-        {
-            this._savedcommands[wc].push(new_command);
+            selection.toggleSelect(index);
         }
 
         this._cw_tree.invalidate();
         Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
 
+        selection.toggleSelect(length - 1);
+
+    }
+
+    editCWEntryFromDialog(wc, command_name, index, ...args)
+    {
+        Zotero.log('editing')
+        Zotero.log(wc)
+        Zotero.log(command_name)
+        Zotero.log(index)
+        this._savedcommands[wc][index] = Zotero.ZotMoov.Commands.Parser.create(command_name, ...args);
+
+        this._cw_tree.invalidate();
+        Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true); 
     }
 
     spawnCWDialog(index, data)
     {
+        const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value;
+        let wc_commands =  this._savedcommands[wc_menu_sel_val];
+
+        const operation = index == null ? 'create' : 'edit';
+        if (index == null) index = wc_commands.length;
+
         window.openDialog('chrome://zotmoov/content/custom-wc-dialog.xhtml',
             'zotmoov-custom-wc-dialog-window',
             'chrome,centerscreen,resizable=no,modal',
             document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value,
             index,
+            operation,
             data
         );
     }
@@ -198,7 +217,13 @@ class ZotMoovAdvancedPrefs {
         this._cw_tree.invalidate();
         Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
 
-        if (selection.focused > wc_commands.length - 1) document.getElementById('zotmoov-adv-settings-cw-delete').disabled = true;
+        if (selection.focused > wc_commands.length - 1)
+        {
+            document.getElementById('zotmoov-adv-settings-cw-delete').disabled = true;
+            document.getElementById('zotmoov-adv-settings-cw-edit').disabled = true;
+            document.getElementById('zotmoov-adv-settings-cw-up').disabled = true;
+            document.getElementById('zotmoov-adv-settings-cw-down').disabled = true;
+        }
     }
 
     onCWTreeSelect(selection)
