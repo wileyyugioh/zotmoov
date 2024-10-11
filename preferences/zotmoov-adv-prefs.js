@@ -82,43 +82,36 @@ class ZotMoovAdvancedPrefs {
         this.createCWTree();
     }
 
-    createCWEntry(wc, command_name, index, ...args)
+    createCWEntryFromDialog(wc, command_name, index, ...args)
     {
         const wc_commands = this._savedcommands[wc];
-        const length = wc_commands.push(Zotero.ZotMoov.Commands.Parser.create(command_name, ...args));
+        wc_commands.splice(index, 0, Zotero.ZotMoov.Commands.Parser.create(command_name, ...args));
 
         let selection = this._cw_tree.selection;
-        for (let index of selection.selected)
+        for (let i of selection.selected)
         {
-            selection.toggleSelect(index);
+            selection.toggleSelect(i);
         }
 
         this._cw_tree.invalidate();
         Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
 
-        selection.toggleSelect(length - 1);
+        selection.toggleSelect(index);
 
     }
 
     editCWEntryFromDialog(wc, command_name, index, ...args)
     {
-        Zotero.log('editing')
-        Zotero.log(wc)
-        Zotero.log(command_name)
-        Zotero.log(index)
         this._savedcommands[wc][index] = Zotero.ZotMoov.Commands.Parser.create(command_name, ...args);
 
         this._cw_tree.invalidate();
         Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true); 
     }
 
-    spawnCWDialog(index, data)
+    spawnCWDialog(operation, index, data)
     {
         const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value;
         let wc_commands =  this._savedcommands[wc_menu_sel_val];
-
-        const operation = index == null ? 'create' : 'edit';
-        if (index == null) index = wc_commands.length;
 
         window.openDialog('chrome://zotmoov/content/custom-wc-dialog.xhtml',
             'zotmoov-custom-wc-dialog-window',
@@ -193,13 +186,17 @@ class ZotMoovAdvancedPrefs {
 
         for (let index of selection.selected)
         {
-            this.spawnCWDialog(index, wc_commands[index]);
+            this.spawnCWDialog('edit', index, wc_commands[index]);
+            break;
         }
+    }
 
-        this._cw_tree.invalidate();
-        Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
+    createCWEntry()
+    {
+        const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value;
+        let wc_commands =  this._savedcommands[wc_menu_sel_val];
 
-        if (selection.focused > wc_commands.length - 1) document.getElementById('zotmoov-adv-settings-cw-edit').disabled = true;
+        this.spawnCWDialog('create', wc_commands.length);
     }
 
     removeCWEntries()
