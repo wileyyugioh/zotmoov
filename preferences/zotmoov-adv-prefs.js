@@ -22,15 +22,17 @@ class ZotMoovAdvancedPrefs {
         const columns = [
             {
                 dataKey: 'index',
-                label: 'index'
+                htmlLabel: '<span data-l10n-id="zotmoov-adv-settings-wc-column-index"></span>',
+                width: 50,
             },
             {
                 dataKey: 'command_name',
-                label: 'command_name'
+                htmlLabel: '<span data-l10n-id="zotmoov-adv-settings-wc-column-command"></span>',
+                width: 100,
             },
             {
                 dataKey: 'desc',
-                label: 'desc',
+                htmlLabel: '<span data-l10n-id="zotmoov-adv-settings-wc-column-desc"></span>',
             },
         ];
         
@@ -68,7 +70,7 @@ class ZotMoovAdvancedPrefs {
             onSelectionChange: (selection) => this.onCWTreeSelect(selection),
             showHeader: true,
             columns: columns,
-            staticColumns: false,
+            staticColumns: true,
             multiSelect: false,
             disableFontSizeScaling: true
         }));
@@ -80,21 +82,105 @@ class ZotMoovAdvancedPrefs {
         this.createCWTree();
     }
 
-    createCWEntry(wc, command_name, ...args)
+    createCWEntry(wc, command_name, index, ...args)
     {
-        this._savedcommands[wc].push(Zotero.ZotMoov.Commands.Parser.create(command_name, ...args))
+        const new_command = Zotero.ZotMoov.Commands.Parser.create(command_name, ...args);
+
+        if (index)
+        {
+            this._savedcommands[wc][index] = new_command;
+        }
+        else
+        {
+            this._savedcommands[wc].push(new_command);
+        }
+
         this._cw_tree.invalidate();
         Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
 
     }
 
-    spawnCWDialog()
+    spawnCWDialog(index, data)
     {
         window.openDialog('chrome://zotmoov/content/custom-wc-dialog.xhtml',
             'zotmoov-custom-wc-dialog-window',
             'chrome,centerscreen,resizable=no,modal',
-            document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value
+            document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value,
+            index,
+            data
         );
+    }
+
+    moveCWEntryUp()
+    {
+        let selection = this._cw_tree.selection;
+
+        const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value;
+        let wc_commands =  this._savedcommands[wc_menu_sel_val];
+
+        let focus_index = -1;
+        for (let index of selection.selected)
+        {
+            if (index == 0) continue;
+
+            const temp = wc_commands[index - 1];
+            wc_commands[index - 1] = wc_commands[index];
+            wc_commands[index] = temp;
+
+            focus_index = index - 1;
+            selection.toggleSelect(index);
+        }
+
+        if (focus_index >= 0) selection.toggleSelect(focus_index);
+        this._cw_tree.invalidate();
+        Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
+
+        if (selection.focused == 0) document.getElementById('zotmoov-adv-settings-cw-up').disabled = true;
+    }
+
+    moveCWEntryDown()
+    {
+        let selection = this._cw_tree.selection;
+
+        const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value;
+        let wc_commands =  this._savedcommands[wc_menu_sel_val];
+
+        let focus_index = -1;
+        for (let index of selection.selected)
+        {
+            if (index == wc_commands.length - 1) continue;
+
+            const temp = wc_commands[index + 1];
+            wc_commands[index + 1] = wc_commands[index];
+            wc_commands[index] = temp;
+
+            focus_index = index + 1;
+            selection.toggleSelect(index);
+        }
+
+        if (focus_index >= 0) selection.toggleSelect(focus_index)
+        this._cw_tree.invalidate();
+        Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
+
+        if (selection.focused == wc_commands.length - 1) document.getElementById('zotmoov-adv-settings-cw-down').disabled = true;
+    }
+
+    editCWEntry()
+    {
+        let selection = this._cw_tree.selection;
+
+        const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value;
+        let wc_commands =  this._savedcommands[wc_menu_sel_val];
+
+        for (let index of selection.selected)
+        {
+            this.spawnCWDialog(index, wc_commands[index]);
+        }
+
+        this._cw_tree.invalidate();
+        Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
+
+        if (selection.focused > wc_commands.length - 1) document.getElementById('zotmoov-adv-settings-cw-edit').disabled = true;
     }
 
     removeCWEntries()
@@ -109,23 +195,22 @@ class ZotMoovAdvancedPrefs {
             wc_commands.splice(index, 1);
         }
 
-
         this._cw_tree.invalidate();
         Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
 
-        if (wc_commands.length == 0) document.getElementById('zotmoov-adv-settings-cw-delete').disabled = true;
+        if (selection.focused > wc_commands.length - 1) document.getElementById('zotmoov-adv-settings-cw-delete').disabled = true;
     }
 
     onCWTreeSelect(selection)
     {
-        let remove_button = document.getElementById('zotmoov-adv-settings-cw-delete');
-        if (selection.count > 0)
-        {
-            remove_button.disabled = false;
-            return;
-        }
+        const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value;
+        let wc_commands =  this._savedcommands[wc_menu_sel_val];
+        let selected = selection.selected;
 
-        remove_button.disabled = true;
+        document.getElementById('zotmoov-adv-settings-cw-delete').disabled = !selected.size;
+        document.getElementById('zotmoov-adv-settings-cw-edit').disabled = !selected.size
+        document.getElementById('zotmoov-adv-settings-cw-up').disabled = (!selected.size || selected.has(0));
+        document.getElementById('zotmoov-adv-settings-cw-down').disabled = (!selected.size || selected.has(wc_commands.length - 1));
     }
 
     changeSelectedWildcard(item)

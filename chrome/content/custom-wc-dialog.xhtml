@@ -10,7 +10,7 @@
     title="ZotMoov"
     drawintitlebar-platforms="mac"
     class="zotero-dialog"
-    style="min-width: 300px;"
+    style="min-width: 300px;min-height:300px"
     onload="myOnLoad();">
 <dialog buttons="cancel,accept" id="zotmoov-cw-dialog">
     <script src="chrome://zotero/content/include.js"/>
@@ -23,11 +23,11 @@
             <menulist native="true" id="zotmoov-adv-settings-wc-sel-menu">
                 <menupopup>
                     <menuitem value="text" label="text" oncommand="loadState(TextState);"/>
-                    <menuitem value="toLowerCase" label="toLowerCase"/>
-                    <menuitem value="toUpperCase" label="toUpperCase"/>
-                    <menuitem value="trim" label="trim"/>
-                    <menuitem value="exec" label="exec"/>
-                    <menuitem value="replace" label="replace"/>
+                    <menuitem value="toLowerCase" label="toLowerCase"  oncommand="loadState(LowercaseState);"/>
+                    <menuitem value="toUpperCase" label="toUpperCase"  oncommand="loadState(UppercaseState);"/>
+                    <menuitem value="trim" label="trim"  oncommand="loadState(TrimState);"/>
+                    <menuitem value="exec" label="exec"  oncommand="loadState(ExecState);"/>
+                    <menuitem value="replace" label="replace"  oncommand="loadState(ReplaceState);"/>
                 </menupopup>
             </menulist>
         </hbox>
@@ -38,33 +38,49 @@
         <vbox>
             <hbox><label id="zotmoov-cw-label2"></label></hbox>
             <hbox><html:input id="zotmoov-cw-text-input2" type="text" style="flex: 1; display: none;"/></hbox>
-            <hbox><html:input id="zotmoov-cw-number-input2" type="number" style="flex: 1; display: none;" min="1"/></hbox>
+            <hbox><html:input id="zotmoov-cw-number-input2" type="number" style="flex: 1; display: none;" min="1" value="1"/></hbox>
         </vbox>
         <vbox>
             <hbox><label id="zotmoov-cw-label3"></label></hbox>
-            <hbox><html:input id="zotmoov-cw-text-input3" type="text" style="flex: 1; display: none;"/></hbox>
+            <hbox><html:input id="zotmoov-cw-text-input3" type="text" style="flex: 1; display: none;" value="g"/></hbox>
         </vbox>
     </vbox>
 
     <script>
     <![CDATA[
         document.addEventListener('dialogaccept', () => myOnAccept());
-        let wc;
+        let window_args =
+        {
+            wc: '%1',
+            data: null,
+            index: null,
+        };
 
         class TextState
         {
-            static load()
+            static load(data)
             {
+                document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = true;
+
                 document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', 'zotmoov-adv-settings-text-label1')
 
                 let txt_input = document.getElementById('zotmoov-cw-text-input1');
                 txt_input.style.display = '';
                 txt_input.setAttribute('oninput', 'TextState.onInput();');
+
+                if(data)
+                {
+                    txt_input.value = data.text;
+                }
             }
 
             static unload()
             {
-                document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', '')
+                document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = false;
+
+                let label1 = document.getElementById('zotmoov-cw-label1');
+                label1.setAttribute('data-l10n-id', '');
+                label1.innerHTML = '';
 
                 let txt_input = document.getElementById('zotmoov-cw-text-input1');
                 txt_input.style.display = 'none';
@@ -74,7 +90,7 @@
             static onAccept()
             {
                 const text = document.getElementById('zotmoov-cw-text-input1').value;
-                Zotero.ZotMoov.Prefs.Advanced.createCWEntry(wc, 'text', text);
+                Zotero.ZotMoov.Prefs.Advanced.createCWEntry(window_args.wc, 'text', window_args.index, text);
             }
 
             static onInput()
@@ -83,12 +99,184 @@
             }
         }
 
+        class LowercaseState
+        {
+            static load() {}
+            static unload() {}
+            static onAccept()
+            {
+                Zotero.ZotMoov.Prefs.Advanced.createCWEntry(window_args.wc, 'toLowerCase', window_args.index);
+            }
+        }
+
+        class UppercaseState
+        {
+            static load() {}
+            static unload() {}
+            static onAccept()
+            {
+                Zotero.ZotMoov.Prefs.Advanced.createCWEntry(window_args.wc, 'toUpperCase', window_args.index);
+            }
+        }
+
+        class TrimState
+        {
+            static load() {}
+            static unload() {}
+            static onAccept()
+            {
+                Zotero.ZotMoov.Prefs.Advanced.createCWEntry(window_args.wc, 'trim');
+            }
+        }
+
+        class ExecState
+        {
+            static load(data)
+            {
+                document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = true;
+
+                document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', 'zotmoov-adv-settings-exec-label1')
+                document.getElementById('zotmoov-cw-label2').setAttribute('data-l10n-id', 'zotmoov-adv-settings-exec-label2')
+                document.getElementById('zotmoov-cw-label3').setAttribute('data-l10n-id', 'zotmoov-adv-settings-exec-label3')
+
+                let txt_input = document.getElementById('zotmoov-cw-text-input1');
+                txt_input.style.display = '';
+                txt_input.setAttribute('oninput', 'ExecState.onInput();');
+
+                let num_input = document.getElementById('zotmoov-cw-number-input2');
+                num_input.style.display = '';
+
+                let txt_input3 = document.getElementById('zotmoov-cw-text-input3');
+                txt_input3.style.display = '';
+
+                if(data)
+                {
+                    txt_input.value = data.regex;
+                    num_input.value = data.group;
+                    txt_input3.value = data.flags;
+                }
+            }
+
+            static unload()
+            {
+                document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = false;
+
+                let label1 = document.getElementById('zotmoov-cw-label1');
+                label1.setAttribute('data-l10n-id', '');
+                label1.innerHTML = '';
+
+                let label2 = document.getElementById('zotmoov-cw-label2');
+                label2.setAttribute('data-l10n-id', '');
+                label2.innerHTML = '';
+
+                let label3 = document.getElementById('zotmoov-cw-label3');
+                label3.setAttribute('data-l10n-id', '');
+                label3.innerHTML = '';
+
+                let txt_input = document.getElementById('zotmoov-cw-text-input1');
+                txt_input.style.display = 'none';
+
+                let num_input = document.getElementById('zotmoov-cw-number-input2');
+                num_input.style.display = 'none';
+
+                let txt_input3 = document.getElementById('zotmoov-cw-text-input3');
+                txt_input3.style.display = 'none';
+            }
+
+            static onAccept()
+            {
+                const regex = document.getElementById('zotmoov-cw-text-input1').value;
+                const group = document.getElementById('zotmoov-cw-number-input2').value;
+                const flags = document.getElementById('zotmoov-cw-text-input3').value;
+
+                Zotero.ZotMoov.Prefs.Advanced.createCWEntry(window_args.wc, 'exec', window_args.index, regex, group, flags);
+            }
+
+            static onInput()
+            {
+                document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = event.target.value.trim() === '';
+            }
+        }
+
+        class ReplaceState
+        {
+            static load(data)
+            {
+                document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = true;
+
+                document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', 'zotmoov-adv-settings-exec-label1')
+                document.getElementById('zotmoov-cw-label2').setAttribute('data-l10n-id', 'zotmoov-adv-settings-replace-label2')
+                document.getElementById('zotmoov-cw-label3').setAttribute('data-l10n-id', 'zotmoov-adv-settings-exec-label3')
+
+                let txt_input = document.getElementById('zotmoov-cw-text-input1');
+                txt_input.style.display = '';
+                txt_input.setAttribute('oninput', 'ReplaceState.onInput();');
+
+                let num_input = document.getElementById('zotmoov-cw-text-input2');
+                num_input.style.display = '';
+                num_input.setAttribute('oninput', 'ReplaceState.onInput();');
+
+                let txt_input3 = document.getElementById('zotmoov-cw-text-input3');
+                txt_input3.style.display = '';
+
+                if(data)
+                {
+                    txt_input.value = data.regex;
+                    num_input.value = data.replace;
+                    txt_input3.value = data.flags;
+                }
+            }
+
+            static unload()
+            {
+                document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = false;
+
+                let label1 = document.getElementById('zotmoov-cw-label1');
+                label1.setAttribute('data-l10n-id', '');
+                label1.innerHTML = '';
+
+                let label2 = document.getElementById('zotmoov-cw-label2');
+                label2.setAttribute('data-l10n-id', '');
+                label2.innerHTML = '';
+
+                let label3 = document.getElementById('zotmoov-cw-label3');
+                label3.setAttribute('data-l10n-id', '');
+                label3.innerHTML = '';
+
+                let txt_input = document.getElementById('zotmoov-cw-text-input1');
+                txt_input.style.display = 'none';
+
+                let txt_input2 = document.getElementById('zotmoov-cw-text-input2');
+                txt_input2.style.display = 'none';
+
+                let txt_input3 = document.getElementById('zotmoov-cw-text-input3');
+                txt_input3.style.display = 'none';
+            }
+
+            static onAccept()
+            {
+                const regex = document.getElementById('zotmoov-cw-text-input1').value;
+                const replace_str = document.getElementById('zotmoov-cw-text-input2').value;
+                const flags = document.getElementById('zotmoov-cw-text-input3').value;
+
+                Zotero.ZotMoov.Prefs.Advanced.createCWEntry(window_args.wc, 'replace', window_args.index, regex, replace_str, flags);
+            }
+
+            static onInput()
+            {
+                let txt_input = document.getElementById('zotmoov-cw-text-input1').value;
+                let txt_input2 = document.getElementById('zotmoov-cw-text-input2').value;
+
+                document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = (txt_input.trim() === '') || (txt_input2.trim() === '');
+            }
+        }
+
         {
             let current_state;
-            function loadState(state)
+            function loadState(state, data)
             {
                 if (current_state) current_state.unload();
-                state.load();
+                state.load(data);
                 current_state = state;
             }
 
@@ -100,9 +288,38 @@
 
         function myOnLoad()
         {
-            if (window.arguments) wc = window.arguments[0];
-            document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = true;
-            loadState(TextState);
+            if (window.arguments)
+            {
+                window_args.wc = window.arguments[0];
+                if(window.arguments[1]) window_args.index = window.arguments[1];
+                if(window.arguments[2]) window_args.data = window.arguments[2];
+            }
+
+            if(!window_args.data) return loadState(TextState);
+
+            switch(window_args.data.command_name)
+            {
+                case 'text':
+                    loadState(TextState, window_args.data);
+                    break;
+                case 'toLowerCase':
+                    loadState(LowercaseState, window_args.data);
+                    break;
+                case 'toUpperCase':
+                    loadState(UppercaseState, window_args.data);
+                    break;
+                case 'trim':
+                    loadState(TrimState, window_args.data);
+                    break;
+                case 'exec':
+                    loadState(ExecState, window_args.data);
+                    break;
+                case 'replace':
+                    loadState(ReplaceState, window_args.data);
+                    break;
+                default:
+                    break;
+            }
         }
 
     ]]>

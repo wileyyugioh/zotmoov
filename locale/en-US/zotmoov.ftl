@@ -16,11 +16,25 @@ zotmoov-settings-fileext-title = Allowed File Extensions
 
 zotmoov-adv-settings-custom-wildcard-title = Custom Wildcards
 
+zotmoov-adv-settings-wc-column-index = Index
+
+zotmoov-adv-settings-wc-column-command = Command
+
+zotmoov-adv-settings-wc-column-desc = Description
+
 zotmoov-adv-settings-wc-sel-prefix = Wildcard
 
 zotmoov-adv-settings-wc-command = Wildcard Command
 
 zotmoov-adv-settings-text-label1 = Text
+
+zotmoov-adv-settings-exec-label1 = Regular Expression
+
+zotmoov-adv-settings-exec-label2 = Capturing Group
+
+zotmoov-adv-settings-exec-label3 = Flags
+
+zotmoov-adv-settings-replace-label2 = Replacement String
 
 zotmoov-context-move-selected =
     .label = ZotMoov: Move Selected to Directory
