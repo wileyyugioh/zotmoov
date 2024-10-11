@@ -226,6 +226,9 @@ class ZotMoovAdvancedPrefs {
             document.getElementById('zotmoov-adv-settings-cw-edit').disabled = true;
             document.getElementById('zotmoov-adv-settings-cw-up').disabled = true;
             document.getElementById('zotmoov-adv-settings-cw-down').disabled = true;
+        } else if (selection.focused == wc_commands.length - 1)
+        {
+            document.getElementById('zotmoov-adv-settings-cw-down').disabled = true;
         }
     }
 
