@@ -90,7 +90,7 @@ class ZotMoovCWParser
         constructor(regex, group, flags)
         {
             this.regex = regex;
-            this.group = group ? group : 0;
+            this.group = group ? Number(group) : 0;
             this.flags = flags ? flags : 'g';
 
             this.command_name = 'exec';

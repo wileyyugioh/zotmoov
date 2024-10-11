@@ -33,7 +33,15 @@
             </hbox>
             <separator class="thin"/>
             <hbox align="center" pack="end">
-                <button id="zotmoov-adv-settings-cw-delete" disabled="true" label="-" style="min-width: 80px; margin-inline-end: 6px;" oncommand="Zotero.ZotMoov.Prefs.Advanced.removeCWEntries()"/>
+                <button id="zotmoov-adv-settings-cw-up" disabled="true" label="↑" style="min-width: 80px; margin-inline-end: 6px;"
+                    oncommand="Zotero.ZotMoov.Prefs.Advanced.moveCWEntryUp()"/>
+                <button id="zotmoov-adv-settings-cw-down" disabled="true" label="↓" style="min-width: 80px; margin-inline-end: 6px;"
+                    oncommand="Zotero.ZotMoov.Prefs.Advanced.moveCWEntryDown()"/>
+                <button id="zotmoov-adv-settings-cw-edit" disabled="true" label="edit" style="min-width: 80px; margin-inline-end: 6px;"
+                    oncommand="Zotero.ZotMoov.Prefs.Advanced.editCWEntry()"/>
+                <spacer flex="1"/>
+                <button id="zotmoov-adv-settings-cw-delete" disabled="true" label="-" style="min-width: 80px; margin-inline-end: 6px;"
+                    oncommand="Zotero.ZotMoov.Prefs.Advanced.removeCWEntries()"/>
                 <button id="zotmoov-adv-settings-cw-add" label="+" style="min-width: 80px;" oncommand="Zotero.ZotMoov.Prefs.Advanced.spawnCWDialog();"/>
             </hbox>
         </vbox>
