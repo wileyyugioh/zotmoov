@@ -17,6 +17,7 @@ class ZotMoovAdvancedPrefs {
     async createCWTree()
     {
         const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value;
+        if (this._savedcommands[wc_menu_sel_val] == null) this._savedcommands[wc_menu_sel_val] = [];
         const wc_commands =  this._savedcommands[wc_menu_sel_val];
 
         const columns = [
@@ -114,9 +115,6 @@ class ZotMoovAdvancedPrefs {
 
     spawnCWDialog(operation, index, data)
     {
-        const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value;
-        let wc_commands =  this._savedcommands[wc_menu_sel_val];
-
         window.openDialog('chrome://zotmoov/content/custom-wc-dialog.xhtml',
             'zotmoov-custom-wc-dialog-window',
             'chrome,centerscreen,resizable=no,modal',
@@ -153,7 +151,7 @@ class ZotMoovAdvancedPrefs {
         this._cw_tree.invalidate();
         Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
 
-        if (selection.focused == 0) document.getElementById('zotmoov-adv-settings-cw-up').disabled = true;
+        if (selection.focused <= 1) document.getElementById('zotmoov-adv-settings-cw-up').disabled = true;
     }
 
     moveCWEntryDown()
@@ -238,10 +236,10 @@ class ZotMoovAdvancedPrefs {
         let wc_commands =  this._savedcommands[wc_menu_sel_val];
         let selected = selection.selected;
 
-        document.getElementById('zotmoov-adv-settings-cw-delete').disabled = !selected.size;
+        document.getElementById('zotmoov-adv-settings-cw-delete').disabled = (!selected.size || (selected.has(0) && wc_commands.length > 1));
         document.getElementById('zotmoov-adv-settings-cw-edit').disabled = !selected.size
-        document.getElementById('zotmoov-adv-settings-cw-up').disabled = (!selected.size || selected.has(0));
-        document.getElementById('zotmoov-adv-settings-cw-down').disabled = (!selected.size || selected.has(wc_commands.length - 1));
+        document.getElementById('zotmoov-adv-settings-cw-up').disabled = (!selected.size || selected.has(0) || selected.has(1));
+        document.getElementById('zotmoov-adv-settings-cw-down').disabled = (!selected.size || selected.has(0) || selected.has(wc_commands.length - 1));
     }
 
     changeSelectedWildcard(item)

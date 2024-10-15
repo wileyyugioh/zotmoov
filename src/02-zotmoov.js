@@ -296,6 +296,8 @@ var ZotMoov = class {
     async moveSelectedItems()
     {
         let atts = this._getSelectedItems();
+        if (!atts.size) return;
+
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
 
         let pref = this.getBasePrefs();
@@ -311,6 +313,8 @@ var ZotMoov = class {
     async moveFromDirectory()
     {
         let atts = this._getSelectedItems();
+        if (!atts.size) return;
+
         atts = Array.from(atts).filter((a) => { return a.isLinkedFileAttachment(); });
 
         for (let item of atts)
@@ -331,6 +335,7 @@ var ZotMoov = class {
     async moveSelectedItemsCustomDir()
     {
         let atts = this._getSelectedItems();
+        if (!atts.size) return;
 
         let fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
         let wm = Services.wm;
