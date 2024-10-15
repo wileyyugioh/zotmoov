@@ -1,0 +1,43 @@
+<!--
+    ZotMoov
+    keyboard_shortcuts.xhtml
+    Written by Wiley Yu
+-->
+
+<linkset>
+    <html:link rel="localization" href="zotmoov.ftl"/>
+</linkset>
+
+<vbox onload="Zotero.ZotMoov.Prefs.Keyboard.init();">
+   <groupbox>
+        <vbox>
+            <label><html:h2 data-l10n-id="zotmoov-kb-settings-keyboard-shortcuts"></html:h2></label>
+            <vbox id="zotmoov-kb-settings-sc-grid">
+                <hbox align="center" pack="end">
+                    <label data-l10n-id="zotmoov-kb-settings-move-item"/>
+                    <spacer flex="1"/>
+                    <html:label class="modifier"/>
+                    <html:input type="text" maxlength="1" size="1" preference="extensions.zotmoov.keys.move_item"/>
+                </hbox>
+                <hbox align="center" pack="end">
+                    <label data-l10n-id="zotmoov-kb-settings-move-item-custom-dir"/>
+                    <spacer flex="1"/>
+                    <html:label class="modifier"/>
+                    <html:input type="text" maxlength="1" size="1" preference="extensions.zotmoov.keys.move_item_custom_dir"/>
+                </hbox>
+                <hbox align="center" pack="end">
+                    <label data-l10n-id="zotmoov-kb-settings-convert-item"/>
+                    <spacer flex="1"/>
+                    <html:label class="modifier"/>
+                    <html:input type="text" id="zotmoov-kb-settings-move-item" maxlength="1" size="1" preference="extensions.zotmoov.keys.convert_linked"/>
+                </hbox>
+                <hbox align="center" pack="end">
+                    <label data-l10n-id="zotmoov-kb-settings-link-item"/>
+                    <spacer flex="1"/>
+                    <html:label class="modifier"/>
+                    <html:input type="text" id="zotmoov-kb-settings-move-item" maxlength="1" size="1" preference="extensions.zotmoov.keys.link_item"/>
+                </hbox>
+            </vbox>
+        </vbox>
+    </groupbox>
+</vbox>

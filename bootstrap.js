@@ -65,6 +65,15 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
              scripts: [rootURI + 'preferences/zotmoov-adv-prefs.js']
     });
 
+    Zotero.PreferencePanes.register(
+        {
+            id: 'zotmoov_keyboard',
+            pluginID: 'zotmoov@wileyy.com',
+            parent: 'zotmoov_basic',
+            src: rootURI + 'preferences/keyboard_shortcuts.xhtml',
+             scripts: [rootURI + 'preferences/zotmoov-keyboard-prefs.js']
+    });
+
     zotmoovMenus.loadAll();
 
     // Need to expose our addon to rest of Zotero

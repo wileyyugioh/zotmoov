@@ -38,6 +38,16 @@ zotmoov-adv-settings-exec-label3 = Flags
 
 zotmoov-adv-settings-replace-label2 = Replacement String
 
+zotmoov-kb-settings-keyboard-shortcuts = Keyboard Shortcuts
+
+zotmoov-kb-settings-move-item = Move/Copy Files to Subdirectory
+
+zotmoov-kb-settings-move-item-custom-dir = Move/Copy Files to Custom Subdirectory
+
+zotmoov-kb-settings-link-item = Link File
+
+zotmoov-kb-settings-convert-item = Move/Copy Files from Subdirectory
+
 zotmoov-context-move-selected =
     .label = ZotMoov: Move Selected to Directory
 

@@ -62,13 +62,18 @@
             <hbox align="center" pack="end">
                 <label data-l10n-id="zotmoov-settings-fileext-about"></label>
                 <spacer flex="1"/>
-                <button id="zotmoov-fileext-table-delete" disabled="true" label="-" style="min-width: 80px; margin-inline-end: 6px;" oncommand="Zotero.ZotMoov.Prefs.removeFileExtEntries();"/>
+                <button id="zotmoov-fileext-table-delete" disabled="true" label="-" style="min-width: 80px; margin-inline-end: 6px;"
+                    oncommand="Zotero.ZotMoov.Prefs.removeFileExtEntries();"/>
                 <button id="zotmoov-fileext-table-add" label="+" style="min-width: 80px;" oncommand="Zotero.ZotMoov.Prefs.spawnFileExtDialog();"/>
             </hbox>
         </vbox>
     </groupbox>
     <groupbox style="margin-top: 20px;">
         <hbox align="center" pack="end">
+            <button
+                style="margin-inline-end: 6px;"
+                data-l10n-id="zotmoov-kb-settings-keyboard-shortcuts"
+                oncommand="Zotero.Utilities.Internal.openPreferences('zotmoov_keyboard');"/>
             <button id="zotmoov-adv-prefs-button"
                 data-l10n-id="zotmoov-settings-advanced-config"
                 oncommand="Zotero.Utilities.Internal.openPreferences('zotmoov_advanced');"

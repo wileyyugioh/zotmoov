@@ -1,5 +1,29 @@
-var ZotMoovMenus = class {
-    constructor(zotmoov, bindings) {
+var ZotMoovMenus = class
+{
+    static get SHORTCUTS()
+    {
+        return [
+            {
+                pref: 'extensions.zotmoov.keys.move_item',
+                command: () => { Zotero.ZotMoov.moveSelectedItems(); },
+            },
+            {
+                pref: 'extensions.zotmoov.keys.link_item',
+                command: () => { this.importLastModifiedFile(); },
+            },
+            {
+                pref: 'extensions.zotmoov.keys.convert_linked',
+                command: () => { Zotero.ZotMoov.moveFromDirectory(); }
+            },
+            {
+                pref: 'extensions.zotmoov.keys.move_item_custom_dir',
+                command: () => { Zotero.ZotMoov.moveSelectedItemsCustomDir(); }
+            }
+        ];
+    }
+
+    constructor(zotmoov, bindings)
+    {
         this.menuseparator_id = 'zotmoov-context-menuseparator';
         this.move_selected_item_id = 'zotmoov-context-move-selected';
         this.move_selected_item_custom_id = 'zotmoov-context-move-selected-custom-dir';
@@ -10,6 +34,41 @@ var ZotMoovMenus = class {
         this._zotmoov_bindings = bindings;
 
         this._popupShowing = this._doPopupShowing.bind(this);
+
+        this._keydown_commands = {};
+    }
+
+    _loadShortcuts()
+    {
+        for (let sc of this.constructor.SHORTCUTS)
+        {
+            let key = Zotero.Prefs.get(sc.pref, true);
+            this._keydown_commands[key] = sc;
+        }
+    }
+
+    _doKeyDown(event)
+    {
+        if (!event.shiftKey) return;
+        if (Zotero.isMac ? !event.metaKey : !event.ctrlKey) return;
+
+        let cmd = this._keydown_commands[event.key.toUpperCase()];
+        if (cmd) cmd.command.apply(this);
+    }
+
+    rebindPrefToKey(pref, key)
+    {
+        const found_key = Object.keys(this._keydown_commands).find((k) =>
+        {
+            if (!this._keydown_commands[k]) return false;
+            return this._keydown_commands[k].pref == pref;
+        });
+
+        if (found_key) this._keydown_commands[found_key] = null;
+
+        const found_pref = this.constructor.SHORTCUTS.find((p) => p.pref == pref);
+
+        this._keydown_commands[key] = found_pref;
     }
 
     _doPopupShowing(event)
@@ -104,6 +163,12 @@ var ZotMoovMenus = class {
 
         // Enable localization
         win.MozXULElement.insertFTLIfNeeded('zotmoov.ftl');
+
+        this._loadShortcuts();
+        doc.addEventListener('keydown', (event) =>
+        {
+            this._doKeyDown(event);
+        });
     }
 
     setMove()
