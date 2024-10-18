@@ -48,6 +48,8 @@ zotmoov-kb-settings-link-item = Link File
 
 zotmoov-kb-settings-convert-item = Move/Copy Files from Subdirectory
 
+zotmoov-kb-settings-warning = Warning: Shortcut is already in use
+
 zotmoov-context-move-selected =
     .label = ZotMoov: Move Selected to Directory
 
