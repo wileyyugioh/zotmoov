@@ -42,7 +42,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
     const zotmoovDebugger = new ZotMoovDebugger('ZotMoov', outputManager);
 
     const sanitizer = new Sanitizer();
-    const zotmoovWildcard = new ZotMoovWildcard(sanitizer);
+    const zotmoovWildcard = new ZotMoovWildcard(sanitizer, ZotMoovCWParser);
 
     zotmoov = new ZotMoov(id, version, rootURI, zotmoovWildcard, sanitizer, zotmoovDebugger);
     zotmoovBindings = new ZotMoovBindings(zotmoov);
