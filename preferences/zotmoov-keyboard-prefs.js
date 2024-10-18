@@ -18,7 +18,7 @@ class ZotMoovKeyboardPrefs {
 
     init()
     {
-        this._zotero_bound_keys = this.constructor.BOUND_KEYS;
+        this._warned_pref = new Set();
 
         for (let label of document.querySelectorAll('#zotmoov-kb-settings-sc-grid .modifier'))
         {
@@ -31,38 +31,58 @@ class ZotMoovKeyboardPrefs {
             textbox.value = textbox.value.toUpperCase();
             textbox.addEventListener('syncfrompreference', () =>
             {
-                let pref = textbox.getAttribute('preference');
+                const pref = textbox.getAttribute('preference');
                 const val = Zotero.Prefs.get(pref, true).toUpperCase();
                 textbox.value = val || '';
-                
-                Zotero.ZotMoov.Menus.rebindPrefToKey(textbox.getAttribute('preference'), textbox.value);
-                if (this._zotero_bound_keys.includes(textbox.value))
-                {
-                    this.constructor.addWarningTooltip(textbox.parentElement.parentElement);
-                } else
-                {
 
+                const zm_keys_overlap = Array.from(document.querySelectorAll('#zotmoov-kb-settings-sc-grid input'))
+                    .filter((tb) => tb.getAttribute('preference') != pref && tb.value == textbox.value);
+                
+                Zotero.ZotMoov.Menus.rebindPrefToKey(pref, textbox.value);
+
+                if (textbox.value != '' && (this.constructor.BOUND_KEYS.includes(textbox.value) || zm_keys_overlap.length))
+                {
+                    this._warned_pref.add(pref);
+                    this.addWarningTooltip(textbox.parentElement);
+                    return;
                 }
+
+                this._warned_pref.delete(pref);
+                this.clearWarningTooltip(textbox.parentElement);
             });
             textbox.addEventListener('input', () =>
             {
+                const pref = textbox.getAttribute('preference');
                 textbox.value = textbox.value.toUpperCase();
-                Zotero.ZotMoov.Menus.rebindPrefToKey(textbox.getAttribute('preference'), textbox.value);
-                if (this._zotero_bound_keys.includes(textbox.value))
-                {
-                    this.constructor.addWarningTooltip(textbox.parentElement.parentElement);
-                } else
-                {
 
+                const zm_keys_overlap = Array.from(document.querySelectorAll('#zotmoov-kb-settings-sc-grid input'))
+                    .filter((tb) => tb.getAttribute('preference') != pref && tb.value == textbox.value);
+
+                Zotero.ZotMoov.Menus.rebindPrefToKey(pref, textbox.value);
+                if (textbox.value != '' && (this.constructor.BOUND_KEYS.includes(textbox.value) || zm_keys_overlap.length))
+                {
+                    this._warned_pref.add(pref);
+                    this.addWarningTooltip(textbox.parentElement);
+                    return;
                 }
+
+                this._warned_pref.delete(pref);
+                this.clearWarningTooltip(textbox.parentElement);
             });
         }
     }
 
-    static addWarningTooltip(element)
+    addWarningTooltip(element)
     {
         element.style.color = 'red';
-        element.title = 'Warning!!!!';
+        document.getElementById('zotmoov-kb-settings-warning').style.display = '';
+    }
+
+    clearWarningTooltip(element)
+    {
+        element.style.color = '';
+        if(this._warned_pref.size > 0) return;
+        document.getElementById('zotmoov-kb-settings-warning').style.display = 'none';
     }
 }
 
