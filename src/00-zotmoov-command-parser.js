@@ -149,7 +149,7 @@ class ZotMoovCWParser
             apply(text)
             {
                 const reg = RegExp(this.regex, this.flags);
-                return reg.exec(text)[group];
+                return reg.exec(text)[this.group];
             }
         },
 
@@ -220,6 +220,7 @@ class ZotMoovCWParser
 
     apply(key, text)
     {
+        if(!this._cws[key]) return null;
         return this._cws[key].reduce((new_text, cmd) => cmd.apply(new_text), text);
     }
 
