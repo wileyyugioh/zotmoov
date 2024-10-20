@@ -42,6 +42,8 @@ zotmoov-adv-settings-cmu-title = Custom Menu Items
 
 zotmoov-adv-settings-cmu-sel-prefix = Menu Item
 
+zotmoov-adv-settings-cmu-new-dialog-title = New Custom Menu Item Title
+
 zotmoov-kb-settings-keyboard-shortcuts = Keyboard Shortcuts
 
 zotmoov-kb-settings-move-item = Move/Copy Files to Subdirectory
