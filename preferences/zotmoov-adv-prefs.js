@@ -83,7 +83,7 @@ class ZotMoovAdvancedPrefs {
             const wc_menu_sel_val = this.sel_menu.selectedItem.value;
             let wc_commands =  this.commands[wc_menu_sel_val];
 
-            for (let index of selection.selected)
+            for (let index of Array.from(selection.selected).reverse())
             {
                 wc_commands.splice(index, 1);
             }
