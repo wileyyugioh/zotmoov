@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://zotero/skin/preferences.css"?>
+
+<!DOCTYPE window SYSTEM "chrome://zotero/locale/zotero.dtd">
+
+<window
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    title="ZotMoov"
+    drawintitlebar-platforms="mac"
+    class="zotero-dialog"
+    style="min-width: 300px;"
+    onload="myOnLoad();">
+<dialog buttons="cancel,accept" id="zotmoov-file-ext-dialog">
+    <script src="chrome://zotero/content/include.js"/>
+
+    <linkset><html:link rel="localization" href="zotmoov.ftl"/></linkset>
+
+    <vbox style='margin-bottom: 10px;'>
+        <hbox><label><html:h3 data-l10n-id="zotmoov-adv-settings-cmu-new-dialog-title"/></label></hbox>
+        <hbox><html:input id="zotmoov-file-ext-dialog-input" type="text" style="flex: 1;" oninput="myOnInput(event);"/></hbox>
+    </vbox>
+
+    <script>
+    <![CDATA[
+        document.addEventListener('dialogaccept', () => myOnAccept());
+
+        function myOnLoad()
+        {
+            document.getElementById('zotmoov-file-ext-dialog').getButton('accept').disabled = true;
+        }
+
+        function myOnAccept()
+        {
+            const text = document.getElementById('zotmoov-file-ext-dialog-input').value;
+            Zotero.ZotMoov.Prefs.Advanced.createCMUMenuItem(text);
+        }
+
+        function myOnInput(event)
+        {
+            document.getElementById('zotmoov-file-ext-dialog').getButton('accept').disabled = event.target.value.trim() === '';
+        }
+
+    ]]>
+    </script>
+</dialog>
+</window>

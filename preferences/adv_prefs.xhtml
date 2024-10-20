@@ -13,14 +13,18 @@
         <vbox>
                 <label><html:h2 data-l10n-id="zotmoov-adv-settings-cmu-title"></html:h2></label>
                 <hbox align="center">
-                    <label data-l10n-id="zotmoov-adv-settings-cmu-sel-prefix"/>
-                    <menulist native="true" id="zotmoov-adv-settings-cmu-sel-menu"><menupopup></menupopup></menulist>
-                    <spacer width="100px"/>
+                    <hbox align="center" style="margin-right: auto;">
+                        <label data-l10n-id="zotmoov-adv-settings-cmu-sel-prefix"/>
+                        <menulist native="true" id="zotmoov-adv-settings-cmu-sel-menu">
+                            <menupopup>
+                            </menupopup>
+                        </menulist>
+                    </hbox>
                     <button id="zotmoov-adv-settings-cmu-sel-delete" disabled="true" label="-" style="min-width: 80px; margin-inline-end: 6px;"
                         oncommand=""/>
                     <button label="+" style="min-width: 80px;" oncommand=""/>
                 </hbox>
-                <hbox class="virtualized-table-container" style="display: flex; min-height: 300px; max-height: 100px;">
+                <hbox class="virtualized-table-container" style="display: flex; min-height: 100px;">
                     <html:div id="zotmoov-adv-settings-cmu-tree"/>
                 </hbox>
                 <separator class="thin"/>
@@ -55,7 +59,7 @@
                     </menupopup>
                 </menulist>
             </hbox>
-            <hbox class="virtualized-table-container" style="display: flex; min-height: 300px; max-height: 100px;">
+            <hbox class="virtualized-table-container" style="display: flex; min-height: 200px;">
                 <html:div id="zotmoov-adv-settings-cw-tree"/>
             </hbox>
             <separator class="thin"/>

@@ -15,12 +15,13 @@ class ZotMoovAdvancedPrefs {
     }
 
     static MoveableEntries = class {
-        constructor(tree, sel_menu, commands, buttons)
+        constructor(tree, sel_menu, commands, buttons, freeze_row = 0)
         {
             this.tree = tree;
             this.sel_menu = sel_menu;
             this.commands = commands;
             this.buttons = buttons;
+            this.freeze_row = freeze_row;
         }
 
         moveEntryUp()
@@ -46,7 +47,7 @@ class ZotMoovAdvancedPrefs {
             if (focus_index >= 0) selection.toggleSelect(focus_index);
             this.tree.invalidate();
 
-            if (selection.focused <= 1) this.buttons.up.disabled = true;
+            if (selection.focused <= this.freeze_row) this.buttons.up.disabled = true;
         }
 
         moveEntryDown()
@@ -119,10 +120,13 @@ class ZotMoovAdvancedPrefs {
             let wc_commands =  this.commands[wc_menu_sel_val];
             let selected = selection.selected;
 
-            this.buttons.delete.disabled = (!selected.size || (selected.has(0) && wc_commands.length > 1));
+            const selected_is_freeze_ninc = Array.from(selected).some(e => [...Array(this.freeze_row).keys()].includes(e));
+            const selected_is_freeze_inc = Array.from(selected).some(e => [...Array(this.freeze_row + 1).keys()].includes(e));
+
+            this.buttons.delete.disabled = (!selected.size || (selected_is_freeze_ninc && wc_commands.length > this.freeze_row));
             this.buttons.edit.disabled = !selected.size
-            this.buttons.up.disabled = (!selected.size || selected.has(0) || selected.has(1));
-            this.buttons.down.disabled = (!selected.size || selected.has(0) || selected.has(wc_commands.length - 1));
+            this.buttons.up.disabled = (!selected.size || selected_is_freeze_inc);
+            this.buttons.down.disabled = (!selected.size || selected_is_freeze_ninc || selected.has(wc_commands.length - 1));
         }
     }
 
@@ -183,6 +187,31 @@ class ZotMoovAdvancedPrefs {
 
             return div;
         }
+
+        ReactDOM.createRoot(document.getElementById('zotmoov-adv-settings-cmu-tree')).render(React.createElement(this.constructor.FixedVirtualizedTable, {
+            getRowCount: () => wc_commands.length,
+            id: 'zotmoov-adv-settings-cmu-tree-treechildren',
+            ref: (ref) => {
+                this._cmu_tree = ref;
+                this._moveable_cmus = new this.constructor.MoveableEntries(this._cmu_tree,
+                    document.getElementById('zotmoov-adv-settings-cmu-sel-menu'),
+                    this._savedcmus,
+                    {
+                        up: document.getElementById('zotmoov-adv-settings-cmu-up'),
+                        down: document.getElementById('zotmoov-adv-settings-cmu-down'),
+                        edit: document.getElementById('zotmoov-adv-settings-cmu-edit'),
+                        delete: document.getElementById('zotmoov-adv-settings-cmu-delete'),
+                    }
+                );
+            },
+            renderItem: renderItem,
+            onSelectionChange: (selection) => this.onCMUTreeSelect(selection),
+            showHeader: true,
+            columns: columns,
+            staticColumns: true,
+            multiSelect: false,
+            disableFontSizeScaling: true
+        }));
     }
 
     async createCWTree()
@@ -247,7 +276,8 @@ class ZotMoovAdvancedPrefs {
                         down: document.getElementById('zotmoov-adv-settings-cw-down'),
                         edit: document.getElementById('zotmoov-adv-settings-cw-edit'),
                         delete: document.getElementById('zotmoov-adv-settings-cw-delete'),
-                    }
+                    },
+                    1
                 );
             },
             renderItem: renderItem,
@@ -262,6 +292,9 @@ class ZotMoovAdvancedPrefs {
 
     init()
     {
+        // Initialized when tree is initialized
+        this._moveable_cmds = null;
+
         this._savedcommands = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.cwc_commands', true));
         this._savedcmus = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
 
@@ -270,7 +303,7 @@ class ZotMoovAdvancedPrefs {
 
     createCWEntryFromDialog(wc, command_name, index, data_obj)
     {
-        // Validate that first input is text
+        // Validate that first input is text or field
         const COMMAND_STRUCT = Zotero.ZotMoov.Commands.Commands;
         if (index == 0 && !([COMMAND_STRUCT.TextCommand.COMMAND_NAME, COMMAND_STRUCT.FieldCommand.COMMAND_NAME].includes(command_name))) return;
 
@@ -354,6 +387,24 @@ class ZotMoovAdvancedPrefs {
     {
         document.getElementById('zotmoov-adv-settings-cw-tree').replaceChildren();
         this.createCWTree();
+    }
+
+    spawnCMUMenuItemCreateDialog()
+    {
+        window.openDialog('chrome://zotmoov/content/add-cmu-dialog.xhtml',
+            'zotmoov-add-cmu-dialog-window',
+            'chrome,centerscreen,resizable=no,modal');
+    }
+
+    createCMUMenuItem(title)
+    {
+        this._savedcmus[title] = [];
+        document.getElementById('zotmoov-adv-settings-cmu-sel-menu').appendItem(title, title);
+    }
+
+    onCMUTreeSelect(selection)
+    {
+        this._moveable_cmus.onTreeSelect(selection);
     }
 }
 
