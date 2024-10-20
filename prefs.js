@@ -21,3 +21,4 @@ pref('extensions.zotmoov.keys.move_item', '');
 pref('extensions.zotmoov.keys.move_item_custom_dir', '');
 pref('extensions.zotmoov.keys.link_item', '');
 pref('extensions.zotmoov.keys.convert_linked', '');
+pref('extensions.zotmoov.custom_menu_items', JSON.stringify({}));
