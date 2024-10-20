@@ -133,9 +133,17 @@ class ZotMoovAdvancedPrefs {
     loadCMUMenuItems()
     {
         const cmu_menu_sel_val = document.getElementById('zotmoov-adv-settings-cmu-sel-menu');
+
         for (let k of Object.keys(this._savedcmus))
         {
             cmu_menu_sel_val.appendItem(k, k);
+        }
+
+        if (cmu_menu_sel_val.itemCount > 0)
+        {
+            cmu_menu_sel_val.selectedIndex = 0;
+            cmu_menu_sel_val.disabled = false;
+            document.getElementById('zotmoov-adv-settings-cmu-sel-delete').disabled = false;
         }
     }
 
@@ -189,7 +197,7 @@ class ZotMoovAdvancedPrefs {
         }
 
         ReactDOM.createRoot(document.getElementById('zotmoov-adv-settings-cmu-tree')).render(React.createElement(this.constructor.FixedVirtualizedTable, {
-            getRowCount: () => wc_commands.length,
+            getRowCount: () => commands.length,
             id: 'zotmoov-adv-settings-cmu-tree-treechildren',
             ref: (ref) => {
                 this._cmu_tree = ref;
@@ -299,6 +307,8 @@ class ZotMoovAdvancedPrefs {
         this._savedcmus = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
 
         this.createCWTree();
+        this.loadCMUMenuItems();
+        this.createCMUTree();
     }
 
     createCWEntryFromDialog(wc, command_name, index, data_obj)
@@ -396,10 +406,50 @@ class ZotMoovAdvancedPrefs {
             'chrome,centerscreen,resizable=no,modal');
     }
 
+    spawnCMUMenuItemDeleteDialog()
+    {
+        const sel_menu = document.getElementById('zotmoov-adv-settings-cmu-sel-menu');
+
+        window.openDialog('chrome://zotmoov/content/del-cmu-dialog.xhtml',
+            'zotmoov-add-cmu-dialog-window',
+            'chrome,centerscreen,resizable=no,modal',
+            {
+                index: sel_menu.selectedIndex,
+                title: sel_menu.selectedItem.value,
+            }
+        );
+    }
+
     createCMUMenuItem(title)
     {
         this._savedcmus[title] = [];
-        document.getElementById('zotmoov-adv-settings-cmu-sel-menu').appendItem(title, title);
+
+        const sel_menu = document.getElementById('zotmoov-adv-settings-cmu-sel-menu');
+        const sel_item = sel_menu.appendItem(title, title);
+        sel_menu.selectedItem = sel_item;
+        sel_menu.disabled = false;
+        document.getElementById('zotmoov-adv-settings-cmu-sel-delete').disabled = false;
+
+        Zotero.Prefs.set('extensions.zotmoov.custom_menu_items', JSON.stringify(this._savedcmus), true);
+    }
+
+    deleteCMUMenuItem(index, title)
+    {
+        delete this._savedcmus[title];
+
+        const sel_menu = document.getElementById('zotmoov-adv-settings-cmu-sel-menu');
+        sel_menu.getItemAtIndex(index).remove();
+        if (sel_menu.itemCount > 0)
+        {
+            sel_menu.selectedIndex = 0;
+        } else
+        {
+            sel_menu.selectedIndex = -1;
+            sel_menu.disabled = true;
+            document.getElementById('zotmoov-adv-settings-cmu-sel-delete').disabled = true;
+        }
+
+        Zotero.Prefs.set('extensions.zotmoov.custom_menu_items', JSON.stringify(this._savedcmus), true);
     }
 
     onCMUTreeSelect(selection)

@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://zotero/skin/preferences.css"?>
+
+<!DOCTYPE window SYSTEM "chrome://zotero/locale/zotero.dtd">
+
+<window
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    title="ZotMoov"
+    drawintitlebar-platforms="mac"
+    class="zotero-dialog"
+    style="min-width: 300px; padding-bottom: 10px;"
+    onload="myOnLoad();">
+<dialog buttons="cancel,accept" id="zotmoov-file-ext-dialog">
+    <script src="chrome://zotero/content/include.js"/>
+
+    <linkset><html:link rel="localization" href="zotmoov.ftl"/></linkset>
+
+    <vbox>
+        <hbox><label><html:h3 id="zotmoov-dialog-title" data-l10n-id="zotmoov-adv-settings-cmu-del-dialog-title"/></label></hbox>
+    </vbox>
+
+    <script>
+    <![CDATA[
+        document.addEventListener('dialogaccept', () => myOnAccept());
+        let window_args = {
+            index: 0,
+            title: ''
+        }
+
+        function myOnLoad()
+        {
+            if (window.arguments)
+            {
+                window_args = {...window_args, ...window.arguments[0]};
+                document.getElementById('zotmoov-dialog-title').setAttribute('data-l10n-args', `{ "cmu-title": "${ window_args.title }" }`);
+            }
+        }
+
+        function myOnAccept()
+        {
+            Zotero.ZotMoov.Prefs.Advanced.deleteCMUMenuItem(window_args.index, window_args.title);
+        }
+    ]]>
+    </script>
+</dialog>
+</window>

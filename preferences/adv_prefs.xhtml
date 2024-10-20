@@ -15,14 +15,11 @@
                 <hbox align="center">
                     <hbox align="center" style="margin-right: auto;">
                         <label data-l10n-id="zotmoov-adv-settings-cmu-sel-prefix"/>
-                        <menulist native="true" id="zotmoov-adv-settings-cmu-sel-menu">
-                            <menupopup>
-                            </menupopup>
-                        </menulist>
+                        <menulist native="true" id="zotmoov-adv-settings-cmu-sel-menu" disabled="true"></menulist>
                     </hbox>
                     <button id="zotmoov-adv-settings-cmu-sel-delete" disabled="true" label="-" style="min-width: 80px; margin-inline-end: 6px;"
-                        oncommand=""/>
-                    <button label="+" style="min-width: 80px;" oncommand=""/>
+                        oncommand="Zotero.ZotMoov.Prefs.Advanced.spawnCMUMenuItemDeleteDialog();"/>
+                    <button label="+" style="min-width: 80px;" oncommand="Zotero.ZotMoov.Prefs.Advanced.spawnCMUMenuItemCreateDialog();"/>
                 </hbox>
                 <hbox class="virtualized-table-container" style="display: flex; min-height: 100px;">
                     <html:div id="zotmoov-adv-settings-cmu-tree"/>
