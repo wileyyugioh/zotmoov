@@ -357,6 +357,7 @@ class ZotMoovAdvancedPrefs {
             sel_menu.selectedItem = sel_item;
             sel_menu.disabled = false;
             document.getElementById('zotmoov-adv-settings-cmu-sel-delete').disabled = false;
+            document.getElementById('zotmoov-adv-settings-cmu-add').disabled = false;
 
             super.changeSelectedItem();
             Zotero.Prefs.set('extensions.zotmoov.custom_menu_items', JSON.stringify(this.commands), true);
@@ -375,7 +376,14 @@ class ZotMoovAdvancedPrefs {
             {
                 sel_menu.selectedIndex = -1;
                 sel_menu.disabled = true;
+
                 document.getElementById('zotmoov-adv-settings-cmu-sel-delete').disabled = true;
+
+                document.getElementById('zotmoov-adv-settings-cmu-down').disabled = true;
+                document.getElementById('zotmoov-adv-settings-cmu-up').disabled = true;
+                document.getElementById('zotmoov-adv-settings-cmu-edit').disabled = true;
+                document.getElementById('zotmoov-adv-settings-cmu-delete').disabled = true;
+                document.getElementById('zotmoov-adv-settings-cmu-add').disabled = true;
             }
 
             super.changeSelectedItem();
@@ -395,6 +403,7 @@ class ZotMoovAdvancedPrefs {
                 this.sel_menu.selectedIndex = 0;
                 this.sel_menu.disabled = false;
                 document.getElementById('zotmoov-adv-settings-cmu-sel-delete').disabled = false;
+                document.getElementById('zotmoov-adv-settings-cmu-add').disabled = false;
             }
         }
     }
