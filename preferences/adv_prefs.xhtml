@@ -18,8 +18,8 @@
                         <menulist native="true" id="zotmoov-adv-settings-cmu-sel-menu" disabled="true"></menulist>
                     </hbox>
                     <button id="zotmoov-adv-settings-cmu-sel-delete" disabled="true" label="-" style="min-width: 80px; margin-inline-end: 6px;"
-                        oncommand="Zotero.ZotMoov.Prefs.Advanced.spawnCMUMenuItemDeleteDialog();"/>
-                    <button label="+" style="min-width: 80px;" oncommand="Zotero.ZotMoov.Prefs.Advanced.spawnCMUMenuItemCreateDialog();"/>
+                        oncommand="Zotero.ZotMoov.Prefs.Advanced.Cmu.spawnMenuItemDeleteDialog();"/>
+                    <button label="+" style="min-width: 80px;" oncommand="Zotero.ZotMoov.Prefs.Advanced.Cmu.spawnMenuItemCreateDialog();"/>
                 </hbox>
                 <hbox class="virtualized-table-container" style="display: flex; min-height: 100px;">
                     <html:div id="zotmoov-adv-settings-cmu-tree"/>
@@ -27,15 +27,15 @@
                 <separator class="thin"/>
                 <hbox align="center" pack="end">
                     <button id="zotmoov-adv-settings-cmu-up" disabled="true" label="↑" style="min-width: 80px; margin-inline-end: 6px;"
-                        oncommand="Zotero.ZotMoov.Prefs.Advanced.moveCMUEntryUp()"/>
+                        oncommand="Zotero.ZotMoov.Prefs.Advanced.Cmu.moveEntryUp()"/>
                     <button id="zotmoov-adv-settings-cmu-down" disabled="true" label="↓" style="min-width: 80px; margin-inline-end: 6px;"
-                        oncommand="Zotero.ZotMoov.Prefs.Advanced.moveCMUEntryDown()"/>
+                        oncommand="Zotero.ZotMoov.Prefs.Advanced.Cmu.moveEntryDown()"/>
                     <button id="zotmoov-adv-settings-cmu-edit" disabled="true" label="&zotero.general.edit;" style="min-width: 80px; margin-inline-end: 6px;"
-                        oncommand="Zotero.ZotMoov.Prefs.Advanced.editCMUEntry()"/>
+                        oncommand="Zotero.ZotMoov.Prefs.Advanced.Cmu.editEntry()"/>
                     <spacer flex="1"/>
                     <button id="zotmoov-adv-settings-cmu-delete" disabled="true" label="-" style="min-width: 80px; margin-inline-end: 6px;"
-                        oncommand="Zotero.ZotMoov.Prefs.Advanced.removeCMUEntries()"/>
-                    <button id="zotmoov-adv-settings-cmu-add" label="+" style="min-width: 80px;" oncommand="Zotero.ZotMoov.Prefs.Advanced.createCMUEntry();"/>
+                        oncommand="Zotero.ZotMoov.Prefs.Advanced.Cmu.removeEntries()"/>
+                    <button id="zotmoov-adv-settings-cmu-add" label="+" style="min-width: 80px;" oncommand="Zotero.ZotMoov.Prefs.Advanced.Cmu.createEntry();"/>
                 </hbox>
             </vbox>
         <vbox>
@@ -44,15 +44,15 @@
                 <label data-l10n-id="zotmoov-adv-settings-wc-sel-prefix"/>
                 <menulist native="true" id="zotmoov-adv-settings-wc-sel-menu">
                     <menupopup>
-                        <menuitem value="%1" label="%1" oncommand="Zotero.ZotMoov.Prefs.Advanced.changeSelectedWildcard(this)"/>
-                        <menuitem value="%2" label="%2" oncommand="Zotero.ZotMoov.Prefs.Advanced.changeSelectedWildcard(this)"/>
-                        <menuitem value="%3" label="%3" oncommand="Zotero.ZotMoov.Prefs.Advanced.changeSelectedWildcard(this)"/>
-                        <menuitem value="%4" label="%4" oncommand="Zotero.ZotMoov.Prefs.Advanced.changeSelectedWildcard(this)"/>
-                        <menuitem value="%5" label="%5" oncommand="Zotero.ZotMoov.Prefs.Advanced.changeSelectedWildcard(this)"/>
-                        <menuitem value="%6" label="%6" oncommand="Zotero.ZotMoov.Prefs.Advanced.changeSelectedWildcard(this)"/>
-                        <menuitem value="%7" label="%7" oncommand="Zotero.ZotMoov.Prefs.Advanced.changeSelectedWildcard(this)"/>
-                        <menuitem value="%8" label="%8" oncommand="Zotero.ZotMoov.Prefs.Advanced.changeSelectedWildcard(this)"/>
-                        <menuitem value="%9" label="%9" oncommand="Zotero.ZotMoov.Prefs.Advanced.changeSelectedWildcard(this)"/>
+                        <menuitem value="%1" label="%1" oncommand="Zotero.ZotMoov.Prefs.Advanced.Cw.changeSelectedItem(this)"/>
+                        <menuitem value="%2" label="%2" oncommand="Zotero.ZotMoov.Prefs.Advanced.Cw.changeSelectedItem(this)"/>
+                        <menuitem value="%3" label="%3" oncommand="Zotero.ZotMoov.Prefs.Advanced.Cw.changeSelectedItem(this)"/>
+                        <menuitem value="%4" label="%4" oncommand="Zotero.ZotMoov.Prefs.Advanced.Cw.changeSelectedItem(this)"/>
+                        <menuitem value="%5" label="%5" oncommand="Zotero.ZotMoov.Prefs.Advanced.Cw.changeSelectedItem(this)"/>
+                        <menuitem value="%6" label="%6" oncommand="Zotero.ZotMoov.Prefs.Advanced.Cw.changeSelectedItem(this)"/>
+                        <menuitem value="%7" label="%7" oncommand="Zotero.ZotMoov.Prefs.Advanced.Cw.changeSelectedItem(this)"/>
+                        <menuitem value="%8" label="%8" oncommand="Zotero.ZotMoov.Prefs.Advanced.Cw.changeSelectedItem(this)"/>
+                        <menuitem value="%9" label="%9" oncommand="Zotero.ZotMoov.Prefs.Advanced.Cw.changeSelectedItem(this)"/>
                     </menupopup>
                 </menulist>
             </hbox>
@@ -62,15 +62,15 @@
             <separator class="thin"/>
             <hbox align="center" pack="end">
                 <button id="zotmoov-adv-settings-cw-up" disabled="true" label="↑" style="min-width: 80px; margin-inline-end: 6px;"
-                    oncommand="Zotero.ZotMoov.Prefs.Advanced.moveCWEntryUp()"/>
+                    oncommand="Zotero.ZotMoov.Prefs.Advanced.Cw.moveEntryUp()"/>
                 <button id="zotmoov-adv-settings-cw-down" disabled="true" label="↓" style="min-width: 80px; margin-inline-end: 6px;"
-                    oncommand="Zotero.ZotMoov.Prefs.Advanced.moveCWEntryDown()"/>
+                    oncommand="Zotero.ZotMoov.Prefs.Advanced.Cw.moveEntryDown()"/>
                 <button id="zotmoov-adv-settings-cw-edit" disabled="true" label="&zotero.general.edit;" style="min-width: 80px; margin-inline-end: 6px;"
-                    oncommand="Zotero.ZotMoov.Prefs.Advanced.editCWEntry()"/>
+                    oncommand="Zotero.ZotMoov.Prefs.Advanced.Cw.editEntry()"/>
                 <spacer flex="1"/>
                 <button id="zotmoov-adv-settings-cw-delete" disabled="true" label="-" style="min-width: 80px; margin-inline-end: 6px;"
-                    oncommand="Zotero.ZotMoov.Prefs.Advanced.removeCWEntries()"/>
-                <button id="zotmoov-adv-settings-cw-add" label="+" style="min-width: 80px;" oncommand="Zotero.ZotMoov.Prefs.Advanced.createCWEntry();"/>
+                    oncommand="Zotero.ZotMoov.Prefs.Advanced.Cw.removeEntries()"/>
+                <button id="zotmoov-adv-settings-cw-add" label="+" style="min-width: 80px;" oncommand="Zotero.ZotMoov.Prefs.Advanced.Cw.createEntry();"/>
             </hbox>
         </vbox>
     </groupbox>
