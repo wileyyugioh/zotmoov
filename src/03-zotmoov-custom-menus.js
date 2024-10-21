@@ -9,7 +9,9 @@ class ZotMoovCMUParser
             constructor(data_obj)
             {
                 this.directory = data_obj.directory;
+                this.enable_customdir = data_obj.enable_customdir;
                 this.enable_subdir = data_obj.enable_subdir;
+
                 this.command_name = this.constructor.COMMAND_NAME;
             }
 
@@ -17,7 +19,7 @@ class ZotMoovCMUParser
             {
                 return {
                     'command_name': this.command_name,
-                    'desc': 'move to ' + this.directory
+                    'desc': 'Move to ' + this.directory
                 };
             }
 
@@ -26,7 +28,9 @@ class ZotMoovCMUParser
                 let prefs = Zotero.ZotMoov.getBasePrefs();
                 prefs.into_subfolder = this.enable_subdir;
 
-                return Zotero.ZotMoov.move(items, this.directory, prefs);
+                const dir = this.enable_customdir ? this.directory : Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
+
+                return Zotero.ZotMoov.move(items, dir, prefs);
             }
         },
 
@@ -37,7 +41,9 @@ class ZotMoovCMUParser
             constructor(data_obj)
             {
                 this.directory = data_obj.directory;
+                this.enable_customdir = data_obj.enable_customdir;
                 this.enable_subdir = data_obj.enable_subdir;
+
                 this.command_name = this.constructor.COMMAND_NAME;
             }
 
@@ -54,7 +60,9 @@ class ZotMoovCMUParser
                 let prefs = Zotero.ZotMoov.getBasePrefs();
                 prefs.into_subfolder = this.enable_subdir;
 
-                return Zotero.ZotMoov.copy(items, this.directory, prefs);
+                const dir = this.enable_customdir ? this.directory : Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
+
+                return Zotero.ZotMoov.copy(items, dir, prefs);
             }
         },
     }

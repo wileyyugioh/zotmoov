@@ -130,13 +130,21 @@ class ZotMoovAdvancedPrefs {
         }
     }
 
+    static CustomItemManager = class {
+        async createTree()
+        {
+
+        }
+    }
+
     loadCMUMenuItems()
     {
         const cmu_menu_sel_val = document.getElementById('zotmoov-adv-settings-cmu-sel-menu');
 
         for (let k of Object.keys(this._savedcmus))
         {
-            cmu_menu_sel_val.appendItem(k, k);
+            let mu = cmu_menu_sel_val.appendItem(k, k);
+            mu.setAttribute('oncommand', 'Zotero.ZotMoov.Prefs.Advanced.changeSelectedMenuItem(this);');
         }
 
         if (cmu_menu_sel_val.itemCount > 0)
@@ -149,7 +157,11 @@ class ZotMoovAdvancedPrefs {
 
     async createCMUTree()
     {
-        const sel_val = document.getElementById('zotmoov-adv-settings-cmu-sel-menu').selectedItem.value;
+        const sel_menu = document.getElementById('zotmoov-adv-settings-cmu-sel-menu');
+        if (sel_menu.itemCount < 1) return;
+
+
+        let sel_val = sel_menu.selectedItem.value;
         if (this._savedcmus[sel_val] == null) this._savedcmus[sel_val] = [];
         const commands =  this._savedcmus[sel_val];
 
@@ -186,7 +198,7 @@ class ZotMoovAdvancedPrefs {
             div.classList.toggle('selected', selection.isSelected(index));
             div.classList.toggle('focused', selection.focused == index);
 
-            const cd = Zotero.ZotMoov.Menu.Custom.parse(command).getColumnData();
+            const cd = Zotero.ZotMoov.Menus.Custom.Parser.parse(command).getColumnData();
             for (let column of columns)
             {
                 const data = (column.dataKey == 'index') ? index.toString() : cd[column.dataKey];
@@ -302,6 +314,7 @@ class ZotMoovAdvancedPrefs {
     {
         // Initialized when tree is initialized
         this._moveable_cmds = null;
+        this._moveable_cmus = null;
 
         this._savedcommands = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.cwc_commands', true));
         this._savedcmus = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
@@ -326,12 +339,31 @@ class ZotMoovAdvancedPrefs {
 
     }
 
+    createCMUEntryFromDialog(wc, command_name, index, data_obj)
+    {
+        const wc_commands = this._savedcmus[wc];
+        wc_commands.splice(index, 0, Zotero.ZotMoov.Menus.Custom.Parser.parse({...data_obj, command_name: command_name}));
+
+        this._moveable_cmus.createEntry(index);
+
+        Zotero.Prefs.set('extensions.zotmoov.custom_menu_items', JSON.stringify(this._savedcmus), true);
+
+    }
+
     editCWEntryFromDialog(wc, command_name, index, data_obj)
     {
         this._savedcommands[wc][index] = Zotero.ZotMoov.Commands.Parser.parse({...data_obj, command_name: command_name});
 
         this._cw_tree.invalidate();
         Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true); 
+    }
+
+    editCMUEntryFromDialog(wc, command_name, index, data_obj)
+    {
+        this._savedcmus[wc][index] = Zotero.ZotMoov.Menus.Custom.Parser.parse({...data_obj, command_name: command_name});
+
+        this._cmu_tree.invalidate();
+        Zotero.Prefs.set('extensions.zotmoov.custom_menu_items', JSON.stringify(this._savedcmus), true);
     }
 
     spawnCWDialog(operation, index, data)
@@ -341,6 +373,20 @@ class ZotMoovAdvancedPrefs {
             'chrome,centerscreen,resizable=no,modal',
             {
                 wc: document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value,
+                index: index,
+                operation: operation,
+                data: data,
+            }
+        );
+    }
+
+    spawnCMUDialog(operation, index, data)
+    {
+        window.openDialog('chrome://zotmoov/content/custom-cmu-dialog.xhtml',
+            'zotmoov-custom-cmu-dialog-window',
+            'chrome,centerscreen,resizable=no,modal',
+            {
+                wc: document.getElementById('zotmoov-adv-settings-cmu-sel-menu').selectedItem.value,
                 index: index,
                 operation: operation,
                 data: data,
@@ -362,6 +408,20 @@ class ZotMoovAdvancedPrefs {
         }
     }
 
+    editCMUEntry()
+    {
+        let selection = this._cmu_tree.selection;
+
+        const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-cmu-sel-menu').selectedItem.value;
+        let wc_commands =  this._savedcmus[wc_menu_sel_val];
+
+        for (let index of selection.selected)
+        {
+            this.spawnCMUDialog('edit', index, wc_commands[index]);
+            break;
+        }
+    }
+
     createCWEntry()
     {
         const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-wc-sel-menu').selectedItem.value;
@@ -376,16 +436,34 @@ class ZotMoovAdvancedPrefs {
         Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
     }
 
+    moveCMUEntryUp()
+    {
+        this._moveable_cmus.moveEntryUp();
+        Zotero.Prefs.set('extensions.zotmoov.custom_menu_items', JSON.stringify(this._savedcmus), true);
+    }
+
     moveCWEntryDown()
     {
         this._moveable_cmds.moveEntryDown();
         Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
     }
 
+    moveCMUEntryDown()
+    {
+        this._moveable_cmus.moveEntryDown();
+        Zotero.Prefs.set('extensions.zotmoov.custom_menu_items', JSON.stringify(this._savedcmus), true);
+    }
+
     removeCWEntries()
     {
         this._moveable_cmds.removeEntries();
         Zotero.Prefs.set('extensions.zotmoov.cwc_commands', JSON.stringify(this._savedcommands), true);
+    }
+
+    removeCMUEntries()
+    {
+        this._moveable_cmus.removeEntries();
+        Zotero.Prefs.set('extensions.zotmoov.custom_menu_items', JSON.stringify(this._savedcmus), true);
     }
 
     onCWTreeSelect(selection)
@@ -426,11 +504,24 @@ class ZotMoovAdvancedPrefs {
 
         const sel_menu = document.getElementById('zotmoov-adv-settings-cmu-sel-menu');
         const sel_item = sel_menu.appendItem(title, title);
+
+
+        sel_item.setAttribute('oncommand', 'Zotero.ZotMoov.Prefs.Advanced.changeSelectedMenuItem(this);');
+
         sel_menu.selectedItem = sel_item;
         sel_menu.disabled = false;
         document.getElementById('zotmoov-adv-settings-cmu-sel-delete').disabled = false;
 
+        document.getElementById('zotmoov-adv-settings-cmu-tree').replaceChildren();
+        this.createCMUTree();
+
         Zotero.Prefs.set('extensions.zotmoov.custom_menu_items', JSON.stringify(this._savedcmus), true);
+    }
+
+    changeSelectedMenuItem()
+    {
+        document.getElementById('zotmoov-adv-settings-cmu-tree').replaceChildren();
+        this.createCMUTree();
     }
 
     deleteCMUMenuItem(index, title)
@@ -450,6 +541,14 @@ class ZotMoovAdvancedPrefs {
         }
 
         Zotero.Prefs.set('extensions.zotmoov.custom_menu_items', JSON.stringify(this._savedcmus), true);
+    }
+
+    createCMUEntry()
+    {
+        const wc_menu_sel_val = document.getElementById('zotmoov-adv-settings-cmu-sel-menu').selectedItem.value;
+        let wc_commands =  this._savedcmus[wc_menu_sel_val];
+
+        this.spawnCMUDialog('create', wc_commands.length);
     }
 
     onCMUTreeSelect(selection)

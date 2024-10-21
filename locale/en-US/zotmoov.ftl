@@ -38,6 +38,11 @@ zotmoov-adv-settings-exec-label3 = Flags
 
 zotmoov-adv-settings-replace-label2 = Replacement String
 
+zotmoov-adv-settings-directory-label1 = Directory
+
+zotmoov-adv-settings-directory-checkbox1 =
+    .label = Enable Custom Directory
+
 zotmoov-adv-settings-cmu-title = Custom Menu Items
 
 zotmoov-adv-settings-cmu-sel-prefix = Menu Item
