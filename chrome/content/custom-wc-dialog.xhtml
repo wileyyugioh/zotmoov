@@ -50,7 +50,7 @@
     <script>
     <![CDATA[
         document.addEventListener('dialogaccept', () => myOnAccept());
-        let cwentry_todo = Zotero.ZotMoov.Prefs.Advanced.createCWEntryFromDialog.bind(Zotero.ZotMoov.Prefs.Advanced);
+        let cwentry_todo = Zotero.ZotMoov.Prefs.Advanced.Cw.createEntryFromDialog.bind(Zotero.ZotMoov.Prefs.Advanced.Cw);
         let window_args =
         {
             wc: '%1',
@@ -366,7 +366,7 @@
             }
 
             // Change operation to edit
-            if (window_args.operation == 'edit') cwentry_todo = Zotero.ZotMoov.Prefs.Advanced.editCWEntryFromDialog.bind(Zotero.ZotMoov.Prefs.Advanced);
+            if (window_args.operation == 'edit') cwentry_todo = Zotero.ZotMoov.Prefs.Advanced.Cw.editEntryFromDialog.bind(Zotero.ZotMoov.Prefs.Advanced.Cw);
 
             if (!window_args.data) return;
             for (const [index, commands] of Object.values(Zotero.ZotMoov.Commands.Commands).entries())

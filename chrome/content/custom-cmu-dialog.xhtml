@@ -49,7 +49,7 @@
     <script>
     <![CDATA[
         document.addEventListener('dialogaccept', () => myOnAccept());
-        let cwentry_todo = Zotero.ZotMoov.Prefs.Advanced.createCMUEntryFromDialog.bind(Zotero.ZotMoov.Prefs.Advanced);
+        let cwentry_todo = Zotero.ZotMoov.Prefs.Advanced.Cmu.createEntryFromDialog.bind(Zotero.ZotMoov.Prefs.Advanced.Cmu);
         let window_args =
         {
             wc: '',
@@ -202,7 +202,7 @@
             loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.Move.COMMAND_NAME]);
 
             // Change operation to edit
-            if (window_args.operation == 'edit') cwentry_todo = Zotero.ZotMoov.Prefs.Advanced.editCMUEntryFromDialog.bind(Zotero.ZotMoov.Prefs.Advanced);
+            if (window_args.operation == 'edit') cwentry_todo = Zotero.ZotMoov.Prefs.Advanced.Cmu.editEntryFromDialog.bind(Zotero.ZotMoov.Prefs.Advanced.Cmu);
 
             if (!window_args.data) return;
             for (const [index, commands] of Object.values(Zotero.ZotMoov.Menus.Custom.Commands).entries())
