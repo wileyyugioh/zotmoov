@@ -73,7 +73,7 @@ class ZotMoovCMUParser
 
         for (let [k, v] of Object.entries(json_obj))
         {
-          this._cws[k] = v.map(f => this.constructor.parse(f));
+            this._cws[k] = v.map(f => this.constructor.parse(f));
         }
     }
 
@@ -90,10 +90,10 @@ class ZotMoovCMUParser
         }
     }
 
-    apply(key, text)
+    apply(key, items)
     {
         if(!this._cws[key]) return null;
-        return this._cws[key].reduce((new_text, cmd) => cmd.apply(new_text), text);
+        return this._cws[key].reduce((new_items, cmd) => cmd.apply(new_items), items);
     }
 
     data()
