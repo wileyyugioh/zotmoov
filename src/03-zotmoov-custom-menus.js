@@ -65,6 +65,57 @@ class ZotMoovCMUParser
                 return Zotero.ZotMoov.copy(items, dir, prefs);
             }
         },
+
+        AddTag: class
+        {
+            static get COMMAND_NAME() { return 'add_tag'; };
+
+            constructor(data_obj)
+            {
+                this.tag = data_obj.tag;
+
+                this.command_name = this.constructor.COMMAND_NAME;
+            }
+
+            getColumnData()
+            {
+                return {
+                    'command_name': this.command_name,
+                    'desc': 'Add tag: ' + this.tag
+                };
+            }
+
+            apply(items)
+            {
+                items.addTag(this.tag)
+                return items;
+            }
+        },
+
+        MoveFrom: class
+        {
+            static get COMMAND_NAME() { return 'move_from'; };
+
+            constructor(data_obj)
+            {
+                this.tag = data_obj.tag;
+
+                this.command_name = this.constructor.COMMAND_NAME;
+            }
+
+            getColumnData()
+            {
+                return {
+                    'command_name': this.command_name,
+                    'desc': 'Move items into Zotero'
+                };
+            }
+
+            apply(items)
+            {
+                return Zotero.ZotMoov.moveFrom(items);
+            }
+        }
     }
 
     constructor(json_obj = {})
@@ -85,6 +136,10 @@ class ZotMoovCMUParser
                 return new this.Commands.Move(obj);
             case this.Commands.Copy.COMMAND_NAME:
                 return new this.Commands.Copy(obj);
+            case this.Commands.AddTag.COMMAND_NAME:
+                return new this.Commands.AddTag(obj);
+            case this.Commands.MoveFrom.COMMAND_NAME:
+                return new this.Commands.MoveFrom(obj);
             default:
                 break;
         }

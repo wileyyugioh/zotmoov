@@ -130,7 +130,8 @@ var ZotMoov = class {
             preferred_collection: null,
             rename_title: true,
             undefined_str: 'undefined',
-            custom_wc: {}
+            custom_wc: {},
+            add_zotmoov_tag: true
         };
 
         let options = {...default_options, ...arg_options};
@@ -190,7 +191,8 @@ var ZotMoov = class {
             clone.attachmentPath = final_path;
             if(options.rename_title) clone.setField('title', PathUtils.filename(final_path));
             clone.dateAdded = item.dateAdded;
-            clone.addTag('zotmoov');
+
+            if(options.add_zotmoov_tag) clone.addTag('zotmoov');
 
             promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }).then(async function()
                     {
@@ -307,7 +309,7 @@ var ZotMoov = class {
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
 
         let pref = this.getBasePrefs();
-        if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
+        if (Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
             await this.move(atts, dst_path, pref);
         } else
@@ -316,18 +318,17 @@ var ZotMoov = class {
         }
     }
 
-    async moveFromDirectory()
+    async moveFrom(items)
     {
-        let atts = this._getSelectedItems();
-        if (!atts.size) return;
+        let atts = Array.from(items).filter((a) => { return a.isLinkedFileAttachment(); });
 
-        atts = Array.from(atts).filter((a) => { return a.isLinkedFileAttachment(); });
-
+        let ret = [];
         for (let item of atts)
         {
             try
             {
                 let converted = await Zotero.Attachments.convertLinkedFileToStoredFile(item, { move: true });
+                ret.push(converted);
             }
             catch (e)
             {
@@ -336,6 +337,15 @@ var ZotMoov = class {
             }
         }
 
+        return ret;
+    }
+
+    async moveFromDirectory()
+    {
+        let atts = this._getSelectedItems();
+        if (!atts.size) return;
+
+        moveFrom(atts);
     }
 
     async moveSelectedItemsCustomDir()
@@ -381,7 +391,8 @@ var ZotMoov = class {
             preferred_collection: (Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null),
             undefined_str: Zotero.Prefs.get('extensions.zotmoov.undefined_str', true),
             allow_group_libraries: Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true),
-            custom_wc: JSON.parse(Zotero.Prefs.get('extensions.zotmoov.cwc_commands', true))
+            custom_wc: JSON.parse(Zotero.Prefs.get('extensions.zotmoov.cwc_commands', true)),
+            add_zotmoov_tag: Zotero.Prefs.get('extensions.zotmoov.add_zotmoov_tag', true)
         };
     }
 }
