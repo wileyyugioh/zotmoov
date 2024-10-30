@@ -18,7 +18,7 @@ class ZotMoovCWParser
             {
                 return {
                     'command_name': this.command_name,
-                    'desc': this.text
+                    'desc': { fluent: 'zotmoov-command-text', args: `{ "text": "${ this.text }" }` },
                 };
             }
 
@@ -44,7 +44,7 @@ class ZotMoovCWParser
             {
                 return {
                     'command_name': this.command_name,
-                    'desc': this.field
+                    'desc': { fluent: 'zotmoov-command-field', args: `{ "text": "${ this.field }" }` }
                 };
             }
 
@@ -67,7 +67,7 @@ class ZotMoovCWParser
             {
                 return {
                     'command_name': this.command_name,
-                    'desc': ''
+                    'desc': { fluent: 'zotmoov-command-lowercase' }
                 };
             }
 
@@ -90,7 +90,7 @@ class ZotMoovCWParser
             {
                 return {
                     'command_name': this.command_name,
-                    'desc': ''
+                    'desc': { fluent: 'zotmoov-command-uppercase' }
                 };
             }
 
@@ -113,7 +113,7 @@ class ZotMoovCWParser
             {
                 return {
                     'command_name': this.command_name,
-                    'desc': ''
+                    'desc': { fluent: 'zotmoov-command-trim' }
                 };
             }
 
@@ -142,7 +142,7 @@ class ZotMoovCWParser
             {
                 return {
                     'command_name': this.command_name,
-                    'desc': this.regex
+                    'desc': { fluent: 'zotmoov-command-exec', args: `{ "text": "${ this.regex }" }` }
                 };
             }
 
@@ -173,7 +173,7 @@ class ZotMoovCWParser
             {
                 return {
                     'command_name': this.command_name,
-                    'desc': this.regex
+                    'desc': { fluent: 'zotmoov-command-replace', args: `{ "text": "${ this.regex }", "text2": "${ this.replace }" }` }
                 };
             }
 

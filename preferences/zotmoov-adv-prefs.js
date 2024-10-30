@@ -189,8 +189,21 @@ class ZotMoovAdvancedPrefs {
                 const cd = this.parser.parse(command).getColumnData();
                 for (let column of columns)
                 {
-                    const data = (column.dataKey == 'index') ? index.toString() : cd[column.dataKey];
-                    div.appendChild(VirtualizedTable.renderCell(index, data, column));
+                    let cell = VirtualizedTable.renderCell(index, null, column);
+
+                    if (column.dataKey == 'desc')
+                    {
+                        let desc_data = cd[column.dataKey];
+                        cell.setAttribute('data-l10n-id', desc_data['fluent']);
+                        cell.setAttribute('data-l10n-args', desc_data['args']);
+                    }
+                    else
+                    {
+                        const data = (column.dataKey == 'index') ? index.toString() : cd[column.dataKey];
+                        cell.textContent = data;
+                    }
+
+                    div.appendChild(cell);
                 }
 
                 return div;
