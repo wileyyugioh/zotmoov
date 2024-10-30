@@ -17,9 +17,10 @@ class ZotMoovCMUParser
 
             getColumnData()
             {
+                const dir = this.directory ? this.directory : Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
                 return {
                     'command_name': this.command_name,
-                    'desc': 'Move to ' + this.directory
+                    'desc': { fluent: 'zotmoov-menu-item-move', args: `{ "text": "${ dir }" }` },
                 };
             }
 
@@ -49,9 +50,10 @@ class ZotMoovCMUParser
 
             getColumnData()
             {
+                const dir = this.directory ? this.directory : Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
                 return {
                     'command_name': this.command_name,
-                    'desc': 'Copy to ' + this.directory
+                    'desc': { fluent: 'zotmoov-menu-item-copy', args: `{ "text": "${ dir }" }` },
                 };
             }
 
@@ -81,7 +83,7 @@ class ZotMoovCMUParser
             {
                 return {
                     'command_name': this.command_name,
-                    'desc': 'Add tag: ' + this.tag
+                    'desc': { fluent: 'zotmoov-menu-item-tag', args: `{ "text": "${ this.tag }" }` },
                 };
             }
 
@@ -107,7 +109,7 @@ class ZotMoovCMUParser
             {
                 return {
                     'command_name': this.command_name,
-                    'desc': 'Move items into Zotero'
+                    'desc': { fluent: 'zotmoov-menu-item-movefrom' },
                 };
             }
 

@@ -125,3 +125,11 @@ zotmoov-command-trim = Trims Whitespace
 zotmoov-command-exec = Executes { $text }
 
 zotmoov-command-replace = Replaces { $text } with { $text2 }
+
+zotmoov-menu-item-move = Move to { $text }
+
+zotmoov-menu-item-copy = Copy to { $text }
+
+zotmoov-menu-item-tag = Add tag { $text }
+
+zotmoov-menu-item-movefrom = Move items into Zotero
