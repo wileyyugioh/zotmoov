@@ -19,7 +19,7 @@
 
     <vbox style='margin-bottom: 10px;'>
         <hbox align="center">
-            <label data-l10n-id="zotmoov-adv-settings-wc-command"/>
+            <label data-l10n-id="zotmoov-adv-settings-cmu-command"/>
             <menulist native="true" id="zotmoov-adv-settings-wc-sel-menu">
                 <menupopup>
                     <menuitem value="move" label="move" oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.Move.COMMAND_NAME]);"/>
@@ -37,8 +37,8 @@
                     <checkbox id = "zotmoov-cw-dir-input1-checkbox" native="true" data-l10n-id="zotmoov-adv-settings-directory-checkbox1" oncommand=""/>
                 </hbox>
                 <hbox align="center">
-                    <html:input type="text" id="zotmoov-dst-dir" readonly="true" style="flex: 1; margin-left: 0;"/>
-                    <button id="zotmoov-dst-dir-button" data-l10n-id="zotmoov-settings-filepath-button-label"/>
+                    <html:input type="text" id="zotmoov-dst-dir" readonly="true" style="flex: 1; margin-left: 0;" disabled="true"/>
+                    <button id="zotmoov-dst-dir-button" data-l10n-id="zotmoov-settings-filepath-button-label" disabled="true"/>
                 </hbox>
             </vbox>
             <vbox>
@@ -150,10 +150,8 @@
                     );
 
                     const dst_dir = document.getElementById('zotmoov-dst-dir');
-                    dst_dir.disabled = true;
 
                     const but = document.getElementById('zotmoov-dst-dir-button');
-                    but.disabled = true;
                     but.setAttribute('oncommand',
                         'States["' + this.command_name + '"].onChooseDir();'
                     );

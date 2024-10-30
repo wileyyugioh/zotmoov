@@ -38,6 +38,8 @@ zotmoov-adv-settings-exec-label3 = Flags
 
 zotmoov-adv-settings-replace-label2 = Replacement String
 
+zotmoov-adv-settings-cmu-command = Menu Item Command
+
 zotmoov-adv-settings-directory-label1 = Directory
 
 zotmoov-adv-settings-tag-label1 = Tag
