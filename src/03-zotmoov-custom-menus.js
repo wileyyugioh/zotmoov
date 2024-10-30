@@ -24,14 +24,17 @@ class ZotMoovCMUParser
                 };
             }
 
-            apply(items)
+            async apply(items)
             {
                 let prefs = Zotero.ZotMoov.getBasePrefs();
                 prefs.into_subfolder = this.enable_subdir;
 
                 const dir = this.enable_customdir ? this.directory : Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
 
-                return Zotero.ZotMoov.move(items, dir, prefs);
+                const temp = await Zotero.ZotMoov.move(items, dir, prefs);
+                return temp
+                    .filter(result => result.status === 'fulfilled' && result.value)
+                    .map(result => result.value);
             }
         },
 
@@ -57,14 +60,17 @@ class ZotMoovCMUParser
                 };
             }
 
-            apply(items)
+            async apply(items)
             {
                 let prefs = Zotero.ZotMoov.getBasePrefs();
                 prefs.into_subfolder = this.enable_subdir;
 
                 const dir = this.enable_customdir ? this.directory : Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
 
-                return Zotero.ZotMoov.copy(items, dir, prefs);
+                const temp = await Zotero.ZotMoov.copy(items, dir, prefs);
+                return temp
+                    .filter(result => result.status === 'fulfilled' && result.value)
+                    .map(result => result.value);
             }
         },
 
@@ -83,20 +89,24 @@ class ZotMoovCMUParser
             {
                 return {
                     'command_name': this.command_name,
-                    'desc': { fluent: 'zotmoov-menu-item-tag', args: `{ "text": "${ this.tag }" }` },
+                    'desc': { fluent: 'zotmoov-menu-item-addtag', args: `{ "text": "${ this.tag }" }` },
                 };
             }
 
             apply(items)
             {
-                items.addTag(this.tag)
+                for (let item of items)
+                {
+                    item.addTag(this.tag)
+                    item.saveTx();
+                }
                 return items;
             }
         },
 
-        MoveFrom: class
+        RemoveTag: class
         {
-            static get COMMAND_NAME() { return 'move_from'; };
+            static get COMMAND_NAME() { return 'rem_tag'; };
 
             constructor(data_obj)
             {
@@ -109,13 +119,44 @@ class ZotMoovCMUParser
             {
                 return {
                     'command_name': this.command_name,
-                    'desc': { fluent: 'zotmoov-menu-item-movefrom' },
+                    'desc': { fluent: 'zotmoov-menu-item-remtag', args: `{ "text": "${ this.tag }" }` },
                 };
             }
 
             apply(items)
             {
-                return Zotero.ZotMoov.moveFrom(items);
+                for (let item of items)
+                {
+                    item.removeTag(this.tag)
+                    item.saveTx();
+                }
+                return items;
+            }
+        },
+
+        MoveFrom: class
+        {
+            static get COMMAND_NAME() { return 'move_from'; };
+
+            constructor(data_obj)
+            {
+                this.command_name = this.constructor.COMMAND_NAME;
+            }
+
+            getColumnData()
+            {
+                return {
+                    'command_name': this.command_name,
+                    'desc': { fluent: 'zotmoov-menu-item-movefrom' },
+                };
+            }
+
+            async apply(items)
+            {
+                const temp = await Zotero.ZotMoov.moveFrom(items);
+                return temp
+                    .filter(result => result.status === 'fulfilled' && result.value)
+                    .map(result => result.value);
             }
         }
     }
@@ -140,6 +181,8 @@ class ZotMoovCMUParser
                 return new this.Commands.Copy(obj);
             case this.Commands.AddTag.COMMAND_NAME:
                 return new this.Commands.AddTag(obj);
+            case this.Commands.RemoveTag.COMMAND_NAME:
+                return new this.Commands.RemoveTag(obj);
             case this.Commands.MoveFrom.COMMAND_NAME:
                 return new this.Commands.MoveFrom(obj);
             default:
@@ -147,10 +190,18 @@ class ZotMoovCMUParser
         }
     }
 
-    apply(key, items)
+    async apply(key, items)
     {
         if(!this._cws[key]) return null;
-        return this._cws[key].reduce((new_items, cmd) => cmd.apply(new_items), items);
+
+        // Need to do for loop because of promises
+        let my_reduce = items;
+        for (let cmd of this._cws[key])
+        {
+            my_reduce = await cmd.apply(my_reduce);
+        }
+
+        return my_reduce;
     }
 
     data()

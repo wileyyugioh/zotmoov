@@ -42,6 +42,8 @@ zotmoov-adv-settings-directory-label1 = Directory
 
 zotmoov-adv-settings-tag-label1 = Tag
 
+zotmoov-adv-settings-movefrom-label1 = Move From
+
 zotmoov-adv-settings-directory-checkbox1 =
     .label = Enable Custom Directory
 
@@ -135,6 +137,8 @@ zotmoov-menu-item-move = Move to { $text }
 
 zotmoov-menu-item-copy = Copy to { $text }
 
-zotmoov-menu-item-tag = Add tag { $text }
+zotmoov-menu-item-addtag = Add tag { $text }
+
+zotmoov-menu-item-remtag = Remove tag { $text }
 
 zotmoov-menu-item-movefrom = Move items into Zotero

@@ -25,6 +25,8 @@
                     <menuitem value="move" label="move" oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.Move.COMMAND_NAME]);"/>
                     <menuitem value="copy" label="copy" oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.Copy.COMMAND_NAME]);"/>
                     <menuitem value="add_tag" label="add_tag" oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.AddTag.COMMAND_NAME]);"/>
+                    <menuitem value="remove_tag" label="remove_tag" oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.RemoveTag.COMMAND_NAME]);"/>
+                    <menuitem value="move_from" label="move_from" oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.MoveFrom.COMMAND_NAME]);"/>
                 </menupopup>
             </menulist>
         </hbox>
@@ -63,6 +65,30 @@
             index: null,
             operation: 'create'
         };
+
+        MoveFromState = class {
+            static command_name = Zotero.ZotMoov.Menus.Custom.Commands.MoveFrom.COMMAND_NAME;
+
+            static load(data)
+            {
+                document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', 'zotmoov-adv-settings-movefrom-label1');
+            }
+
+            static unload()
+            {
+                document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', '');
+            }
+
+            static onAccept()
+            {
+                cwentry_todo(window_args.wc,
+                    this.command_name,
+                    window_args.index,
+                    {
+                    }
+                );
+            }
+        }
 
         AddTagState = class {
             static command_name = Zotero.ZotMoov.Menus.Custom.Commands.AddTag.COMMAND_NAME;
@@ -240,7 +266,15 @@
                 static command_name = Zotero.ZotMoov.Menus.Custom.Commands.Copy.COMMAND_NAME;
             },
 
-            [Zotero.ZotMoov.Menus.Custom.Commands.AddTag.COMMAND_NAME]: AddTagState
+            [Zotero.ZotMoov.Menus.Custom.Commands.AddTag.COMMAND_NAME]: AddTagState,
+
+            [Zotero.ZotMoov.Menus.Custom.Commands.RemoveTag.COMMAND_NAME]: class extends AddTagState
+            {
+                static command_name = Zotero.ZotMoov.Menus.Custom.Commands.RemoveTag.COMMAND_NAME;
+            },
+
+
+            [Zotero.ZotMoov.Menus.Custom.Commands.MoveFrom.COMMAND_NAME]: MoveFromState
         };
 
         {
