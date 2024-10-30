@@ -40,6 +40,8 @@ zotmoov-adv-settings-replace-label2 = Replacement String
 
 zotmoov-adv-settings-directory-label1 = Directory
 
+zotmoov-adv-settings-tag-label1 = Tag
+
 zotmoov-adv-settings-directory-checkbox1 =
     .label = Enable Custom Directory
 
