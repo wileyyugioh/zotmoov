@@ -209,8 +209,13 @@ var ZotMoov = class {
 
                             await item.erase();
                             await IOUtils.remove(file_path); // Include this in case moving another linked file
-                        }).catch((e) => { IOUtils.remove(final_path); });
+                        }).catch((e) => {
+                            IOUtils.remove(final_path);
 
+                            throw e;
+                        });
+
+                        return clone;
                     })
             );
         }
@@ -273,7 +278,11 @@ var ZotMoov = class {
             let i = 1;
             while(await IOUtils.exists(final_path)) final_path = rest_of_path + ' ' + (i++) + '.' + file_ext;
 
-            promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }));
+            promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }).then(async function()
+                    {
+                        return item;
+                    })
+            );
         }
 
         return Promise.allSettled(promises);
@@ -322,22 +331,9 @@ var ZotMoov = class {
     {
         let atts = Array.from(items).filter((a) => { return a.isLinkedFileAttachment(); });
 
-        let ret = [];
-        for (let item of atts)
-        {
-            try
-            {
-                let converted = await Zotero.Attachments.convertLinkedFileToStoredFile(item, { move: true });
-                ret.push(converted);
-            }
-            catch (e)
-            {
-                Zotero.logError(e);
-                continue;
-            }
-        }
+        let promises = atts.map((item) => Zotero.Attachments.convertLinkedFileToStoredFile(item, { move: true }));
 
-        return ret;
+        return Promise.allSettled(promises);
     }
 
     async moveFromDirectory()
