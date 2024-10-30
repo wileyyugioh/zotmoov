@@ -131,7 +131,7 @@ class ZotMoovAdvancedPrefs {
     }
 
     static CustomItemManager = class {
-        constructor(sel_menu, parser, tree_id, commands, id, pref, freeze_row, buttons, dialog)
+        constructor(sel_menu, parser, tree_id, commands, id, pref, freeze_row, buttons, dialog, dialog_id)
         {
             this.sel_menu = sel_menu;
             this.parser = parser;
@@ -142,6 +142,7 @@ class ZotMoovAdvancedPrefs {
             this.freeze_row = freeze_row;
             this.buttons = buttons;
             this.dialog = dialog;
+            this.dialog_id = dialog_id;
         }
 
         async createTree()
@@ -195,7 +196,7 @@ class ZotMoovAdvancedPrefs {
                     {
                         let desc_data = cd[column.dataKey];
                         cell.setAttribute('data-l10n-id', desc_data['fluent']);
-                        cell.setAttribute('data-l10n-args', desc_data['args']);
+                        if (desc_data['args']) cell.setAttribute('data-l10n-args', desc_data['args']);
                     }
                     else
                     {
@@ -374,6 +375,8 @@ class ZotMoovAdvancedPrefs {
 
             super.changeSelectedItem();
             Zotero.Prefs.set('extensions.zotmoov.custom_menu_items', JSON.stringify(this.commands), true);
+
+            Zotero.ZotMoov.Menus.addCustomMenuItemAllWin('zotmoov-' + title.replace(/\s/g, '_'), title, title);
         }
 
         deleteMenuItem(index, title)
@@ -401,6 +404,8 @@ class ZotMoovAdvancedPrefs {
 
             super.changeSelectedItem();
             Zotero.Prefs.set(this.pref, JSON.stringify(this.commands), true);
+
+            Zotero.ZotMoov.Menus.removeCustomMenuItemAllWin('zotmoov-' + title.replace(/\s/g, '_'));
         }
 
         loadMenuItems()
@@ -440,7 +445,8 @@ class ZotMoovAdvancedPrefs {
                 edit: document.getElementById('zotmoov-adv-settings-cw-edit'),
                 delete: document.getElementById('zotmoov-adv-settings-cw-delete'),
             },
-            'chrome://zotmoov/content/custom-wc-dialog.xhtml'
+            'chrome://zotmoov/content/custom-wc-dialog.xhtml',
+            'zotmoov-adv-settings-custom-wc-dialog-window'
         );
         this.Cw.createTree();
 
@@ -458,7 +464,8 @@ class ZotMoovAdvancedPrefs {
                 edit: document.getElementById('zotmoov-adv-settings-cmu-edit'),
                 delete: document.getElementById('zotmoov-adv-settings-cmu-delete'),
             },
-            'chrome://zotmoov/content/custom-cmu-dialog.xhtml'
+            'chrome://zotmoov/content/custom-cmu-dialog.xhtml',
+            'zotmoov-adv-settings-custom-cmu-dialog-window'
         );
         this.Cmu.loadMenuItems();
         this.Cmu.createTree();
