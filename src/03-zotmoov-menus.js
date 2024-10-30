@@ -44,11 +44,12 @@ var ZotMoovMenus = class
     {
         let doc = win.document;
 
-        let after_ele = doc.getElementById(this.attach_new_file_id);
+        let after_ele = this._custom_items.length ? this._custom_items.at(-1) : doc.getElementById(this.attach_new_file_id);
 
         let mu = doc.createXULElement('menuitem');
         mu.id = id;
-        mu.label = 'ZotMoov: ' + label;
+        mu.setAttribute('data-l10n-id', 'zotmoov-context-custom-menuitem-title');
+        mu.setAttribute('data-l10n-args', `{ "text": "${ label }" }`);
         mu.addEventListener('command', () =>
         {
             const cmu = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
@@ -75,11 +76,11 @@ var ZotMoovMenus = class
     removeCustomMenuItem(win, id)
     {
         let doc = win.document;
-        let mu = doc.getElementById('id');
+        let mu = doc.getElementById(id);
         if (mu) mu.remove();
     }
 
-    removeCustomMenuItemAllWin(win, id)
+    removeCustomMenuItemAllWin(id)
     {
         let windows = Zotero.getMainWindows();
         for (let win of windows)
@@ -102,7 +103,7 @@ var ZotMoovMenus = class
         const cmus = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
         for (let cmu of Object.keys(cmus))
         {
-            const id = cmu.replace(/\s/g, '_');
+            const id = 'zotmoov-' + cmu.replace(/\s/g, '_');
             this.addCustomMenuItem(win, id, cmu, cmu);
         }
     }

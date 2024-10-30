@@ -81,6 +81,9 @@ zotmoov-context-attach-new-file =
 zotmoov-context-convert-linked =
     .label = ZotMoov: Move Selected from Directory
 
+zotmoov-context-custom-menuitem-title =
+    .label = ZotMoov: { $text }
+
 zotmoov-settings-enable-automove-label =
     .label = Automatically Move/Copy Files When Added
 
