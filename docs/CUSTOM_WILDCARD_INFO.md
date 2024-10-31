@@ -2,7 +2,7 @@
 
 Users have the ability to create their own custom wildcards in ZotMoov, replacing %1, %2, ..., %9. They can be created/edited in Advanced Options.
 
-<img src="res/cwc.png" width="300"/>
+<img src="res/cwc.png" width="600"/>
 
 1. Select the wildcard you want to edit in the drop down menu
 2. Press [+] to add a wildcard command. The first command **must** be either ```text``` or ```field```.
