@@ -14,7 +14,7 @@ ZotMoov can:
 
 And set the ZotMoov directory to the folder you want to move/copy files to.
 
-<img src="res/Image2.png" width="500"/>
+<img src="docs/res/Image2.png" width="500"/>
 
 It is highly recommended to
 1. **[Make a local backup before mooving your library](https://www.zotero.org/support/zotero_data#backing_up_your_zotero_data)**
