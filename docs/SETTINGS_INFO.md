@@ -39,6 +39,7 @@ By adding/removing entries to this table via the [+] and [-] buttons, you can ch
 ## Advanced Options
 
 [Custom Wildcards](CUSTOM_WILDCARD_INFO.md)
+
 [Custom Menu Items](CUSTOM_MENUITEM_INFO.md)
 
 ## Selected Hidden Preferences
