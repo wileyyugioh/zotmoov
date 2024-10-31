@@ -29,6 +29,7 @@ var ZotMoovMenus = class
         this.move_selected_item_custom_id = 'zotmoov-context-move-selected-custom-dir';
         this.attach_new_file_id = 'zotmoov-context-attach-new-file';
         this.convert_linked_to_stored_id = 'zotmoov-context-convert-linked-to-stored';
+        this.menuitem_class = 'zotmoov-context-menuitem';
 
         this._zotmoov = zotmoov;
         this._zotmoov_bindings = bindings;
@@ -37,17 +38,17 @@ var ZotMoovMenus = class
         this._popupShowing = this._doPopupShowing.bind(this);
 
         this._keydown_commands = {};
-        this._custom_items = [];
     }
 
     addCustomMenuItem(win, id, label, key)
     {
         let doc = win.document;
 
-        let after_ele = this._custom_items.length ? this._custom_items.at(-1) : doc.getElementById(this.attach_new_file_id);
+        let after_ele = doc.querySelector('.' + this.menuitem_class + ':last-child');
 
         let mu = doc.createXULElement('menuitem');
         mu.id = id;
+        mu.classList.add(this.menuitem_class);
         mu.setAttribute('data-l10n-id', 'zotmoov-context-custom-menuitem-title');
         mu.setAttribute('data-l10n-args', `{ "text": "${ label }" }`);
         mu.addEventListener('command', () =>
@@ -58,8 +59,6 @@ var ZotMoovMenus = class
         });
 
         after_ele.after(mu);
-
-        this._custom_items.push(mu);
     }
 
 
@@ -87,14 +86,6 @@ var ZotMoovMenus = class
         {
             if(!win.ZoteroPane) continue;
             this.removeCustomMenuItem(win, id);
-        }
-    }
-
-    removeAllCustomMenuItems()
-    {
-        for (let item of this._custom_items)
-        {
-            item.remove();
         }
     }
 
@@ -179,6 +170,7 @@ var ZotMoovMenus = class
         // Move Selected Menu item
         let move_selected_item = doc.createXULElement('menuitem');
         move_selected_item.id = this.move_selected_item_id;
+        move_selected_item.classList.add(this.menuitem_class);
 
         let self = this;
         move_selected_item.addEventListener('command', () =>
@@ -189,6 +181,7 @@ var ZotMoovMenus = class
         // Custom Dir Menu item
         let move_selected_item_custom = doc.createXULElement('menuitem');
         move_selected_item_custom.id = this.move_selected_item_custom_id;
+        move_selected_item_custom.classList.add(this.menuitem_class);
         move_selected_item_custom.addEventListener('command', () =>
         {
             self._zotmoov.moveSelectedItemsCustomDir();
@@ -197,6 +190,7 @@ var ZotMoovMenus = class
         // Attach New File
         let attach_new_file = doc.createXULElement('menuitem');
         attach_new_file.id = this.attach_new_file_id;
+        attach_new_file.classList.add(this.menuitem_class);
         attach_new_file.setAttribute('data-l10n-id', 'zotmoov-context-attach-new-file');
         attach_new_file.addEventListener('command', () =>
         {
@@ -206,6 +200,7 @@ var ZotMoovMenus = class
         // Convert Linked to Stored File
         let convert_linked_to_stored = doc.createXULElement('menuitem');
         convert_linked_to_stored.id = this.convert_linked_to_stored_id;
+        convert_linked_to_stored.classList.add(this.menuitem_class);
         convert_linked_to_stored.setAttribute('data-l10n-id', 'zotmoov-context-convert-linked');
         convert_linked_to_stored.addEventListener('command', () =>
         {
@@ -268,15 +263,8 @@ var ZotMoovMenus = class
     unload(win)
     {
         let doc = win.document;
-
-        win.document.getElementById(this.menuseparator_id).remove();
-        win.document.getElementById(this.move_selected_item_id).remove();
-        win.document.getElementById(this.move_selected_item_custom_id).remove();
-        win.document.getElementById(this.attach_new_file_id).remove();
-        win.document.getElementById(this.convert_linked_to_stored_id).remove();
+        doc.querySelectorAll('.'+this.menuitem_class).forEach(e => e.remove());
         doc.querySelector('[href="zotmoov.ftl"]').remove();
-
-        this.removeAllCustomMenuItems();
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
         zotero_itemmenu.removeEventListener('popupshowing', this._popupShowing);
