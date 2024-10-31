@@ -9,32 +9,44 @@ Users have the ability to create their own custom menu items in ZotMoov, appeari
 
 ## Menu Item Commands
 
-### text
+### move
 
-This behaves like the subdirectory string in the General Settings and follows the [same formatting](WILDCARD_INFO.md).
+Move items.
 
-### field
+Input: A list of items
+Output: A list of successfully moved items.
 
-This returns the field associated with the item. A list of all available fields is [here](https://www.zotero.org/support/dev/client_coding/javascript_api/search_fields).
+- Enable Custom Directory: Allows you to override the general setting and instead move the files to another directory.
+- Automatically Move/Copy Files to a Subdirectory: Choose whether or not subdirectory folders will be created
 
-### toLowerCase
+### copy
 
-Converts the string to lowercase.
+Copy items.
 
-### toUpperCase
+Input: A list of items
+Output: A list of successfully copied items.
 
-Converts the string to uppercase.
-
-### trim
-
-Removes all whitespace from the beginning and end of the string.
-
-
-### exec
-
-Execute a search with a regular expression. This uses the [javascript implementation of exec](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec).
+- Enable Custom Directory: Allows you to override the general setting and instead move the files to another directory.
+- Automatically Move/Copy Files to a Subdirectory: Choose whether or not subdirectory folders will be created
 
 
-### replace
+### add_tag
 
-Replaces a regex pattern with a string. This uses the [javascript implementation of replace](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace).
+Add tag to items
+
+Input: A list of items
+Output: The same list of items
+
+### rem_tag
+
+Remove tag from items
+
+Input: A list of items
+Output: The same list of items
+
+### move_from
+
+Move files **into** Zotero. Behaves like the Move Selected from Directory menu item.
+
+Input: A list of items
+Output: A list of items successfully moved into Zotero.
