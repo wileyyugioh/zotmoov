@@ -1,6 +1,8 @@
 # ZotMoov Custom Menu Items
 
-Users have the ability to create their own custom menu items in ZotMoov, appearing in the context menu when you right-click an item.
+Users have the ability to create their own custom menu items in ZotMoov, appearing in the context menu when you right-click an item. They can be created in Advanced Options.
+
+<img src="res/cmu.png" width="300"/>
 
 1. Select the top [+] to create a new menu item. Give it a title that you want to appear in the context menu.
 2. Select the bottom [+] to add a new command.
