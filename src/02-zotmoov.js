@@ -11,7 +11,7 @@ var ZotMoov = class {
         this.zotmoov_debugger = zotmoov_debugger;
     }
 
-    _getCopyPath(item, dst_path, arg_options = {})
+    async _getCopyPath(item, dst_path, arg_options = {})
     {
         const default_options = {
             into_subfolder: false,
@@ -23,7 +23,13 @@ var ZotMoov = class {
         let options = {...default_options, ...arg_options};
 
         let file_path = item.getFilePath();
+
         let file_name = file_path.split(/[\\/]/).pop();
+        if (Zotero.Attachments.shouldAutoRenameFile())
+        {
+            file_name = await Zotero.Attachments.getRenamedFileBaseNameIfAllowedType(item, file_path);
+        }
+
         let local_dst_path = dst_path;
 
         // Optionally add subdirectory folder here
@@ -165,7 +171,7 @@ var ZotMoov = class {
                 if (!options.allowed_file_ext.includes(file_ext)) continue;
             }
 
-            let copy_path = this._getCopyPath(item, dst_path,
+            let copy_path = await this._getCopyPath(item, dst_path,
                 {
                     into_subfolder: options.into_subfolder,
                     subdir_str: options.subdir_str,
@@ -260,7 +266,7 @@ var ZotMoov = class {
                 if (!options.allowed_file_ext.includes(file_ext)) continue;
             }
 
-            let copy_path = this._getCopyPath(item, dst_path, {
+            let copy_path = await this._getCopyPath(item, dst_path, {
                     into_subfolder: options.into_subfolder,
                     subdir_str: options.subdir_str,
                     preferred_collection: options.preferred_collection,
