@@ -36,9 +36,15 @@ When this is enabled, ZotMoov will automatically delete linked files in the ZotM
 
 By adding/removing entries to this table via the [+] and [-] buttons, you can choose which types of files ZotMoov will move/copy. If the table is empty, then all files will be moved regardless of their file extension.
 
+## Advanced Options
+
+[Custom Wildcards](CUSTOM_WILDCARD_INFO.md)
+[Custom Menu Items](CUSTOM_MENUITEM_INFO.md)
+
 ## Selected Hidden Preferences
 
 [Hidden preferences can be accessed/modified to change some of ZotMoov's behavior](https://www.zotero.org/support/preferences/hidden_preferences)
 
 ```extensions.zotmoov.rename_title```: Enable/disable custom title renaming over the Zotero default
 ```extensions.zotmoov.undefined_str```: The string of the `%U` wildcard
+```extensions.zotmoov.add_zotmoov_tag```: Enable/disable whether the ```zotmoov``` tag is added to processed items
