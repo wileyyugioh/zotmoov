@@ -158,6 +158,47 @@ class ZotMoovCMUParser
                     .filter(result => result.status === 'fulfilled' && result.value)
                     .map(result => result.value);
             }
+        },
+
+        AnnotationToNote: class
+        {
+            static get COMMAND_NAME() { return 'ann2note'; };
+
+            constructor(data_obj)
+            {
+                this.command_name = this.constructor.COMMAND_NAME;
+            }
+
+            getColumnData()
+            {
+                return {
+                    'command_name': this.command_name,
+                    'desc': { fluent: 'zotmoov-menu-item-ann2note' },
+                };
+            }
+
+            async apply(items)
+            {
+                const promises = items.map(item => Zotero.getActiveZoteroPane().addNoteFromAnnotationsForAttachment(item, { skipSelect: true }));
+                const selected_collection = Zotero.getActiveZoteroPane().getSelectedCollection(true);
+                const notes = await Promise.allSettled(promises);
+                notes.forEach((result, index) => {
+                        if (result.status !== 'fulfilled' || !result.value) return;
+                        const note = result.value;
+                        const item = items[index];
+                        if (!item.parentID)
+                        {
+                            const collections = item.getCollections();
+                            let find_col = collections.find((c) => c == selected_collection);
+                            if (!find_col) find_col = collections[0];
+
+                            note.addToCollection(find_col);
+                            note.saveTx();
+                        }
+                    });
+
+                return items;
+            }
         }
     }
 
@@ -185,6 +226,8 @@ class ZotMoovCMUParser
                 return new this.Commands.RemoveTag(obj);
             case this.Commands.MoveFrom.COMMAND_NAME:
                 return new this.Commands.MoveFrom(obj);
+            case this.Commands.AnnotationToNote.COMMAND_NAME:
+                return new this.Commands.AnnotationToNote(obj);
             default:
                 break;
         }

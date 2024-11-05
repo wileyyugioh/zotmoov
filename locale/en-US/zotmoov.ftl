@@ -46,6 +46,8 @@ zotmoov-adv-settings-tag-label1 = Tag
 
 zotmoov-adv-settings-movefrom-label1 = Move From
 
+zotmoov-adv-settings-ann2note-label1 = Convert Annotations to Notes
+
 zotmoov-adv-settings-directory-checkbox1 =
     .label = Enable Custom Directory
 
@@ -144,3 +146,5 @@ zotmoov-menu-item-addtag = Add tag { $text }
 zotmoov-menu-item-remtag = Remove tag { $text }
 
 zotmoov-menu-item-movefrom = Move items into Zotero
+
+zotmoov-menu-item-ann2note = Add note from annotations

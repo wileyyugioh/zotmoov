@@ -25,7 +25,7 @@ var ZotMoov = class {
         let file_path = item.getFilePath();
 
         let file_name = file_path.split(/[\\/]/).pop();
-        if (Zotero.Attachments.shouldAutoRenameFile())
+        if (Zotero.Attachments.shouldAutoRenameFile() && item.parentItem)
         {
             let file_ext = file_path.split('.').pop().toLowerCase();
             let renamed = await Zotero.Attachments.getRenamedFileBaseNameIfAllowedType(item.parentItem, file_path);
