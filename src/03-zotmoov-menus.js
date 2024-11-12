@@ -48,6 +48,14 @@ var ZotMoovMenus = class
         });
 
         after_ele.after(mu);
+
+        const PREF_PREFIX = 'extensions.zotmoov.keys.custom.';
+        const pref_str = PREF_PREFIX + key.replace(/\s/g, '_');
+
+        this._scs[pref_str] = () => {
+                let cmu = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
+                (new this._custom_mu_parser(cmu)).apply(key, this._zotmoov._getSelectedItems());
+        };
     }
 
 
@@ -61,20 +69,27 @@ var ZotMoovMenus = class
         }
     }
 
-    removeCustomMenuItem(win, id)
+    removeCustomMenuItem(win, id, key)
     {
         let doc = win.document;
         let mu = doc.getElementById(id);
         if (mu) mu.remove();
+
+        const PREF_PREFIX = 'extensions.zotmoov.keys.custom.';
+        const pref_str = PREF_PREFIX + key.replace(/\s/g, '_');
+
+        // Kinda hacky but whatever
+        this.rebindPrefToKey(pref_str, '');
+        delete this._scs[pref_str];
     }
 
-    removeCustomMenuItemAllWin(id)
+    removeCustomMenuItemAllWin(id, key)
     {
         let windows = Zotero.getMainWindows();
         for (let win of windows)
         {
             if(!win.ZoteroPane) continue;
-            this.removeCustomMenuItem(win, id);
+            this.removeCustomMenuItem(win, id, key);
         }
     }
 
