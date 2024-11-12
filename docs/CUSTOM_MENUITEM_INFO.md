@@ -16,6 +16,7 @@ Users have the ability to create their own custom menu items in ZotMoov, appeari
 Move items.
 
 Input: A list of items
+
 Output: A list of successfully moved items.
 
 - Enable Custom Directory: Allows you to override the general setting and instead move the files to another directory.
@@ -26,6 +27,7 @@ Output: A list of successfully moved items.
 Copy items.
 
 Input: A list of items
+
 Output: A list of successfully copied items.
 
 - Enable Custom Directory: Allows you to override the general setting and instead move the files to another directory.
@@ -37,6 +39,7 @@ Output: A list of successfully copied items.
 Add tag to items
 
 Input: A list of items
+
 Output: The same list of items
 
 ### Remove Tag
@@ -44,6 +47,7 @@ Output: The same list of items
 Remove tag from items
 
 Input: A list of items
+
 Output: The same list of items
 
 ### Move From
@@ -51,6 +55,7 @@ Output: The same list of items
 Move files **into** Zotero. Behaves like the Move Selected from Directory menu item.
 
 Input: A list of items
+
 Output: A list of items successfully moved into Zotero.
 
 
@@ -59,4 +64,5 @@ Output: A list of items successfully moved into Zotero.
 Extract annotations from a PDF and convert it into a Zotero note. Uses Zotero's internal functionality for this.
 
 Input: A list of items
+
 Output: The same list of items
