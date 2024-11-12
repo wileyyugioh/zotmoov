@@ -205,7 +205,7 @@ var ZotMoovWildcard = class {
         let result = wildcard;
 
         const cw = (new this.custom_wc_parser(custom_wc)).apply(wildcard, item);
-        if(cw) return cw;
+        if(typeof cw == 'string') return cw;
 
         switch(wildcard)
         {
