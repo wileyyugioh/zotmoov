@@ -59,6 +59,8 @@ zotmoov-adv-settings-cmu-new-dialog-title = New Custom Menu Item Title
 
 zotmoov-adv-settings-cmu-del-dialog-title = Are you sure you want to delete { $cmu-title }?
 
+zotmoov-kb-settings-custom = Custom: { text }
+
 zotmoov-kb-settings-keyboard-shortcuts = Keyboard Shortcuts
 
 zotmoov-kb-settings-move-item = Move/Copy Files to Subdirectory
@@ -137,14 +139,32 @@ zotmoov-command-exec = Executes { $text }
 
 zotmoov-command-replace = Replaces { $text } with { $text2 }
 
+zotmoov-menu-item-move-title = Move To
+    .label = Move To
+
 zotmoov-menu-item-move = Move to { $text }
+
+zotmoov-menu-item-copy-title = Copy To
+    .label = Copy To
 
 zotmoov-menu-item-copy = Copy to { $text }
 
+zotmoov-menu-item-addtag-title = Add Tag
+    .label = Add Tag
+
 zotmoov-menu-item-addtag = Add tag { $text }
+
+zotmoov-menu-item-remtag-title = Remove Tag
+    .label = Remove Tag
 
 zotmoov-menu-item-remtag = Remove tag { $text }
 
+zotmoov-menu-item-movefrom-title = Move From
+    .label = Move From
+
 zotmoov-menu-item-movefrom = Move items into Zotero
+
+zotmoov-menu-item-ann2note-title = Annotation to Note
+    .label = Annotation to Note
 
 zotmoov-menu-item-ann2note = Add note from annotations

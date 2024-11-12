@@ -192,7 +192,7 @@ class ZotMoovAdvancedPrefs {
                 {
                     let cell = VirtualizedTable.renderCell(index, null, column);
 
-                    if (column.dataKey == 'desc')
+                    if (['desc', 'command_name'].includes(column.dataKey))
                     {
                         let desc_data = cd[column.dataKey];
                         cell.setAttribute('data-l10n-id', desc_data['fluent']);

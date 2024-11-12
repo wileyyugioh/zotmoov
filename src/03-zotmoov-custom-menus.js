@@ -19,7 +19,7 @@ class ZotMoovCMUParser
             {
                 const dir = this.directory ? this.directory : Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
                 return {
-                    'command_name': this.command_name,
+                    'command_name': { fluent: 'zotmoov-menu-item-move-title' },
                     'desc': { fluent: 'zotmoov-menu-item-move', args: `{ "text": "${ dir }" }` },
                 };
             }
@@ -55,7 +55,7 @@ class ZotMoovCMUParser
             {
                 const dir = this.directory ? this.directory : Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
                 return {
-                    'command_name': this.command_name,
+                    'command_name': { fluent: 'zotmoov-menu-item-copy-title' },
                     'desc': { fluent: 'zotmoov-menu-item-copy', args: `{ "text": "${ dir }" }` },
                 };
             }
@@ -88,7 +88,7 @@ class ZotMoovCMUParser
             getColumnData()
             {
                 return {
-                    'command_name': this.command_name,
+                    'command_name': { fluent: 'zotmoov-menu-item-addtag-title' },
                     'desc': { fluent: 'zotmoov-menu-item-addtag', args: `{ "text": "${ this.tag }" }` },
                 };
             }
@@ -118,7 +118,7 @@ class ZotMoovCMUParser
             getColumnData()
             {
                 return {
-                    'command_name': this.command_name,
+                    'command_name': { fluent: 'zotmoov-menu-item-remtag-title' },
                     'desc': { fluent: 'zotmoov-menu-item-remtag', args: `{ "text": "${ this.tag }" }` },
                 };
             }
@@ -146,7 +146,7 @@ class ZotMoovCMUParser
             getColumnData()
             {
                 return {
-                    'command_name': this.command_name,
+                    'command_name': { fluent: 'zotmoov-menu-item-movefrom-title' },
                     'desc': { fluent: 'zotmoov-menu-item-movefrom' },
                 };
             }
@@ -172,7 +172,7 @@ class ZotMoovCMUParser
             getColumnData()
             {
                 return {
-                    'command_name': this.command_name,
+                    'command_name': { fluent: 'zotmoov-menu-item-ann2note-title' },
                     'desc': { fluent: 'zotmoov-menu-item-ann2note' },
                 };
             }
