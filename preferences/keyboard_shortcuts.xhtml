@@ -8,7 +8,7 @@
     <html:link rel="localization" href="zotmoov.ftl"/>
 </linkset>
 
-<vbox onload="Zotero.ZotMoov.Prefs.Keyboard.init();">
+<vbox onload="Zotero.ZotMoov.Prefs.Keyboard.init();" onunload="Zotero.ZotMoov.Prefs.Keyboard.destroy();">
    <groupbox>
         <vbox>
             <label><html:h2 data-l10n-id="zotmoov-kb-settings-keyboard-shortcuts"></html:h2></label>
