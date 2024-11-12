@@ -34,21 +34,13 @@ class ZotMoovKeyboardPrefs {
         this._loadAllCustomMenuItems();
 
         this._pref_obs = Zotero.Prefs.registerObserver('extensions.zotmoov.custom_menu_items', () => {
-            try
-            {
-                document.getElementById('zotmoov-kb-settings-custom').innerHTML = '';
-                this._loadAllCustomMenuItems(document);
-            }
-            catch (e)
-            {
-                Zotero.log(e);
-            }
+            document.getElementById('zotmoov-kb-settings-custom').innerHTML = '';
+            this._loadAllCustomMenuItems(document);
         }, true);
-    }
 
-    destroy()
-    {
-        Zotero.Prefs.unregisterObserver(this._pref_obs);
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState == 'hidden') Zotero.Prefs.unregisterObserver(this._pref_obs);
+        })
     }
 
     _loadListeners(textbox)
