@@ -20,6 +20,8 @@ class ZotMoovKeyboardPrefs {
     {
         this._warned_pref = new Set();
 
+        this._loadAllCustomMenuItems();
+
         for (let label of document.querySelectorAll('#zotmoov-kb-settings-sc-grid .modifier'))
         {
             // Display the appropriate modifier keys for the platform
@@ -28,48 +30,96 @@ class ZotMoovKeyboardPrefs {
 
         for (let textbox of document.querySelectorAll('#zotmoov-kb-settings-sc-grid input'))
         {
-            textbox.value = textbox.value.toUpperCase();
-            textbox.addEventListener('syncfrompreference', () =>
-            {
-                const pref = textbox.getAttribute('preference');
-                const val = Zotero.Prefs.get(pref, true).toUpperCase();
-                textbox.value = val || '';
-
-                const zm_keys_overlap = Array.from(document.querySelectorAll('#zotmoov-kb-settings-sc-grid input'))
-                    .filter((tb) => tb.getAttribute('preference') != pref && tb.value == textbox.value);
-                
-                Zotero.ZotMoov.Menus.rebindPrefToKey(pref, textbox.value);
-
-                if (textbox.value != '' && (this.constructor.BOUND_KEYS.includes(textbox.value) || zm_keys_overlap.length))
-                {
-                    this._warned_pref.add(pref);
-                    this.addWarningTooltip(textbox.parentElement);
-                    return;
-                }
-
-                this._warned_pref.delete(pref);
-                this.clearWarningTooltip(textbox.parentElement);
-            });
-            textbox.addEventListener('input', () =>
-            {
-                const pref = textbox.getAttribute('preference');
-                textbox.value = textbox.value.toUpperCase();
-
-                const zm_keys_overlap = Array.from(document.querySelectorAll('#zotmoov-kb-settings-sc-grid input'))
-                    .filter((tb) => tb.getAttribute('preference') != pref && tb.value == textbox.value);
-
-                Zotero.ZotMoov.Menus.rebindPrefToKey(pref, textbox.value);
-                if (textbox.value != '' && (this.constructor.BOUND_KEYS.includes(textbox.value) || zm_keys_overlap.length))
-                {
-                    this._warned_pref.add(pref);
-                    this.addWarningTooltip(textbox.parentElement);
-                    return;
-                }
-
-                this._warned_pref.delete(pref);
-                this.clearWarningTooltip(textbox.parentElement);
-            });
+            _loadListeners(textbox);
         }
+    }
+
+    _loadListeners(textbox)
+    {
+        textbox.value = textbox.value.toUpperCase();
+        textbox.addEventListener('syncfrompreference', () =>
+        {
+            const pref = textbox.getAttribute('preference');
+            const val = Zotero.Prefs.get(pref, true).toUpperCase();
+            textbox.value = val || '';
+
+            const zm_keys_overlap = Array.from(document.querySelectorAll('#zotmoov-kb-settings-sc-grid input'))
+                .filter((tb) => tb.getAttribute('preference') != pref && tb.value == textbox.value);
+            
+            Zotero.ZotMoov.Menus.rebindPrefToKey(pref, textbox.value);
+
+            if (textbox.value != '' && (this.constructor.BOUND_KEYS.includes(textbox.value) || zm_keys_overlap.length))
+            {
+                this._warned_pref.add(pref);
+                this.addWarningTooltip(textbox.parentElement);
+                return;
+            }
+
+            this._warned_pref.delete(pref);
+            this.clearWarningTooltip(textbox.parentElement);
+        });
+        textbox.addEventListener('input', () =>
+        {
+            const pref = textbox.getAttribute('preference');
+            textbox.value = textbox.value.toUpperCase();
+
+            const zm_keys_overlap = Array.from(document.querySelectorAll('#zotmoov-kb-settings-sc-grid input'))
+                .filter((tb) => tb.getAttribute('preference') != pref && tb.value == textbox.value);
+
+            Zotero.ZotMoov.Menus.rebindPrefToKey(pref, textbox.value);
+            if (textbox.value != '' && (this.constructor.BOUND_KEYS.includes(textbox.value) || zm_keys_overlap.length))
+            {
+                this._warned_pref.add(pref);
+                this.addWarningTooltip(textbox.parentElement);
+                return;
+            }
+
+            this._warned_pref.delete(pref);
+            this.clearWarningTooltip(textbox.parentElement);
+        });
+    }
+
+    _loadAllCustomMenuItems()
+    {
+        let cmus = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
+        for (let key of cmus.keys())
+        {
+            this._loadCustomMenuItem(key.replace(/\s/g, '_'));
+        }
+    }
+
+    _loadCustomMenuItem(name)
+    {
+        const PREF_PREFIX = 'extensions.zotmoov.keys.custom.'
+
+        const hbox = document.createXULElement('hbox');
+        hbox.setAttribute('align', 'center');
+        hbox.setAttribute('pack', 'end');
+
+        const label = document.createXULElement('label');
+        label.setAttribute('data-l10n-id', 'zotmoov-kb-settings-custom');
+        label.setAttribute('data-l10n-args', `{ "text": "${ name }" }`);
+
+        const spacer = document.createXULElement('spacer');
+        spacer.setAttribute('flex', '1');
+
+        const modifier = document.createXULElement('html:label');
+        modifier.classList.add('modifier');
+
+        const text = document.createXULElement('html:input');
+        text.setAttribute('type', 'text');
+        text.setAttribute('maxlength', '1');
+        text.setAttribute('size', '1');
+        text.setAttribute('preference', PREF_PREFIX + name);
+
+        hbox.appendChild(label);
+        hbox.appendChild(spacer);
+        hbox.appendChild(modifier);
+        hbox.appendChild(text);
+
+        document.getElementById('zotmoov-kb-settings-sc-grid').appendChild(hbox);
+
+        this._loadListeners(text);
     }
 
     addWarningTooltip(element)

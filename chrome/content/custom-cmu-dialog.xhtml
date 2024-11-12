@@ -22,12 +22,18 @@
             <label data-l10n-id="zotmoov-adv-settings-cmu-command"/>
             <menulist native="true" id="zotmoov-adv-settings-wc-sel-menu">
                 <menupopup>
-                    <menuitem value="move" label="move" oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.Move.COMMAND_NAME]);"/>
-                    <menuitem value="copy" label="copy" oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.Copy.COMMAND_NAME]);"/>
-                    <menuitem value="add_tag" label="add_tag" oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.AddTag.COMMAND_NAME]);"/>
-                    <menuitem value="rem_tag" label="rem_tag" oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.RemoveTag.COMMAND_NAME]);"/>
-                    <menuitem value="move_from" label="move_from" oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.MoveFrom.COMMAND_NAME]);"/>
-                    <menuitem value="ann2note" label="ann2note" oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.AnnotationToNote.COMMAND_NAME]);"/>
+                    <menuitem value="move" data-l10n-id="zotmoov-menu-item-move-title"
+                        oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.Move.COMMAND_NAME]);"/>
+                    <menuitem value="copy" data-l10n-id="zotmoov-menu-item-copy-title"
+                        oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.Copy.COMMAND_NAME]);"/>
+                    <menuitem value="add_tag" data-l10n-id="zotmoov-menu-item-addtag-title"
+                        oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.AddTag.COMMAND_NAME]);"/>
+                    <menuitem value="rem_tag" data-l10n-id="zotmoov-menu-item-remtag-title"
+                        oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.RemoveTag.COMMAND_NAME]);"/>
+                    <menuitem value="move_from" data-l10n-id="zotmoov-menu-item-movefrom-title"
+                        oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.MoveFrom.COMMAND_NAME]);"/>
+                    <menuitem value="ann2note" data-l10n-id="zotmoov-menu-item-ann2note-title"
+                        oncommand="loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.AnnotationToNote.COMMAND_NAME]);"/>
                 </menupopup>
             </menulist>
         </hbox>
