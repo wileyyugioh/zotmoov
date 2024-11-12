@@ -25,13 +25,30 @@ class ZotMoovKeyboardPrefs {
             this._loadListeners(textbox);
         }
 
-        this._loadAllCustomMenuItems();
-
         for (let label of document.querySelectorAll('#zotmoov-kb-settings-sc-grid .modifier'))
         {
             // Display the appropriate modifier keys for the platform
             label.textContent = Zotero.isMac ? Zotero.getString('general.keys.cmdShift') : Zotero.getString('general.keys.ctrlShift');
         }
+
+        this._loadAllCustomMenuItems();
+
+        this._pref_obs = Zotero.Prefs.registerObserver('extensions.zotmoov.custom_menu_items', () => {
+            try
+            {
+                document.getElementById('zotmoov-kb-settings-custom').innerHTML = '';
+                this._loadAllCustomMenuItems(document);
+            }
+            catch (e)
+            {
+                Zotero.log(e);
+            }
+        }, true);
+    }
+
+    destroy()
+    {
+        Zotero.Prefs.unregisterObserver(this._pref_obs);
     }
 
     _loadListeners(textbox)
@@ -108,6 +125,7 @@ class ZotMoovKeyboardPrefs {
 
         const modifier = document.createElement('label');
         modifier.classList.add('modifier');
+        modifier.textContent = Zotero.isMac ? Zotero.getString('general.keys.cmdShift') : Zotero.getString('general.keys.ctrlShift');
 
         const text = document.createElement('input');
         text.setAttribute('type', 'text');

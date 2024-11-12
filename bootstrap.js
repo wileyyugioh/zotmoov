@@ -100,6 +100,10 @@ function onMainWindowUnload({ window }) {
 function shutdown()
 {
     log('ZotMoov: Shutting down');
+
+    chromeHandle.destruct();
+    chromeHandle = null;
+    
     zotmoovMenus.unloadAll();
     zotmoovBindings.destroy();
 
@@ -107,9 +111,6 @@ function shutdown()
     zotmoovMenus = null;
     zotmoovBindings = null;
     Zotero.ZotMoov = null;
-
-    chromeHandle.destruct();
-    chromeHandle = null;
 }
 
 function uninstall()
