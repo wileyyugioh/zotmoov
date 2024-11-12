@@ -44,7 +44,7 @@ zotmoov-adv-settings-directory-label1 = Directory
 
 zotmoov-adv-settings-tag-label1 = Tag
 
-zotmoov-adv-settings-movefrom-label1 = Move From
+zotmoov-adv-settings-movefrom-label1 = Move Linked Files Into Zotero
 
 zotmoov-adv-settings-ann2note-label1 = Convert Annotations to Notes
 
