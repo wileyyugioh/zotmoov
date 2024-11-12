@@ -81,6 +81,7 @@ var ZotMoovMenus = class
         // Kinda hacky but whatever
         this.rebindPrefToKey(pref_str, '');
         delete this._scs[pref_str];
+        Zotero.Prefs.clear(pref_str, true);
     }
 
     removeCustomMenuItemAllWin(id, key)
