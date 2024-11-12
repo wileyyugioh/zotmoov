@@ -405,7 +405,7 @@ class ZotMoovAdvancedPrefs {
             super.changeSelectedItem();
             Zotero.Prefs.set(this.pref, JSON.stringify(this.commands), true);
 
-            Zotero.ZotMoov.Menus.removeCustomMenuItemAllWin('zotmoov-' + title.replace(/\s/g, '_'));
+            Zotero.ZotMoov.Menus.removeCustomMenuItemAllWin('zotmoov-' + title.replace(/\s/g, '_'), title);
         }
 
         loadMenuItems()
