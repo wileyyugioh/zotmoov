@@ -23,7 +23,13 @@ var ZotMoovCWParser = class {
 
             apply(item)
             {
-                return Zotero.ZotMoov.wildcard.process_string(item, this.text);
+                let options = Zotero.ZotMoov.getBasePrefs();
+
+                return Zotero.ZotMoov.wildcard.process_string(item, this.text, {
+                    preferred_collection: options.preferred_collection,
+                    undefined_str: options.undefined_str,
+                    custom_wc: options.custom_wc
+                });
             }
         },
 
