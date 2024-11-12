@@ -2,24 +2,12 @@ var ZotMoovMenus = class
 {
     static get SHORTCUTS()
     {
-        return [
-            {
-                pref: 'extensions.zotmoov.keys.move_item',
-                command: () => { Zotero.ZotMoov.moveSelectedItems(); },
-            },
-            {
-                pref: 'extensions.zotmoov.keys.link_item',
-                command: () => { this.importLastModifiedFile(); },
-            },
-            {
-                pref: 'extensions.zotmoov.keys.convert_linked',
-                command: () => { Zotero.ZotMoov.moveFromDirectory(); }
-            },
-            {
-                pref: 'extensions.zotmoov.keys.move_item_custom_dir',
-                command: () => { Zotero.ZotMoov.moveSelectedItemsCustomDir(); }
-            }
-        ];
+        return {
+            'extensions.zotmoov.keys.move_item': () => { Zotero.ZotMoov.moveSelectedItems(); },
+            'extensions.zotmoov.keys.link_item': () => { this.importLastModifiedFile(); },
+            'extensions.zotmoov.keys.convert_linked': () => { Zotero.ZotMoov.moveFromDirectory(); },
+            'extensions.zotmoov.keys.move_item_custom_dir': () => { Zotero.ZotMoov.moveSelectedItemsCustomDir(); },
+        };
     }
 
     constructor(zotmoov, bindings, custom_mu)
@@ -38,6 +26,7 @@ var ZotMoovMenus = class
         this._popupShowing = this._doPopupShowing.bind(this);
 
         this._keydown_commands = {};
+        this._scs = {};
     }
 
     addCustomMenuItem(win, id, label, key)
@@ -101,10 +90,26 @@ var ZotMoovMenus = class
 
     _loadShortcuts()
     {
-        for (let sc of this.constructor.SHORTCUTS)
+        this._scs = this.constructor.SHORTCUTS;
+
+        let cmus = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
+        for (let key of Object.keys(cmus))
         {
-            let key = Zotero.Prefs.get(sc.pref, true);
-            this._keydown_commands[key] = sc;
+            const PREF_PREFIX = 'extensions.zotmoov.keys.custom.';
+            const pref_str = PREF_PREFIX + key.replace(/\s/g, '_');
+
+            this._scs[pref_str] = () => {
+                    let cmu = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
+                    (new this._custom_mu_parser(cmu)).apply(key, this._zotmoov._getSelectedItems());
+            };
+        }
+
+        for (let pref of Object.keys(this._scs))
+        {
+            let key = Zotero.Prefs.get(pref, true);
+            if (!key) continue;
+
+            this._keydown_commands[key.toUpperCase()] = pref;
         }
     }
 
@@ -113,23 +118,20 @@ var ZotMoovMenus = class
         if (!event.shiftKey) return;
         if (Zotero.isMac ? !event.metaKey : !event.ctrlKey) return;
 
-        let cmd = this._keydown_commands[event.key.toUpperCase()];
-        if (cmd) cmd.command.apply(this);
+        let pref = this._keydown_commands[event.key.toUpperCase()];
+        if (pref) this._scs[pref].apply(this);
     }
 
     rebindPrefToKey(pref, key)
     {
         const found_key = Object.keys(this._keydown_commands).find((k) =>
         {
-            if (!this._keydown_commands[k]) return false;
-            return this._keydown_commands[k].pref == pref;
+            return this._keydown_commands[k] == pref;
         });
 
         if (found_key) this._keydown_commands[found_key] = null;
 
-        const found_pref = this.constructor.SHORTCUTS.find((p) => p.pref == pref);
-
-        this._keydown_commands[key] = found_pref;
+        this._keydown_commands[key.toUpperCase()] = pref;
     }
 
     _doPopupShowing(event)

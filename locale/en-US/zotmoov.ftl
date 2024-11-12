@@ -59,7 +59,7 @@ zotmoov-adv-settings-cmu-new-dialog-title = New Custom Menu Item Title
 
 zotmoov-adv-settings-cmu-del-dialog-title = Are you sure you want to delete { $cmu-title }?
 
-zotmoov-kb-settings-custom = Custom: { text }
+zotmoov-kb-settings-custom = Custom: { $text }
 
 zotmoov-kb-settings-keyboard-shortcuts = Keyboard Shortcuts
 
