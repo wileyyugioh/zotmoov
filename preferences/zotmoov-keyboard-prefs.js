@@ -20,6 +20,11 @@ class ZotMoovKeyboardPrefs {
     {
         this._warned_pref = new Set();
 
+        for (let textbox of document.querySelectorAll('#zotmoov-kb-settings-sc-grid input'))
+        {
+            this._loadListeners(textbox);
+        }
+
         this._loadAllCustomMenuItems();
 
         for (let label of document.querySelectorAll('#zotmoov-kb-settings-sc-grid .modifier'))
@@ -27,16 +32,11 @@ class ZotMoovKeyboardPrefs {
             // Display the appropriate modifier keys for the platform
             label.textContent = Zotero.isMac ? Zotero.getString('general.keys.cmdShift') : Zotero.getString('general.keys.ctrlShift');
         }
-
-        for (let textbox of document.querySelectorAll('#zotmoov-kb-settings-sc-grid input'))
-        {
-            _loadListeners(textbox);
-        }
     }
 
     _loadListeners(textbox)
     {
-        textbox.value = textbox.value.toUpperCase();
+        if (textbox.value) textbox.value = textbox.value.toUpperCase();
         textbox.addEventListener('syncfrompreference', () =>
         {
             const pref = textbox.getAttribute('preference');
@@ -82,15 +82,18 @@ class ZotMoovKeyboardPrefs {
     _loadAllCustomMenuItems()
     {
         let cmus = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
-        for (let key of cmus.keys())
+        for (let key of Object.keys(cmus))
         {
-            this._loadCustomMenuItem(key.replace(/\s/g, '_'));
+            this._loadCustomMenuItem(key.replace(/\s/g, '_'), key);
         }
     }
 
-    _loadCustomMenuItem(name)
+    _loadCustomMenuItem(pref, name)
     {
-        const PREF_PREFIX = 'extensions.zotmoov.keys.custom.'
+        const PREF_PREFIX = 'extensions.zotmoov.keys.custom.';
+        const pref_str = PREF_PREFIX + pref;
+
+        if (Zotero.Prefs.get(pref_str, true) == undefined) Zotero.Prefs.set(pref_str, '', true);
 
         const hbox = document.createXULElement('hbox');
         hbox.setAttribute('align', 'center');
@@ -103,21 +106,21 @@ class ZotMoovKeyboardPrefs {
         const spacer = document.createXULElement('spacer');
         spacer.setAttribute('flex', '1');
 
-        const modifier = document.createXULElement('html:label');
+        const modifier = document.createElement('label');
         modifier.classList.add('modifier');
 
-        const text = document.createXULElement('html:input');
+        const text = document.createElement('input');
         text.setAttribute('type', 'text');
         text.setAttribute('maxlength', '1');
         text.setAttribute('size', '1');
-        text.setAttribute('preference', PREF_PREFIX + name);
+        text.setAttribute('preference', pref_str);
 
         hbox.appendChild(label);
         hbox.appendChild(spacer);
         hbox.appendChild(modifier);
         hbox.appendChild(text);
 
-        document.getElementById('zotmoov-kb-settings-sc-grid').appendChild(hbox);
+        document.getElementById('zotmoov-kb-settings-custom').appendChild(hbox);
 
         this._loadListeners(text);
     }
