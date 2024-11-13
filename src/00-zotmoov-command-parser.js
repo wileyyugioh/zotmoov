@@ -176,7 +176,6 @@ var ZotMoovCWParser = class {
 
             getColumnData()
             {
-                Zotero.log(`{ "text": "${ this.regex }", "text2": "${ this.replace }" }`);
                 return {
                     'command_name': this.command_name,
                     'desc': { fluent: 'zotmoov-command-replace', args: `{ "text": ${ JSON.stringify(this.regex) }, "text2": ${ JSON.stringify(this.replace) } }` }
