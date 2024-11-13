@@ -63,3 +63,7 @@ This is helpful in fallback scenarios.
     - "/AJS/2024/"
     - "/AJS//" which is effectively "/AJS/"
     - "///" which is effectively "/" the base ZotMoov directory
+
+## Custom Wildcards
+
+[Custom Wildcards](CUSTOM_WILDCARD_INFO.md)
