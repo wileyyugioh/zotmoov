@@ -29,7 +29,7 @@ var ZotMoovMenus = class
         this._scs = {};
     }
 
-    addCustomMenuItem(win, id, label, key)
+    _addCustomMenuItem(win, id, label, key)
     {
         let doc = win.document;
 
@@ -48,6 +48,17 @@ var ZotMoovMenus = class
         });
 
         after_ele.after(mu);
+    }
+
+
+    addCustomMenuItemAllWin(id, label, key)
+    {
+        let windows = Zotero.getMainWindows();
+        for (let win of windows)
+        {
+            if(!win.ZoteroPane) continue;
+            this._addCustomMenuItem(win, id, label, key);
+        }
 
         const PREF_PREFIX = 'extensions.zotmoov.keys.custom.';
         const pref_str = PREF_PREFIX + key.replace(/\s/g, '_');
@@ -58,18 +69,7 @@ var ZotMoovMenus = class
         };
     }
 
-
-    addCustomMenuItemAllWin(id, label, key)
-    {
-        let windows = Zotero.getMainWindows();
-        for (let win of windows)
-        {
-            if(!win.ZoteroPane) continue;
-            this.addCustomMenuItem(win, id, label, key);
-        }
-    }
-
-    removeCustomMenuItem(win, id, key)
+    _removeCustomMenuItem(win, id, key)
     {
         let doc = win.document;
         let mu = doc.getElementById(id);
@@ -77,11 +77,6 @@ var ZotMoovMenus = class
 
         const PREF_PREFIX = 'extensions.zotmoov.keys.custom.';
         const pref_str = PREF_PREFIX + key.replace(/\s/g, '_');
-
-        // Kinda hacky but whatever
-        this.rebindPrefToKey(pref_str, '');
-        delete this._scs[pref_str];
-        Zotero.Prefs.clear(pref_str, true);
     }
 
     removeCustomMenuItemAllWin(id, key)
@@ -90,8 +85,13 @@ var ZotMoovMenus = class
         for (let win of windows)
         {
             if(!win.ZoteroPane) continue;
-            this.removeCustomMenuItem(win, id, key);
+            this._removeCustomMenuItem(win, id, key);
         }
+
+        // Kinda hacky but whatever
+        this.rebindPrefToKey(pref_str, '');
+        delete this._scs[pref_str];
+        Zotero.Prefs.clear(pref_str, true);
     }
 
     _loadCMUFromPrefs(win)
@@ -100,7 +100,7 @@ var ZotMoovMenus = class
         for (let cmu of Object.keys(cmus))
         {
             const id = 'zotmoov-' + cmu.replace(/\s/g, '_');
-            this.addCustomMenuItem(win, id, cmu, cmu);
+            this._addCustomMenuItem(win, id, cmu, cmu);
         }
     }
 
@@ -177,7 +177,7 @@ var ZotMoovMenus = class
         return (items.size != 0);
     }
 
-    load(win)
+    _load(win)
     {
         let doc = win.document;
 
@@ -247,7 +247,6 @@ var ZotMoovMenus = class
         // Enable localization
         win.MozXULElement.insertFTLIfNeeded('zotmoov.ftl');
 
-        this._loadShortcuts();
         this._loadCMUFromPrefs(win);
 
         doc.addEventListener('keydown', (event) =>
@@ -278,7 +277,7 @@ var ZotMoovMenus = class
         }
     }
 
-    unload(win)
+    _unload(win)
     {
         let doc = win.document;
         doc.querySelectorAll('.'+this.menuitem_class).forEach(e => e.remove());
@@ -294,8 +293,10 @@ var ZotMoovMenus = class
         for (let win of windows)
         {
             if(!win.ZoteroPane) continue;
-            this.load(win);
+            this._load(win);
         }
+
+        this._loadShortcuts();
     }
 
     unloadAll()
@@ -304,7 +305,7 @@ var ZotMoovMenus = class
         for (let win of windows)
         {
             if(!win.ZoteroPane) continue;
-            this.unload(win);
+            this._unload(win);
         }
     }
 
