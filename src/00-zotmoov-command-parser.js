@@ -16,7 +16,7 @@ var ZotMoovCWParser = class {
             getColumnData()
             {
                 return {
-                    'command_name': this.command_name,
+                    'command_name': { fluent: 'zotmoov-command-generic', args: `{ "text": "${ this.command_name }" }` },
                     'desc': { fluent: 'zotmoov-command-text', args: `{ "text": "${ this.text }" }` },
                 };
             }
@@ -48,7 +48,7 @@ var ZotMoovCWParser = class {
             getColumnData()
             {
                 return {
-                    'command_name': this.command_name,
+                    'command_name': { fluent: 'zotmoov-command-generic', args: `{ "text": "${ this.command_name }" }` },
                     'desc': { fluent: 'zotmoov-command-field', args: `{ "text": "${ this.field }" }` }
                 };
             }
@@ -71,7 +71,7 @@ var ZotMoovCWParser = class {
             getColumnData()
             {
                 return {
-                    'command_name': this.command_name,
+                    'command_name': { fluent: 'zotmoov-command-generic', args: `{ "text": "${ this.command_name }" }` },
                     'desc': { fluent: 'zotmoov-command-lowercase' }
                 };
             }
@@ -94,7 +94,7 @@ var ZotMoovCWParser = class {
             getColumnData()
             {
                 return {
-                    'command_name': this.command_name,
+                    'command_name': { fluent: 'zotmoov-command-generic', args: `{ "text": "${ this.command_name }" }` },
                     'desc': { fluent: 'zotmoov-command-uppercase' }
                 };
             }
@@ -117,7 +117,7 @@ var ZotMoovCWParser = class {
             getColumnData()
             {
                 return {
-                    'command_name': this.command_name,
+                    'command_name': { fluent: 'zotmoov-command-generic', args: `{ "text": "${ this.command_name }" }` },
                     'desc': { fluent: 'zotmoov-command-trim' }
                 };
             }
@@ -146,7 +146,7 @@ var ZotMoovCWParser = class {
             getColumnData()
             {
                 return {
-                    'command_name': this.command_name,
+                    'command_name': { fluent: 'zotmoov-command-generic', args: `{ "text": "${ this.command_name }" }` },
                     'desc': { fluent: 'zotmoov-command-exec', args: `{ "text": ${ JSON.stringify(this.regex) } }` }
                 };
             }
@@ -177,7 +177,7 @@ var ZotMoovCWParser = class {
             getColumnData()
             {
                 return {
-                    'command_name': this.command_name,
+                    'command_name': { fluent: 'zotmoov-command-generic', args: `{ "text": "${ this.command_name }" }` },
                     'desc': { fluent: 'zotmoov-command-replace', args: `{ "text": ${ JSON.stringify(this.regex) }, "text2": ${ JSON.stringify(this.replace) } }` }
                 };
             }
