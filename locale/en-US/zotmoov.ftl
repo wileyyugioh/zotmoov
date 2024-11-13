@@ -125,15 +125,15 @@ zotmoov-settings-new-file-ext = New File Extension
 zotmoov-settings-advanced-config =
     .label = Advanced Options
 
-zotmoov-command-text = Wildcard String { $text }
+zotmoov-command-text = Wildcard string { $text }
 
-zotmoov-command-field = Gets Field { $text }
+zotmoov-command-field = Gets field { $text }
 
-zotmoov-command-lowercase = Converts to Lowercase
+zotmoov-command-lowercase = Converts to lowercase
 
-zotmoov-command-uppercase = Converts to Uppercase
+zotmoov-command-uppercase = Converts to uppercase
 
-zotmoov-command-trim = Trims Whitespace
+zotmoov-command-trim = Trims whitespace
 
 zotmoov-command-exec = Executes { $text }
 
