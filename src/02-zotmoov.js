@@ -349,7 +349,7 @@ var ZotMoov = class {
         let atts = this._getSelectedItems();
         if (!atts.size) return;
 
-        moveFrom(atts);
+        this.moveFrom(atts);
     }
 
     async moveSelectedItemsCustomDir()

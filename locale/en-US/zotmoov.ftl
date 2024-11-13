@@ -125,6 +125,8 @@ zotmoov-settings-new-file-ext = New File Extension
 zotmoov-settings-advanced-config =
     .label = Advanced Options
 
+zotmoov-command-generic = { $text }
+
 zotmoov-command-text = Wildcard string { $text }
 
 zotmoov-command-field = Gets field { $text }
