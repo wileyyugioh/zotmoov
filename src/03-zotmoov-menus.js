@@ -145,7 +145,7 @@ var ZotMoovMenus = class
             return this._keydown_commands[k] == pref;
         });
 
-        if (found_key) this._keydown_commands[found_key] = null;
+        if (found_key != undefined) this._keydown_commands[found_key] = null;
 
         this._keydown_commands[key.toUpperCase()] = pref;
     }
