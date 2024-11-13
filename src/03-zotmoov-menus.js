@@ -74,9 +74,6 @@ var ZotMoovMenus = class
         let doc = win.document;
         let mu = doc.getElementById(id);
         if (mu) mu.remove();
-
-        const PREF_PREFIX = 'extensions.zotmoov.keys.custom.';
-        const pref_str = PREF_PREFIX + key.replace(/\s/g, '_');
     }
 
     removeCustomMenuItemAllWin(id, key)
@@ -87,6 +84,9 @@ var ZotMoovMenus = class
             if(!win.ZoteroPane) continue;
             this._removeCustomMenuItem(win, id, key);
         }
+
+        const PREF_PREFIX = 'extensions.zotmoov.keys.custom.';
+        const pref_str = PREF_PREFIX + key.replace(/\s/g, '_');
 
         // Kinda hacky but whatever
         this.rebindPrefToKey(pref_str, '');
