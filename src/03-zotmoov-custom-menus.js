@@ -82,6 +82,8 @@ var ZotMoovCMUParser = class {
                 this.tag = data_obj.tag;
 
                 this.command_name = this.constructor.COMMAND_NAME;
+
+                if(this.tag == null) throw new TypeError('AddTag: tag is not defined');
             }
 
             getColumnData()
@@ -112,6 +114,8 @@ var ZotMoovCMUParser = class {
                 this.tag = data_obj.tag;
 
                 this.command_name = this.constructor.COMMAND_NAME;
+
+                if(this.tag == null) throw new TypeError('RemoveTag: tag is not defined');
             }
 
             getColumnData()
