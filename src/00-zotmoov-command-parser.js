@@ -147,7 +147,7 @@ var ZotMoovCWParser = class {
             {
                 return {
                     'command_name': this.command_name,
-                    'desc': { fluent: 'zotmoov-command-exec', args: `{ "text": "${ this.regex }" }` }
+                    'desc': { fluent: 'zotmoov-command-exec', args: `{ "text": ${ JSON.stringify(this.regex) } }` }
                 };
             }
 
@@ -176,9 +176,10 @@ var ZotMoovCWParser = class {
 
             getColumnData()
             {
+                Zotero.log(`{ "text": "${ this.regex }", "text2": "${ this.replace }" }`);
                 return {
                     'command_name': this.command_name,
-                    'desc': { fluent: 'zotmoov-command-replace', args: `{ "text": "${ this.regex }", "text2": "${ this.replace }" }` }
+                    'desc': { fluent: 'zotmoov-command-replace', args: `{ "text": ${ JSON.stringify(this.regex) }, "text2": ${ JSON.stringify(this.replace) } }` }
                 };
             }
 
