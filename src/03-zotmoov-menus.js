@@ -147,7 +147,7 @@ var ZotMoovMenus = class
 
         if (found_key != undefined) this._keydown_commands[found_key] = null;
 
-        this._keydown_commands[key.toUpperCase()] = pref;
+        if (key) this._keydown_commands[key.toUpperCase()] = pref;
     }
 
     _doPopupShowing(event)
