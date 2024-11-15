@@ -348,7 +348,7 @@ var ZotMoov = class {
         let atts = Array.from(items).filter((a) => { return a.isLinkedFileAttachment(); });
 
         let promises = atts.map((item) => {
-            let p = Zotero.Attachments.convertLinkedFileToStoredFile(item, { move: true })
+            let p = Zotero.Attachments.convertLinkedFileToStoredFile(item, { move: true });
             if (!options.add_zotmoov_tag) return p;
 
             p = p.then((stored) => {
