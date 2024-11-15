@@ -345,11 +345,20 @@ var ZotMoov = class {
 
         let options = {...default_options, ...arg_options};
 
-        if (options.add_zotmoov_tag) items.forEach((item) => { if (item.removeTag(options.tag_str)) item.saveTx(); });
-
         let atts = Array.from(items).filter((a) => { return a.isLinkedFileAttachment(); });
 
-        let promises = atts.map((item) => Zotero.Attachments.convertLinkedFileToStoredFile(item, { move: true }));
+        let promises = atts.map((item) => {
+            let p = Zotero.Attachments.convertLinkedFileToStoredFile(item, { move: true })
+            if (!options.add_zotmoov_tag) return p;
+
+            p = p.then((stored) => {
+                if (stored.removeTag(options.tag_str)) stored.saveTx();
+
+                return stored;
+            });
+
+            return p;
+        });
 
         return Promise.allSettled(promises);
     }
