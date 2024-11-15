@@ -139,7 +139,8 @@ var ZotMoov = class {
             rename_title: true,
             undefined_str: 'undefined',
             custom_wc: {},
-            add_zotmoov_tag: true
+            add_zotmoov_tag: true,
+            tag_str: 'zotmoov'
         };
 
         let options = {...default_options, ...arg_options};
@@ -200,7 +201,7 @@ var ZotMoov = class {
             if(options.rename_title) clone.setField('title', PathUtils.filename(final_path));
             clone.dateAdded = item.dateAdded;
 
-            if(options.add_zotmoov_tag) clone.addTag('zotmoov');
+            if (options.add_zotmoov_tag) clone.addTag(options.tag_str);
 
             promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }).then(async function()
                     {
@@ -335,8 +336,17 @@ var ZotMoov = class {
         }
     }
 
-    async moveFrom(items)
+    async moveFrom(items, arg_options = {})
     {
+        const default_options = {
+            add_zotmoov_tag: true,
+            tag_str: 'zotmoov'
+        };
+
+        let options = {...default_options, ...arg_options};
+
+        if (options.add_zotmoov_tag) items.forEach((item) => { if (item.removeTag(options.tag_str)) item.saveTx(); });
+
         let atts = Array.from(items).filter((a) => { return a.isLinkedFileAttachment(); });
 
         let promises = atts.map((item) => Zotero.Attachments.convertLinkedFileToStoredFile(item, { move: true }));
@@ -349,7 +359,8 @@ var ZotMoov = class {
         let atts = this._getSelectedItems();
         if (!atts.size) return;
 
-        this.moveFrom(atts);
+        let pref = this.getBasePrefs();
+        this.moveFrom(atts, pref);
     }
 
     async moveSelectedItemsCustomDir()
@@ -396,7 +407,8 @@ var ZotMoov = class {
             undefined_str: Zotero.Prefs.get('extensions.zotmoov.undefined_str', true),
             allow_group_libraries: Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true),
             custom_wc: JSON.parse(Zotero.Prefs.get('extensions.zotmoov.cwc_commands', true)),
-            add_zotmoov_tag: Zotero.Prefs.get('extensions.zotmoov.add_zotmoov_tag', true)
+            add_zotmoov_tag: Zotero.Prefs.get('extensions.zotmoov.add_zotmoov_tag', true),
+            tag_str: Zotero.Prefs.get('extensions.zotmoov.tag_str', true)
         };
     }
 }
