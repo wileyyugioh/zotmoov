@@ -156,7 +156,9 @@ var ZotMoovCMUParser = class {
 
             async apply(items)
             {
-                const temp = await Zotero.ZotMoov.moveFrom(items);
+                let prefs = Zotero.ZotMoov.getBasePrefs();
+
+                const temp = await Zotero.ZotMoov.moveFrom(items, prefs);
                 return temp
                     .filter(result => result.status === 'fulfilled' && result.value)
                     .map(result => result.value);
