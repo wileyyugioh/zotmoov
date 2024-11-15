@@ -67,7 +67,7 @@ zotmoov-kb-settings-move-item = Move/Copy Files to Subdirectory
 
 zotmoov-kb-settings-move-item-custom-dir = Move/Copy Files to Custom Subdirectory
 
-zotmoov-kb-settings-link-item = Link File
+zotmoov-kb-settings-link-item = Attach New File
 
 zotmoov-kb-settings-convert-item = Move/Copy Files from Subdirectory
 
