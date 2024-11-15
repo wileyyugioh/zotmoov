@@ -44,7 +44,7 @@ var ZotMoovMenus = class
         {
             const cmu = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
             if (!cmu) return;
-            (new this._custom_mu_parser(cmu)).apply(key, this._zotmoov._getSelectedItems());
+            (new this._custom_mu_parser(cmu)).apply(key, Array.from(this._zotmoov._getSelectedItems()));
         });
 
         after_ele.after(mu);
@@ -65,7 +65,7 @@ var ZotMoovMenus = class
 
         this._scs[pref_str] = () => {
                 let cmu = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
-                (new this._custom_mu_parser(cmu)).apply(key, this._zotmoov._getSelectedItems());
+                (new this._custom_mu_parser(cmu)).apply(key, Array.from(this._zotmoov._getSelectedItems()));
         };
     }
 
@@ -116,7 +116,7 @@ var ZotMoovMenus = class
 
             this._scs[pref_str] = () => {
                     let cmu = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
-                    (new this._custom_mu_parser(cmu)).apply(key, this._zotmoov._getSelectedItems());
+                    (new this._custom_mu_parser(cmu)).apply(key, Array.from(this._zotmoov._getSelectedItems()));
             };
         }
 
