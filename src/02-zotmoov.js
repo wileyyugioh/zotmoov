@@ -51,7 +51,7 @@ var ZotMoov = class {
         return copy_path;
     }
 
-    async delete(items, home_path, arg_options = {})
+    delete(items, home_path, arg_options = {})
     {
         const default_options = {
             prune_empty_dir: true
@@ -85,13 +85,12 @@ var ZotMoov = class {
             }
             if (!ok) continue;
 
-            // It is, so delete the file
-            let p = IOUtils.remove(fp);
+            promises.push((async () => {
+                // It is, so delete the file
+                let p = await IOUtils.remove(fp);
 
-            // Delete empty directories recursively up to home directory
-            if (options.prune_empty_dir)
-            {
-                p = p.then(async function()
+                // Delete empty directories recursively up to home directory
+                if (options.prune_empty_dir)
                 {
                     let path_arr = fp_arr.slice();
                     path_arr.pop();
@@ -119,10 +118,8 @@ var ZotMoov = class {
                         await IOUtils.remove(path);
                         path_arr.pop();
                     }
-                });
-            }
-
-            promises.push(p);
+                }
+            })());
         }
 
         return Promise.allSettled(promises);
@@ -203,30 +200,28 @@ var ZotMoov = class {
 
             if (options.add_zotmoov_tag) clone.addTag(options.tag_str);
 
-            promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }).then(async function()
-                    {
-                        await Zotero.DB.executeTransaction(async function()
-                        {
-                            let id = await clone.save();
-                            await Zotero.Items.moveChildItems(item, clone);
-                            await Zotero.Relations.copyObjectSubjectRelations(item, clone);
-                            await Zotero.Fulltext.transferItemIndex(item, clone).catch((e) => { Zotero.logError(e); });
+            promises.push((async () => {
+                await IOUtils.copy(file_path, final_path, { noOverwrite: true });
 
-                            // Update timestamps
-                            const file_info = await IOUtils.stat(file_path);
-                            IOUtils.setModificationTime(final_path, file_info.lastModified);
+                await Zotero.DB.executeTransaction(async () => {
+                    let id = await clone.save();
+                    await Zotero.Items.moveChildItems(item, clone);
+                    await Zotero.Relations.copyObjectSubjectRelations(item, clone);
+                    await Zotero.Fulltext.transferItemIndex(item, clone).catch((e) => { Zotero.logError(e); });
 
-                            await item.erase();
-                            await IOUtils.remove(file_path); // Include this in case moving another linked file
-                        }).catch((e) => {
-                            IOUtils.remove(final_path);
+                    // Update timestamps
+                    const file_info = await IOUtils.stat(file_path);
+                    IOUtils.setModificationTime(final_path, file_info.lastModified);
 
-                            throw e;
-                        });
+                    await item.erase();
+                    await IOUtils.remove(file_path); // Include this in case moving another linked file
+                }).catch((e) => {
+                    IOUtils.remove(final_path);
 
-                        return clone;
-                    })
-            );
+                    throw e;
+                });
+                return clone;
+            })());
         }
 
         return Promise.allSettled(promises);
@@ -285,13 +280,12 @@ var ZotMoov = class {
             let rest_of_path = path_arr.join('.');
 
             let i = 1;
-            while(await IOUtils.exists(final_path)) final_path = rest_of_path + ' ' + (i++) + '.' + file_ext;
+            while (await IOUtils.exists(final_path)) final_path = rest_of_path + ' ' + (i++) + '.' + file_ext;
 
-            promises.push(IOUtils.copy(file_path, final_path, { noOverwrite: true }).then(async function()
-                    {
-                        return item;
-                    })
-            );
+            promises.push((async () => {
+                await IOUtils.copy(file_path, final_path, { noOverwrite: true });
+                return item;
+            })());
         }
 
         return Promise.allSettled(promises);
@@ -347,18 +341,13 @@ var ZotMoov = class {
 
         let atts = Array.from(items).filter((a) => { return a.isLinkedFileAttachment(); });
 
-        let promises = atts.map((item) => {
-            let p = Zotero.Attachments.convertLinkedFileToStoredFile(item, { move: true });
-            if (!options.add_zotmoov_tag) return p;
+        let promises = atts.map((item) => (async () => {
+            let stored = await Zotero.Attachments.convertLinkedFileToStoredFile(item, { move: true });
+            if (!options.add_zotmoov_tag) return stored;
 
-            p = p.then((stored) => {
-                if (stored.removeTag(options.tag_str)) stored.saveTx();
-
-                return stored;
-            });
-
-            return p;
-        });
+            if (stored.removeTag(options.tag_str)) await stored.saveTx();
+            return stored;
+        })());
 
         return Promise.allSettled(promises);
     }
