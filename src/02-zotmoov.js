@@ -195,7 +195,7 @@ var ZotMoov = class {
             let clone = item.clone(null, { includeCollections: true });
             clone.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
             clone.attachmentPath = final_path;
-            if(options.rename_title) clone.setField('title', PathUtils.filename(final_path));
+            if (options.rename_title) clone.setField('title', PathUtils.filename(final_path));
             clone.dateAdded = item.dateAdded;
 
             if (options.add_zotmoov_tag) clone.addTag(options.tag_str);
