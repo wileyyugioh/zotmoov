@@ -29,17 +29,16 @@ var ZotMoovBindings = class {
 
         this._patcher.monkey_patch(Zotero.Item.prototype, '_eraseData', function (orig) {
             return Zotero.Promise.coroutine(function* (...args) {
-                return orig.apply(this, args).then((val) =>
-                {
-                    if (self._del_ignore.includes(this.key)) return val;
-                    if (Zotero.Prefs.get('extensions.zotmoov.delete_files', true))
-                    {
-                        let prune_empty_dir = Zotero.Prefs.get('extensions.zotmoov.prune_empty_dir', true);
-                        self._zotmoov.delete([this], Zotero.Prefs.get('extensions.zotmoov.dst_dir', true), { prune_empty_dir: prune_empty_dir });
-                    }
+                let val = yield orig.apply(this, args);
 
-                    return val;
-                });
+                if (self._del_ignore.includes(this.key)) return val;
+                if (Zotero.Prefs.get('extensions.zotmoov.delete_files', true))
+                {
+                    let prune_empty_dir = Zotero.Prefs.get('extensions.zotmoov.prune_empty_dir', true);
+                    self._zotmoov.delete([this], Zotero.Prefs.get('extensions.zotmoov.dst_dir', true), { prune_empty_dir: prune_empty_dir });
+                }
+
+                return val;
             });
         });
 
