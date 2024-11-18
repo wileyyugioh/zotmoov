@@ -49,8 +49,9 @@ class ZotMoovKeyboardPrefs {
         textbox.addEventListener('syncfrompreference', () =>
         {
             const pref = textbox.getAttribute('preference');
-            const val = Zotero.Prefs.get(pref, true).toUpperCase();
-            textbox.value = val || '';
+            const val = Zotero.Prefs.get(pref, true);
+            if (val == undefined) return;
+            textbox.value = val.toUpperCase() || '';
 
             const zm_keys_overlap = Array.from(document.querySelectorAll('#zotmoov-kb-settings-sc-grid input'))
                 .filter((tb) => tb.getAttribute('preference') != pref && tb.value == textbox.value);
