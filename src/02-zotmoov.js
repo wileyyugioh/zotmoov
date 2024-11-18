@@ -51,7 +51,7 @@ var ZotMoov = class {
         return copy_path;
     }
 
-    delete(items, home_path, arg_options = {})
+   async delete(items, home_path, arg_options = {})
     {
         const default_options = {
             prune_empty_dir: true
@@ -122,7 +122,7 @@ var ZotMoov = class {
             })());
         }
 
-        return Promise.allSettled(promises);
+        await Promise.allSettled(promises);
     }
 
     async move(items, dst_path, arg_options = {})
@@ -224,7 +224,10 @@ var ZotMoov = class {
             })());
         }
 
-        return Promise.allSettled(promises);
+        const temp = await Promise.allSettled(promises);
+
+        return temp.filter(result => result.status === 'fulfilled' && result.value)
+                    .map(result => result.value);
     }
 
     async copy(items, dst_path, arg_options = {})
@@ -288,7 +291,10 @@ var ZotMoov = class {
             })());
         }
 
-        return Promise.allSettled(promises);
+        const temp = await Promise.allSettled(promises);
+
+        return temp.filter(result => result.status === 'fulfilled' && result.value)
+                    .map(result => result.value);
     }
 
     _getSelectedItems()
@@ -349,7 +355,10 @@ var ZotMoov = class {
             return stored;
         })());
 
-        return Promise.allSettled(promises);
+        const temp = await Promise.allSettled(promises);
+
+        return temp.filter(result => result.status === 'fulfilled' && result.value)
+                    .map(result => result.value);
     }
 
     async moveFromDirectory()

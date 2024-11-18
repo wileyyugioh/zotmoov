@@ -30,10 +30,7 @@ var ZotMoovCMUParser = class {
 
                 const dir = this.enable_customdir ? this.directory : Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
 
-                const temp = await Zotero.ZotMoov.move(items, dir, prefs);
-                return temp
-                    .filter(result => result.status === 'fulfilled' && result.value)
-                    .map(result => result.value);
+                return await Zotero.ZotMoov.move(items, dir, prefs);
             }
         },
 
@@ -66,10 +63,7 @@ var ZotMoovCMUParser = class {
 
                 const dir = this.enable_customdir ? this.directory : Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
 
-                const temp = await Zotero.ZotMoov.copy(items, dir, prefs);
-                return temp
-                    .filter(result => result.status === 'fulfilled' && result.value)
-                    .map(result => result.value);
+                return await Zotero.ZotMoov.copy(items, dir, prefs);
             }
         },
 
@@ -158,10 +152,7 @@ var ZotMoovCMUParser = class {
             {
                 let prefs = Zotero.ZotMoov.getBasePrefs();
 
-                const temp = await Zotero.ZotMoov.moveFrom(items, prefs);
-                return temp
-                    .filter(result => result.status === 'fulfilled' && result.value)
-                    .map(result => result.value);
+                return await Zotero.ZotMoov.moveFrom(items, prefs);
             }
         },
 
