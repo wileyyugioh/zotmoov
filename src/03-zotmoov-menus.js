@@ -177,7 +177,7 @@ var ZotMoovMenus = class
         return (items.size != 0);
     }
 
-    _load(win)
+    load(win)
     {
         let doc = win.document;
 
@@ -277,14 +277,21 @@ var ZotMoovMenus = class
         }
     }
 
-    _unload(win)
+    unload(win)
     {
         let doc = win.document;
         doc.querySelectorAll('.'+this.menuitem_class).forEach(e => e.remove());
-        doc.querySelector('[href="zotmoov.ftl"]').remove();
+        
+        let loc = doc.querySelector('[href="zotmoov.ftl"]')
+        if (loc) loc.remove();
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
-        zotero_itemmenu.removeEventListener('popupshowing', this._popupShowing);
+        if (zotero_itemmenu) zotero_itemmenu.removeEventListener('popupshowing', this._popupShowing);
+    }
+
+    init()
+    {
+        this._loadShortcuts();
     }
 
     loadAll()
@@ -295,8 +302,6 @@ var ZotMoovMenus = class
             if(!win.ZoteroPane) continue;
             this._load(win);
         }
-
-        this._loadShortcuts();
     }
 
     unloadAll()

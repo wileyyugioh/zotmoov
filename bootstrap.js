@@ -74,7 +74,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
              scripts: [rootURI + 'preferences/zotmoov-keyboard-prefs.js']
     });
 
-    zotmoovMenus.loadAll();
+    zotmoovMenus.init();
 
     // Need to expose our addon to rest of Zotero
     Zotero.ZotMoov = zotmoov;
