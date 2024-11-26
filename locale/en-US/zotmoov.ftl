@@ -48,6 +48,9 @@ zotmoov-adv-settings-movefrom-label1 = Move Linked Files Into Zotero
 
 zotmoov-adv-settings-ann2note-label1 = Convert Annotations to Notes
 
+zotmoov-adv-settings-add2parent =
+    .label = Also Modify Parent
+
 zotmoov-adv-settings-directory-checkbox1 =
     .label = Enable Custom Directory
 
