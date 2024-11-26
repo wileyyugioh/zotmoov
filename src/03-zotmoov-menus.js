@@ -300,7 +300,7 @@ var ZotMoovMenus = class
         for (let win of windows)
         {
             if(!win.ZoteroPane) continue;
-            this._load(win);
+            this.load(win);
         }
     }
 
@@ -310,7 +310,7 @@ var ZotMoovMenus = class
         for (let win of windows)
         {
             if(!win.ZoteroPane) continue;
-            this._unload(win);
+            this.unload(win);
         }
     }
 

@@ -75,6 +75,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
     });
 
     zotmoovMenus.init();
+    zotmoovMenus.loadAll();
 
     // Need to expose our addon to rest of Zotero
     Zotero.ZotMoov = zotmoov;
