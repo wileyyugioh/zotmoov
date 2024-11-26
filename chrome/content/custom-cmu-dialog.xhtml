@@ -56,7 +56,7 @@
         </vbox>
         <vbox style="margin-top: 10px;">
             <hbox align="center">
-                <checkbox id="zotmoov-enable-subdir" native="true" data-l10n-id="zotmoov-settings-enable-subdir-move-label" style="display: none;"/>
+                <checkbox id="zotmoov-enable-subdir" native="true" style="display: none;"/>
             </hbox>
         </vbox>
     </vbox>
@@ -129,9 +129,14 @@
                 txt_input.style.display = '';
                 txt_input.setAttribute('oninput', 'States["' + Zotero.ZotMoov.Menus.Custom.Commands.AddTag.COMMAND_NAME + '"].onInput();');
 
+                const parent = document.getElementById('zotmoov-enable-subdir');
+                parent.style.display = '';
+                parent.setAttribute('data-l10n-id', 'zotmoov-adv-settings-add2parent');
+
                 if (data)
                 {
                     txt_input.value = data.tag;
+                    parent.checked = data.do_parent || false;
                 }
 
                 document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = txt_input.value.trim() === '';
@@ -144,17 +149,23 @@
                 let txt_input = document.getElementById('zotmoov-cw-text-input1');
                 txt_input.style.display = 'none';
                 txt_input.setAttribute('oninput', '');
+
+                const parent = document.getElementById('zotmoov-enable-subdir');
+                parent.style.display = 'none';
+                parent.setAttribute('data-l10n-id', '');
             }
 
             static onAccept()
             {
                 const tag = document.getElementById('zotmoov-cw-text-input1').value;
+                const do_parent = document.getElementById('zotmoov-enable-subdir').checked;
 
                 cwentry_todo(window_args.wc,
                     this.command_name,
                     window_args.index,
                     {
-                        tag: tag
+                        tag: tag,
+                        do_parent: do_parent
                     }
                 );
             }
@@ -190,6 +201,7 @@
 
                     const subdir = document.getElementById('zotmoov-enable-subdir');
                     subdir.style.display = '';
+                    subdir.setAttribute('data-l10n-id', 'zotmoov-settings-enable-subdir-move-label');
 
                     if (data)
                     {
@@ -217,6 +229,7 @@
 
                 const subdir = document.getElementById('zotmoov-enable-subdir');
                 subdir.style.display = 'none';
+                subdir.setAttribute('data-l10n-id', '');
             }
 
             static onAccept()

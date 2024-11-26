@@ -74,6 +74,7 @@ var ZotMoovCMUParser = class {
             constructor(data_obj)
             {
                 this.tag = data_obj.tag;
+                this.do_parent = data_obj.do_parent === undefined ? false : data_obj.do_parent;
 
                 this.command_name = this.constructor.COMMAND_NAME;
 
@@ -88,13 +89,24 @@ var ZotMoovCMUParser = class {
                 };
             }
 
-            apply(items)
+            async apply(items)
             {
+                let promises = [];
                 for (let item of items)
                 {
-                    item.addTag(this.tag)
-                    item.saveTx();
+                    promises.push((async () => {
+                        item.addTag(this.tag)
+                        await item.saveTx();
+
+                        if (!this.do_parent || !item.parentID) return;
+                        const parent = item.parentItem;
+                        parent.addTag(this.tag);
+                        await parent.saveTx();
+                    })());
                 }
+
+                await Promise.allSettled(promises);
+
                 return items;
             }
         },
@@ -106,6 +118,7 @@ var ZotMoovCMUParser = class {
             constructor(data_obj)
             {
                 this.tag = data_obj.tag;
+                this.do_parent = data_obj.do_parent === undefined ? false : data_obj.do_parent;
 
                 this.command_name = this.constructor.COMMAND_NAME;
 
@@ -120,13 +133,24 @@ var ZotMoovCMUParser = class {
                 };
             }
 
-            apply(items)
+            async apply(items)
             {
+                let promises = [];
                 for (let item of items)
                 {
-                    item.removeTag(this.tag)
-                    item.saveTx();
+                    promises.push((async () => {
+                        item.removeTag(this.tag)
+                        await item.saveTx();
+
+                        if (!this.do_parent || !item.parentID) return;
+                        const parent = item.parentItem;
+                        parent.removeTag(this.tag);
+                        await parent.saveTx();
+                    })());
                 }
+
+                await Promise.allSettled(promises);
+
                 return items;
             }
         },
@@ -178,6 +202,8 @@ var ZotMoovCMUParser = class {
                 const promises = items.map(item => Zotero.getActiveZoteroPane().addNoteFromAnnotationsForAttachment(item, { skipSelect: true }));
                 const selected_collection = Zotero.getActiveZoteroPane().getSelectedCollection(true);
                 const notes = await Promise.allSettled(promises);
+
+                const new_promises = [];
                 notes.forEach((result, index) => {
                         if (result.status !== 'fulfilled' || !result.value) return;
                         const note = result.value;
@@ -189,9 +215,11 @@ var ZotMoovCMUParser = class {
                             if (!find_col) find_col = collections[0];
 
                             note.addToCollection(find_col);
-                            note.saveTx();
+                            new_promises.push(note.saveTx());
                         }
                     });
+
+                await Promise.allSettled(new_promises);
 
                 return items;
             }
