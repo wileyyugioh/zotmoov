@@ -14,7 +14,7 @@ When this button is clicked, the last modified file in the Source Folder with an
 
 ## File Behavior
 
-By default ZotMoov will move and link your files. You can change the dropdown menu option to `copy` for ZotMoov to just make a back-up of your added files in the specified directory.
+By default ZotMoov will move and link your files. You can change the dropdown menu option to ```copy``` for ZotMoov to just make a back-up of your added files in the specified directory. Note that files that are copied via ```copy``` will not be tracked by Zotero anymore. Most users will want this set to ```move```.
 
 ## Automatically Move/Copy Files When Added
 
