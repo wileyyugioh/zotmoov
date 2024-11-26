@@ -28,6 +28,10 @@ It is highly recommended to
 
 ## FAQ
 
+### Move vs Copy
+
+Most likely, you will want to ```move``` your items. ```move``` is for converting the internal Zotero stored attachments to linked attachments and files that are moved can be freely converted between each form. ```copy``` is primarily used for copying the attachment into a folder as a backup. Once a file is copied it is **not** tracked by Zotero anymore and is not easily reimported.
+
 ### Migrating from ZotFile
 
 ZotMoov should not break any existing linked files from ZotFile. But to be sure, before updating to Zotero 7 [make a local backup of your library](https://www.zotero.org/support/zotero_data#backing_up_your_zotero_data) and of your ZotFile folder.
