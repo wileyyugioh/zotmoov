@@ -199,27 +199,24 @@ var ZotMoovCMUParser = class {
 
             async apply(items)
             {
-                const promises = items.map(item => Zotero.getActiveZoteroPane().addNoteFromAnnotationsForAttachment(item, { skipSelect: true }));
-                const selected_collection = Zotero.getActiveZoteroPane().getSelectedCollection(true);
-                const notes = await Promise.allSettled(promises);
+                const pane = Zotero.getActiveZoteroPane();
+                const note_promises = items.map(item => pane.addNoteFromAnnotationsForAttachment(item, { skipSelect: true }));
+                const selected_collection = pane.getSelectedCollection(true);
+                const notes = await Promise.allSettled(note_promises);
 
-                const new_promises = [];
+                const promises = [];
                 notes.forEach((result, index) => {
                         if (result.status !== 'fulfilled' || !result.value) return;
                         const note = result.value;
                         const item = items[index];
-                        if (!item.parentID)
+                        if (!item.parentID && selected_collection)
                         {
-                            const collections = item.getCollections();
-                            let find_col = collections.find((c) => c == selected_collection);
-                            if (!find_col) find_col = collections[0];
-
-                            note.addToCollection(find_col);
-                            new_promises.push(note.saveTx());
+                            note.addToCollection(selected_collection);
+                            promises.push(note.saveTx());
                         }
                     });
 
-                await Promise.allSettled(new_promises);
+                await Promise.allSettled(promises);
 
                 return items;
             }
