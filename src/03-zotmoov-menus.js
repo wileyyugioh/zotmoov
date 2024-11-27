@@ -1,6 +1,6 @@
 var ZotMoovMenus = class
 {
-    static get SHORTCUTS()
+    get SHORTCUTS()
     {
         return {
             'extensions.zotmoov.keys.move_item': () => { Zotero.ZotMoov.moveSelectedItems(); },
@@ -106,7 +106,7 @@ var ZotMoovMenus = class
 
     _loadShortcuts()
     {
-        this._scs = this.constructor.SHORTCUTS;
+        this._scs = this.SHORTCUTS;
 
         let cmus = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
         for (let key of Object.keys(cmus))
@@ -345,7 +345,8 @@ var ZotMoovMenus = class
         allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext.map(ext => ext.toLowerCase()) : null;
 
         let items = Zotero.getActiveZoteroPane().getSelectedItems();
-        if(items.length != 1 || !items[0].isRegularItem()) return; // Only run if only one file is selected
+        if (items.length != 1 || !items[0].isRegularItem()) return; // Only run if only one file is selected
+        if (!search_dir) return;
 
         let lastFilePath = null;
         let lastDate = new Date(0);
