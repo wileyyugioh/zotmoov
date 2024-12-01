@@ -426,8 +426,17 @@ class ZotMoovAdvancedPrefs {
         }
     }
 
+    constructor(zotmoovMenus)
+    {
+        this.zotmoovMenus = zotmoovMenus;
+    }
+
     init()
     {
+        let enable_attach_dir = Zotero.Prefs.get('extensions.zotmoov.enable_attach_dir', true);
+        document.getElementById('zotmoov-attach-search-dir').disabled = !enable_attach_dir;
+        document.getElementById('zotmoov-attach-search-dir-button').disabled = !enable_attach_dir;
+
         this._savedcommands = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.cwc_commands', true));
         this._savedcmus = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
 
@@ -470,7 +479,37 @@ class ZotMoovAdvancedPrefs {
         this.Cmu.loadMenuItems();
         this.Cmu.createTree();
     }
+
+    async pickSearchDirectory()
+    {
+        let fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
+
+        fp.init(window, Zotero.getString('dataDir.selectDir'), fp.modeGetFolder);
+        fp.appendFilters(fp.filterAll);
+        let rv = await new Zotero.Promise(function(resolve)
+        {
+            fp.open((returnConstant) => resolve(returnConstant));
+        });
+        if (rv != fp.returnOK) return '';
+
+        Zotero.Prefs.set('extensions.zotmoov.attach_search_dir', fp.file.path, true);
+        document.getElementById('zotmoov-attach-search-dir').value = fp.file.path;
+    }
+
+    onEnableSearchClick(cb)
+    {
+        document.getElementById('zotmoov-attach-search-dir').disabled = !cb.checked;
+        document.getElementById('zotmoov-attach-search-dir-button').disabled = !cb.checked;
+
+        if(cb.checked)
+        {
+            this.zotmoovMenus.showAttachNewFile();
+        } else
+        {
+            this.zotmoovMenus.hideAttachNewFile();
+        }
+    }
 }
 
 // Expose to Zotero
-Zotero.ZotMoov.Prefs.Advanced = new ZotMoovAdvancedPrefs();
+Zotero.ZotMoov.Prefs.Advanced = new ZotMoovAdvancedPrefs(Zotero.ZotMoov.Menus);

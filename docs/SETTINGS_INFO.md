@@ -4,13 +4,6 @@
 
 The base directory where ZotMoov will move/copy files
 
-## Source Folder for Attaching New Files
-
-When checked this will enable the Attach New File menu item.
-
-<img src="res/Image3.png" width="300"/>
-
-When this button is clicked, the last modified file in the Source Folder with an allowed file extension will be attached to the selected item.
 
 ## File Behavior
 
@@ -37,6 +30,14 @@ When this is enabled, ZotMoov will automatically delete linked files in the ZotM
 By adding/removing entries to this table via the [+] and [-] buttons, you can choose which types of files ZotMoov will move/copy. If the table is empty, then all files will be moved regardless of their file extension.
 
 ## Advanced Options
+
+### Search Folder for Attaching New Files
+
+When checked this will enable the Attach New File menu item.
+
+<img src="res/Image3.png" width="300"/>
+
+When this button is clicked, the last modified file in the Search Folder with an allowed file extension will be attached to the selected item.
 
 [Custom Wildcards](CUSTOM_WILDCARD_INFO.md)
 
