@@ -53,7 +53,8 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
             id: 'zotmoov_basic',
             pluginID: 'zotmoov@wileyy.com',
             src: rootURI + 'preferences/prefs.xhtml',
-            scripts: [rootURI + 'preferences/zotmoov-prefs.js']
+            scripts: [rootURI + 'preferences/zotmoov-prefs.js'],
+            helpURL: 'https://github.com/wileyyugioh/zotmoov/blob/master/docs/SETTINGS_INFO.md'
     });
 
     Zotero.PreferencePanes.register(
@@ -62,7 +63,8 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
             pluginID: 'zotmoov@wileyy.com',
             parent: 'zotmoov_basic',
             src: rootURI + 'preferences/adv_prefs.xhtml',
-             scripts: [rootURI + 'preferences/zotmoov-adv-prefs.js']
+            scripts: [rootURI + 'preferences/zotmoov-adv-prefs.js'],
+            helpURL: 'https://github.com/wileyyugioh/zotmoov/blob/master/docs/SETTINGS_INFO.md#advanced-options'
     });
 
     Zotero.PreferencePanes.register(
@@ -71,7 +73,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
             pluginID: 'zotmoov@wileyy.com',
             parent: 'zotmoov_basic',
             src: rootURI + 'preferences/keyboard_shortcuts.xhtml',
-             scripts: [rootURI + 'preferences/zotmoov-keyboard-prefs.js']
+            scripts: [rootURI + 'preferences/zotmoov-keyboard-prefs.js']
     });
 
     zotmoovMenus.init();
