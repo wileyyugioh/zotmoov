@@ -177,4 +177,4 @@ zotmoov-menu-item-ann2note-title = Annotation to Note
 
 zotmoov-menu-item-ann2note = Add note from annotations
 
-zotmoov-add-att-confirm = Add <em>{ $filename }</em> as:
+zotmoov-add-att-confirm = Attach <em>{ $filename }</em> as:
