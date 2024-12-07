@@ -24,3 +24,4 @@ pref('extensions.zotmoov.keys.convert_linked', '');
 pref('extensions.zotmoov.custom_menu_items', JSON.stringify({}));
 pref('extensions.zotmoov.add_zotmoov_tag', true);
 pref('extensions.zotmoov.tag_str', 'zotmoov');
+pref('extensions.zotmoov.attach_prompt', false);

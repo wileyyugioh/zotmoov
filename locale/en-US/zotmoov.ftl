@@ -7,6 +7,9 @@ zotmoov-settings-attachment-search-intro = Search Folder for Attaching New Files
 zotmoov-settings-enable-attach-dir =
     .label = Enable Attach New File
 
+zotmoov-settings-attach-dir-prompt =
+    .label = Confirm When Adding File
+
 zotmoov-settings-filepath-button-label =
     .label = Choose Directory
 
@@ -173,3 +176,5 @@ zotmoov-menu-item-ann2note-title = Annotation to Note
     .label = Annotation to Note
 
 zotmoov-menu-item-ann2note = Add note from annotations
+
+zotmoov-add-att-confirm = Add { $filename } as:

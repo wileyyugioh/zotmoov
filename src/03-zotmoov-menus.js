@@ -382,6 +382,25 @@ var ZotMoovMenus = class
             fileBaseName = await Zotero.Attachments.getRenamedFileBaseNameIfAllowedType(items[0], lastFilePath);
         }
 
+        if (Zotero.Prefs.get('extensions.zotmoov.attach_prompt', true))
+        {
+            const orig_filename = PathUtils.filename(lastFilePath);
+            const new_filename = await new Promise((resolve, reject) =>
+            {
+                window.openDialog('chrome://zotmoov/content/add-att-confirm.xhtml',
+                'zotmoov-add-att-dialog-window',
+                'chrome,centerscreen,resizable=no,modal',
+                {
+                    orig_filename: orig_filename,
+                    new_filename: fileBaseName || orig_filename,
+                    callback: resolve
+                });
+            });
+
+            if (!new_filename) return;
+            fileBaseName = new_filename;
+        }
+
         const options = {
             'file': lastFilePath,
             'fileBaseName': fileBaseName,
