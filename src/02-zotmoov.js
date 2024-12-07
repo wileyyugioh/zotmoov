@@ -18,14 +18,15 @@ var ZotMoov = class {
             subdir_str: '',
             preferred_collection: null,
             undefined_str: 'undefined',
-            custom_wc: {}
+            custom_wc: {},
+            rename_file: true,
         };
         let options = {...default_options, ...arg_options};
 
         let file_path = item.getFilePath();
 
         let file_name = file_path.split(/[\\/]/).pop();
-        if (Zotero.Attachments.shouldAutoRenameFile() && item.parentItem)
+        if (options.rename_file && item.parentItem)
         {
             let file_ext = file_path.split('.').pop().toLowerCase();
             let renamed = await Zotero.Attachments.getRenamedFileBaseNameIfAllowedType(item.parentItem, file_path);
@@ -137,7 +138,8 @@ var ZotMoov = class {
             undefined_str: 'undefined',
             custom_wc: {},
             add_zotmoov_tag: true,
-            tag_str: 'zotmoov'
+            tag_str: 'zotmoov',
+            rename_file: true
         };
 
         let options = {...default_options, ...arg_options};
@@ -178,6 +180,7 @@ var ZotMoov = class {
                     preferred_collection: options.preferred_collection,
                     undefined_str: options.undefined_str,
                     custom_wc: options.custom_wc,
+                    rename_file: options.rename_file
             });
 
             // Have to check since later adding an entry triggers the
@@ -239,7 +242,8 @@ var ZotMoov = class {
             allowed_file_ext: null,
             preferred_collection: null,
             undefined_str: 'undefined',
-            custom_wc: {}
+            custom_wc: {},
+            rename_file: true
         };
 
         let options = {...default_options, ...arg_options};
@@ -272,7 +276,8 @@ var ZotMoov = class {
                     subdir_str: options.subdir_str,
                     preferred_collection: options.preferred_collection,
                     undefined_str: options.undefined_str,
-                    custom_wc: options.custom_wc
+                    custom_wc: options.custom_wc,
+                    rename_file: options.rename_file
             });
 
             if (file_path == copy_path) continue;
@@ -415,7 +420,8 @@ var ZotMoov = class {
             allow_group_libraries: Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true),
             custom_wc: JSON.parse(Zotero.Prefs.get('extensions.zotmoov.cwc_commands', true)),
             add_zotmoov_tag: Zotero.Prefs.get('extensions.zotmoov.add_zotmoov_tag', true),
-            tag_str: Zotero.Prefs.get('extensions.zotmoov.tag_str', true)
+            tag_str: Zotero.Prefs.get('extensions.zotmoov.tag_str', true),
+            rename_file: Zotero.Attachments.shouldAutoRenameFile()
         };
     }
 }

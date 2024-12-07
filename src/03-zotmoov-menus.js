@@ -384,10 +384,10 @@ var ZotMoovMenus = class
 
         if (Zotero.Prefs.get('extensions.zotmoov.attach_prompt', true))
         {
-            const orig_filename = PathUtils.filename(lastFilePath);
+            const orig_filename = PathUtils.filename(lastFilePath).replace(/\.[^/.]+$/, '');
             const new_filename = await new Promise((resolve, reject) =>
             {
-                window.openDialog('chrome://zotmoov/content/add-att-confirm.xhtml',
+                Zotero.getMainWindow().openDialog('chrome://zotmoov/content/add-att-confirm.xhtml',
                 'zotmoov-add-att-dialog-window',
                 'chrome,centerscreen,resizable=no,modal',
                 {
@@ -421,6 +421,8 @@ var ZotMoovMenus = class
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
 
         let pref = this._zotmoov.getBasePrefs();
+        pref.rename_file = false;
+
         if(should_move)
         {
             await this._zotmoov.move([att], dst_path, pref);
