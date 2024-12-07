@@ -18,7 +18,7 @@
     <linkset><html:link rel="localization" href="zotmoov.ftl"/></linkset>
 
     <vbox style='margin-bottom: 10px;'>
-        <hbox><label><html:h3 data-l10n-id="zotmoov-add-att-confirm"/></label></hbox>
+        <hbox><label><html:h3 id="zotmoov-add-att-confirm-title" data-l10n-id="zotmoov-add-att-confirm"/></label></hbox>
         <hbox><html:input id="zotmoov-file-ext-dialog-input" type="text" style="flex: 1;" oninput="myOnInput(event);"/></hbox>
     </vbox>
 
@@ -38,7 +38,12 @@
             if (window.arguments) window_args = {...window_args, ...window.arguments[0]};
 
             document.getElementById('zotmoov-file-ext-dialog-input').value = window_args.new_filename;
-            document.getElementById('zotmoov-add-att-confirm').setAttribute('data-l10n-args') = { 'filename': window_args.orig_filename };
+            document.l10n.setArgs(document.getElementById('zotmoov-add-att-confirm-title'), { filename: window_args.orig_filename });
+
+            document.addEventListener('L10nMutationsFinished', () => {
+                window.sizeToContent();
+            });
+        }
 
         function myOnAccept()
         {
