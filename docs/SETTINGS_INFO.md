@@ -39,6 +39,8 @@ When checked this will enable the Attach New File menu item.
 
 When this button is clicked, the last modified file in the Search Folder with an allowed file extension will be attached to the selected item.
 
+You can also check **Confirm When Adding File** for a confirmation dialog to pop up when you attach a file.
+
 [Custom Wildcards](CUSTOM_WILDCARD_INFO.md)
 
 [Custom Menu Items](CUSTOM_MENUITEM_INFO.md)
