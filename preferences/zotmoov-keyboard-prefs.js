@@ -111,7 +111,7 @@ class ZotMoovKeyboardPrefs {
 
         const label = document.createXULElement('label');
         label.setAttribute('data-l10n-id', 'zotmoov-kb-settings-custom');
-        label.setAttribute('data-l10n-args', `{ "text": "${ name }" }`);
+        label.setAttribute('data-l10n-args', JSON.stringify({ text: name }));
 
         const spacer = document.createXULElement('spacer');
         spacer.setAttribute('flex', '1');

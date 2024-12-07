@@ -19,7 +19,7 @@ var ZotMoovCMUParser = class {
                 const dir = this.directory ? this.directory : Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
                 return {
                     'command_name': { fluent: 'zotmoov-menu-item-move-title' },
-                    'desc': { fluent: 'zotmoov-menu-item-move', args: `{ "text": "${ dir }" }` },
+                    'desc': { fluent: 'zotmoov-menu-item-move', args: JSON.stringify({ text: dir }) },
                 };
             }
 
@@ -52,7 +52,7 @@ var ZotMoovCMUParser = class {
                 const dir = this.directory ? this.directory : Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
                 return {
                     'command_name': { fluent: 'zotmoov-menu-item-copy-title' },
-                    'desc': { fluent: 'zotmoov-menu-item-copy', args: `{ "text": "${ dir }" }` },
+                    'desc': { fluent: 'zotmoov-menu-item-copy', args: JSON.stringify({ text: dir }) },
                 };
             }
 
@@ -85,7 +85,7 @@ var ZotMoovCMUParser = class {
             {
                 return {
                     'command_name': { fluent: 'zotmoov-menu-item-addtag-title' },
-                    'desc': { fluent: 'zotmoov-menu-item-addtag', args: `{ "text": "${ this.tag }" }` },
+                    'desc': { fluent: 'zotmoov-menu-item-addtag', args: JSON.stringify({ text: this.tag }) },
                 };
             }
 
@@ -129,7 +129,7 @@ var ZotMoovCMUParser = class {
             {
                 return {
                     'command_name': { fluent: 'zotmoov-menu-item-remtag-title' },
-                    'desc': { fluent: 'zotmoov-menu-item-remtag', args: `{ "text": "${ this.tag }" }` },
+                    'desc': { fluent: 'zotmoov-menu-item-remtag', args: JSON.stringify({ text: this.tag }) },
                 };
             }
 

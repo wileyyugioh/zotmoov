@@ -39,7 +39,7 @@ var ZotMoovMenus = class
         mu.id = id;
         mu.classList.add(this.menuitem_class);
         mu.setAttribute('data-l10n-id', 'zotmoov-context-custom-menuitem-title');
-        mu.setAttribute('data-l10n-args', `{ "text": "${ label }" }`);
+        mu.setAttribute('data-l10n-args', JSON.stringify({ text: label }));
         mu.addEventListener('command', () =>
         {
             const cmu = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));

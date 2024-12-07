@@ -34,7 +34,12 @@
             if (window.arguments)
             {
                 window_args = {...window_args, ...window.arguments[0]};
-                document.getElementById('zotmoov-dialog-title').setAttribute('data-l10n-args', `{ "cmu-title": "${ window_args.title }" }`);
+
+                document.l10n.setArgs(document.getElementById('zotmoov-dialog-title'), { 'cmu-title': window_args.title });
+
+                document.addEventListener('L10nMutationsFinished', () => {
+                    window.sizeToContent();
+                });
             }
         }
 
