@@ -41,9 +41,9 @@ When this button is clicked, the last modified file in the Search Folder with an
 
 You can also check **Confirm When Adding File** for a confirmation dialog to pop up when you attach a file.
 
-[Custom Wildcards](CUSTOM_WILDCARD_INFO.md)
+### [Custom Wildcards](CUSTOM_WILDCARD_INFO.md)
 
-[Custom Menu Items](CUSTOM_MENUITEM_INFO.md)
+### [Custom Menu Items](CUSTOM_MENUITEM_INFO.md)
 
 ## Selected Hidden Preferences
 
