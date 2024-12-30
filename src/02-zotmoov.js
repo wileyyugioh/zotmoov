@@ -24,6 +24,7 @@ var ZotMoov = class {
         let options = {...default_options, ...arg_options};
 
         let file_path = item.getFilePath();
+        if (!file_path) return '';
 
         let file_name = file_path.split(/[\\/]/).pop();
         if (options.rename_file && item.parentItem)
@@ -73,6 +74,7 @@ var ZotMoov = class {
             if (item.attachmentLinkMode != Zotero.Attachments.LINK_MODE_LINKED_FILE) continue;
 
             let fp = item.getFilePath();
+            if (!fp) continue;
             let fp_arr = PathUtils.split(fp);
 
             // Check to see if file is in home_path
@@ -165,6 +167,7 @@ var ZotMoov = class {
             }
 
             let file_path = item.getFilePath();
+            if (!file_path) continue;
 
             // Test to see if file extension is allowed
             if (Array.isArray(options.allowed_file_ext))
@@ -182,6 +185,8 @@ var ZotMoov = class {
                     custom_wc: options.custom_wc,
                     rename_file: options.rename_file
             });
+            
+            if (!copy_path) continue;
 
             // Have to check since later adding an entry triggers the
             // handler again
@@ -263,6 +268,7 @@ var ZotMoov = class {
             if (!options.allow_group_libraries && item.libraryID != Zotero.Libraries.userLibraryID) continue;
 
             let file_path = item.getFilePath();
+            if (!file_path) continue;
 
             // Test to see if file extension is allowed
             if (Array.isArray(options.allowed_file_ext))
@@ -279,7 +285,8 @@ var ZotMoov = class {
                     custom_wc: options.custom_wc,
                     rename_file: options.rename_file
             });
-
+            
+            if (!copy_path) continue;
             if (file_path == copy_path) continue;
 
             let final_path = copy_path;
