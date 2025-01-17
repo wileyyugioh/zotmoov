@@ -130,6 +130,8 @@ var ZotMoov = class {
 
     async move(items, dst_path, arg_options = {})
     {
+        // TODO - Mr. Hoorn - Refactor this entire file for maintainability.
+        // Perhaps also rewrite the script builder to manually account for dependencies?
         const default_options = {
             ignore_linked: false,
             into_subfolder: false,
