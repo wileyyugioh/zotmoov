@@ -25,10 +25,10 @@ class FileProcessor:
         return [Path(file[:-3]) for file in os.listdir(directory) if file.endswith('.js')]
 
     @staticmethod
-    def get_content_to_write(sanitized_directory: str, script_files: List[Path]) -> str:
+    def get_content_to_write(normal_directory: str, sanitized_directory: str, script_files: List[Path]) -> str:
         return f"""
         let {sanitized_directory}_scripts = [{', '.join("'" + f.name + "'" for f in script_files)}]
-        let {sanitized_directory}_paths = {sanitized_directory}_scripts.map(this._convertScriptToPath.bind(this, '{sanitized_directory}'));
+        let {sanitized_directory}_paths = {sanitized_directory}_scripts.map(this._convertScriptToPath.bind(this, '{normal_directory}'));
 """
 
     @staticmethod
@@ -53,7 +53,7 @@ var ScriptDefinitions = class {
             script_files = self.file_processor.get_script_files(directory)
             script_files.sort()
             sanitized_directory: str = FileProcessor.sanitize_path(str(directory))
-            self.js_file_content += self.file_processor.get_content_to_write(sanitized_directory, script_files)
+            self.js_file_content += self.file_processor.get_content_to_write(str(directory).replace("\\", "/"), sanitized_directory, script_files)
 
         concat_str = self.file_processor.get_concat_str(self.directories)
         self.js_file_content += f"""
