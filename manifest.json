@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "ZotMoov",
-  "version": "1.2.11",
-  "description": "Mooves attachments and links them",
+  "version": "1.2.12",
+  "description": "Mooves attachments and links them (test)",
   "author": "Wiley Yu & Mr. Hoorn",
   "applications": {
     "zotero": {

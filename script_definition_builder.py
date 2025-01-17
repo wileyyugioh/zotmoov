@@ -1,10 +1,11 @@
 import os
 from pathlib import Path
+from typing import List
 
 
 class FileProcessor:
     @staticmethod
-    def get_sub_dirs(directory):
+    def get_sub_dirs(directory: str):
         directory_path = Path(directory)
         sub_dirs = []
         for subdirectory in directory_path.iterdir():
@@ -13,23 +14,23 @@ class FileProcessor:
         return sub_dirs
 
     @staticmethod
-    def get_script_files(directory):
-        return [file[:-3] for file in os.listdir(directory) if file.endswith('.js')]
+    def get_script_files(directory: Path) -> List[Path]:
+        return [Path(file[:-3]) for file in os.listdir(directory) if file.endswith('.js')]
 
     @staticmethod
-    def write_content(directory, script_files):
+    def get_content_to_write(directory_name: str, script_files: List[Path]) -> str:
         return f"""
-        let {directory.replace('/', '_')}_scripts = [{', '.join("'" + f + "'" for f in script_files)}]
-        let {directory.replace('/', '_')}_paths = {directory.replace('/', '_')}_scripts.map(this._convertScriptToPath.bind(this, '{directory}'));
+        let {directory_name.replace('/', '_')}_scripts = [{', '.join("'" + f.name + "'" for f in script_files)}]
+        let {directory_name.replace('/', '_')}_paths = {directory_name.replace('/', '_')}_scripts.map(this._convertScriptToPath.bind(this, '{directory_name}'));
 """
 
     @staticmethod
-    def get_concat_str(directories):
-        return ', '.join(f"{directory.replace('/', '_')}_paths" for directory in directories)
+    def get_concat_str(directories: List[Path]) -> str:
+        return ', '.join(f"{directory.name.replace('/', '_')}_paths" for directory in directories)
 
 
 class JSFileContent:
-    def __init__(self, directories):
+    def __init__(self, directories: List[Path]):
         self.directories = directories
         self.file_processor = FileProcessor()
         self.js_file_content = """
@@ -40,11 +41,11 @@ var ScriptDefinitions = class {
 
     getScriptPaths() {"""
 
-    def generate_content(self):
+    def generate_content(self) -> None:
         for directory in self.directories:
             script_files = self.file_processor.get_script_files(directory)
             script_files.sort()
-            self.js_file_content += self.file_processor.write_content(directory, script_files)
+            self.js_file_content += self.file_processor.get_content_to_write(directory.name, script_files)
 
         concat_str = self.file_processor.get_concat_str(self.directories)
         self.js_file_content += f"""
@@ -56,26 +57,26 @@ var ScriptDefinitions = class {
 
 class FileWriter:
     @staticmethod
-    def write_file(js_file_content):
+    def write_file(js_file_content: str) -> None:
         js_path: Path = Path(os.path.dirname(__file__)).joinpath('init', '00-script-definitions.js')
         with open(js_path, 'w') as file:
             file.write(js_file_content)
 
 
-def get_directory_tree(directories):
+def get_directory_tree(directory_names_to_include: List[str]) -> List[Path]:
     walked_directories = []
 
-    for directory in directories:
+    for directory_name in directory_names_to_include:
         # Get subdirectories for this directory
-        sub_directories = FileProcessor.get_sub_dirs(directory)
+        sub_directories = FileProcessor.get_sub_dirs(directory_name)
 
         # For each subdirectory, get its subdirectories recursively
         for sub_directory in sub_directories:
-            full_path = f"{directory}/{sub_directory}"
+            full_path = f"{directory_name}/{sub_directory}"
             walked_directories.extend(get_directory_tree([full_path]))
 
         # Append the current directory after its subdirectories
-        walked_directories.append(directory)
+        walked_directories.append(Path(directory_name))
 
     return walked_directories
 
