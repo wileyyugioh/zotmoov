@@ -5,6 +5,13 @@ from typing import List
 
 class FileProcessor:
     @staticmethod
+    def sanitize_path(directory: str) -> str:
+        # More sanitization can be added if needed, but these are the primary ones.
+        sanitized_path = directory.replace('/', '_')
+        sanitized_path = sanitized_path.replace('\\', '_')
+        return sanitized_path
+
+    @staticmethod
     def get_sub_dirs(directory: str):
         directory_path = Path(directory)
         sub_dirs = []
@@ -18,15 +25,15 @@ class FileProcessor:
         return [Path(file[:-3]) for file in os.listdir(directory) if file.endswith('.js')]
 
     @staticmethod
-    def get_content_to_write(directory_name: str, script_files: List[Path]) -> str:
+    def get_content_to_write(sanitized_directory: str, script_files: List[Path]) -> str:
         return f"""
-        let {directory_name.replace('/', '_')}_scripts = [{', '.join("'" + f.name + "'" for f in script_files)}]
-        let {directory_name.replace('/', '_')}_paths = {directory_name.replace('/', '_')}_scripts.map(this._convertScriptToPath.bind(this, '{directory_name}'));
+        let {sanitized_directory}_scripts = [{', '.join("'" + f.name + "'" for f in script_files)}]
+        let {sanitized_directory}_paths = {sanitized_directory}_scripts.map(this._convertScriptToPath.bind(this, '{sanitized_directory}'));
 """
 
     @staticmethod
     def get_concat_str(directories: List[Path]) -> str:
-        return ', '.join(f"{directory.name.replace('/', '_')}_paths" for directory in directories)
+        return ', '.join(f"{FileProcessor.sanitize_path(str(directory))}_paths" for directory in directories)
 
 
 class JSFileContent:
@@ -45,7 +52,8 @@ var ScriptDefinitions = class {
         for directory in self.directories:
             script_files = self.file_processor.get_script_files(directory)
             script_files.sort()
-            self.js_file_content += self.file_processor.get_content_to_write(directory.name, script_files)
+            sanitized_directory: str = FileProcessor.sanitize_path(str(directory))
+            self.js_file_content += self.file_processor.get_content_to_write(sanitized_directory, script_files)
 
         concat_str = self.file_processor.get_concat_str(self.directories)
         self.js_file_content += f"""
