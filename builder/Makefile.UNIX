@@ -11,7 +11,7 @@ zotmoov.xpi: FORCE
 zotmoov-%-fx.xpi: zotmoov.xpi
 	mv $< $@
 
-Makefile.in: manifest.json
+Makefile.in: ../manifest.json
 	echo "all: zotmoov-${RELEASE}-fx.xpi" > Makefile.in
 
 FORCE:
