@@ -41,12 +41,11 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
     const outputManager = new OutputManager(directoryManager);
     const zotmoovDebugger = new ZotMoovDebugger('ZotMoov', outputManager);
 
-    const sanitizer = new Sanitizer();
-    const zotmoovWildcard = new ZotMoovWildcard(sanitizer, ZotMoovCWParser);
+    const sanitizer = new FileNameSanitizer();
 
-    zotmoov = new ZotMoov(id, version, rootURI, zotmoovWildcard, sanitizer, zotmoovDebugger);
-    zotmoovBindings = new ZotMoovBindings(zotmoov);
-    zotmoovMenus = new ZotMoovMenus(zotmoov, zotmoovBindings, ZotMoovCMUParser);
+    const zotmoov = new ZotMoov(id, version, sanitizer, zotmoovDebugger);
+    const zotmoovBindings = new ZotMoovBindings(zotmoov);
+    const zotmoovMenus = new ZotMoovMenus(zotmoov, zotmoovBindings, ZotMoovCMUParser);
 
     Zotero.PreferencePanes.register(
         {
