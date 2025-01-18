@@ -11,3 +11,4 @@
 # Personal
 /.personal
 /init/00-script-definitions.js
+logs
