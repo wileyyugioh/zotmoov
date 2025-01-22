@@ -389,25 +389,24 @@ var ZotMoov = class {
 
         const { FilePicker } = ChromeUtils.importESModule('chrome://zotero/content/modules/filePicker.mjs');
         let fp = new FilePicker();
+
         let wm = Services.wm;
         let win = wm.getMostRecentWindow('navigator:browser');
 
         fp.init(win, Zotero.getString('dataDir.selectDir'), fp.modeGetFolder);
         fp.appendFilters(fp.filterAll);
-        let rv = await new Zotero.Promise(function(resolve)
-        {
-            fp.show((returnConstant) => resolve(returnConstant));
-        });
+        
+        let rv = await fp.show();
         if (rv != fp.returnOK) return '';
 
         let pref = this.getBasePrefs();
         pref.into_subfolder = false;
         if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
-            await this.move(atts, fp.file.path, pref);
+            await this.move(atts, fp.file, pref);
         } else
         {
-            await this.copy(atts, fp.file.path, pref);
+            await this.copy(atts, fp.file, pref);
         }
     }
 
