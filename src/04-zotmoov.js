@@ -1,17 +1,28 @@
 Components.utils.importGlobalProperties(['PathUtils', 'IOUtils']);
 
-var ZotMoov = class {
-    constructor(id, version, rootURI, wildcard, sanitizer, zotmoov_debugger) {
+// 18 January 2025
+
+class ZotMoov {
+    /**
+     *
+     * @param id {string}
+     * @param version {string}
+     * @param sanitizer {FileNameSanitizer}
+     * @param zotmoov_debugger {ZotMoovDebugger}
+     */
+    constructor(id, version, sanitizer, zotmoov_debugger) {
         this.id = id;
         this.version = version;
-        this.rootURI = rootURI;
-
-        this.wildcard = wildcard;
         this.sanitizer = sanitizer;
         this.zotmoov_debugger = zotmoov_debugger;
+
+        const config = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
+        const getItemTemplatePossibilities = new GetItemTemplatePossibilities();
+        this.configuration_parser = new ConfigurationParser(config, zotmoov_debugger, getItemTemplatePossibilities);
+        this.item_factory = new ItemFactory(new CreatorModelFactory(), zotmoov_debugger, sanitizer, 3, ', ');
     }
 
-    async _getCopyPath(item, dst_path, arg_options = {})
+    async _getCopyPath(zoteroItem, dst_path, arg_options = {})
     {
         const default_options = {
             into_subfolder: false,
@@ -23,14 +34,16 @@ var ZotMoov = class {
         };
         let options = {...default_options, ...arg_options};
 
-        let file_path = item.getFilePath();
+        let file_path = zoteroItem.getFilePath();
         if (!file_path) return '';
 
         let file_name = file_path.split(/[\\/]/).pop();
-        if (options.rename_file && item.parentItem)
+        this.zotmoov_debugger.debug("Getting copy path for: " + file_name);
+
+        if (options.rename_file && zoteroItem.parentItem)
         {
             let file_ext = file_path.split('.').pop().toLowerCase();
-            let renamed = await Zotero.Attachments.getRenamedFileBaseNameIfAllowedType(item.parentItem, file_path);
+            let renamed = await Zotero.Attachments.getRenamedFileBaseNameIfAllowedType(zoteroItem.parentItem, file_path);
             if (renamed) file_name = renamed + '.' + file_ext;
         }
 
@@ -39,16 +52,14 @@ var ZotMoov = class {
         // Optionally add subdirectory folder here
         if (options.into_subfolder)
         {
-            let custom_dir = this.wildcard.process_string(item, options.subdir_str, {
-                preferred_collection: options.preferred_collection,
-                undefined_str: options.undefined_str,
-                custom_wc: options.custom_wc
-            });
+            const item = this.item_factory.createItem(zoteroItem);
+            let custom_dir = this.configuration_parser.parse(item);
             let sanitized_custom_dir = custom_dir.split('/').map((dir) => this.sanitizer.sanitize(dir, '_'));
             local_dst_path = PathUtils.join(local_dst_path, ...sanitized_custom_dir);
         }
 
         let copy_path = PathUtils.join(local_dst_path, file_name);
+        this.zotmoov_debugger.debug("Final path: " + copy_path)
 
         return copy_path;
     }
@@ -130,6 +141,8 @@ var ZotMoov = class {
 
     async move(items, dst_path, arg_options = {})
     {
+        // TODO - Mr. Hoorn - Refactor this entire file for maintainability.
+        // Perhaps also rewrite the script builder to manually account for dependencies?
         const default_options = {
             ignore_linked: false,
             into_subfolder: false,
@@ -205,6 +218,24 @@ var ZotMoov = class {
             clone.attachmentPath = final_path;
             if (options.rename_title) clone.setField('title', PathUtils.filename(final_path));
             clone.dateAdded = item.dateAdded;
+
+            // Temporary fix for file path issue
+            if (final_path.length > 260) {
+                this.zotmoov_debugger.error("File path too long: " + final_path + "\nTotal " + (final_path.length) + " characters");
+                this.zotmoov_debugger.debug("Implementing temporary fix; renaming file to paper.pdf");
+
+                const original_file_name = PathUtils.filename(file_path);
+                const new_file_name = 'paper.pdf';
+
+                final_path = final_path.replace(original_file_name, new_file_name);
+
+                if (final_path.length > 260) {
+                    this.zotmoov_debugger.error("File path too long after temporary fix: " + final_path + "\nTotal " + (final_path.length) + " characters\nSKIPPING!");
+                    return;
+                }
+
+                this.zotmoov_debugger.debug("Final path: " + final_path);
+            }
 
             if (options.add_zotmoov_tag) clone.addTag(options.tag_str);
 

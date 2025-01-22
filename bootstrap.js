@@ -7,6 +7,7 @@ let zotmoov = null;
 let zotmoovMenus = null;
 let zotmoovBindings = null;
 let chromeHandle = null;
+let firstLoad = true;
 
 function log(msg)
 {
@@ -28,25 +29,29 @@ async function install()
 
 async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 {
-    // Only ones we need to load directly here
-    Services.scriptloader.loadSubScript(rootURI + 'init/00-script-definitions.js');
-    Services.scriptloader.loadSubScript(rootURI + 'init/01-script-loader.js');
+    if (firstLoad)
+    {
+        // Only ones we need to load directly here
+        Services.scriptloader.loadSubScript(rootURI + 'init/00-script-definitions.js', this);
+        Services.scriptloader.loadSubScript(rootURI + 'init/01-script-loader.js', this);
 
-    let scriptPaths = new ScriptDefinitions().getScriptPaths();
-    let scriptLoader = new ScriptLoader(rootURI);
+        let scriptPaths = new ScriptDefinitions().getScriptPaths();
+        let scriptLoader = new ScriptLoader(rootURI);
 
-    await scriptLoader.loadScripts(scriptPaths);
+        await scriptLoader.loadScripts(scriptPaths, this);
+
+        firstLoad = false;
+    }
 
     const directoryManager = new DirectoryManager();
     const outputManager = new OutputManager(directoryManager);
     const zotmoovDebugger = new ZotMoovDebugger('ZotMoov', outputManager);
 
-    const sanitizer = new Sanitizer();
-    const zotmoovWildcard = new ZotMoovWildcard(sanitizer, ZotMoovCWParser);
+    const sanitizer = new FileNameSanitizer();
 
-    zotmoov = new ZotMoov(id, version, rootURI, zotmoovWildcard, sanitizer, zotmoovDebugger);
-    zotmoovBindings = new ZotMoovBindings(zotmoov);
-    zotmoovMenus = new ZotMoovMenus(zotmoov, zotmoovBindings, ZotMoovCMUParser);
+    const zotmoov = new ZotMoov(id, version, sanitizer, zotmoovDebugger);
+    const zotmoovBindings = new ZotMoovBindings(zotmoov);
+    const zotmoovMenus = new ZotMoovMenus(zotmoov, zotmoovBindings, ZotMoovCMUParser);
 
     Zotero.PreferencePanes.register(
         {

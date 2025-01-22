@@ -1,4 +1,4 @@
-var ZotMoovPatcher = class {
+class ZotMoovPatcher {
     constructor()
     {
         this._disabled = false;
