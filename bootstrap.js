@@ -7,6 +7,7 @@ let zotmoov = null;
 let zotmoovMenus = null;
 let zotmoovBindings = null;
 let chromeHandle = null;
+let firstLoad = true;
 
 function log(msg)
 {
@@ -28,14 +29,19 @@ async function install()
 
 async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 {
-    // Only ones we need to load directly here
-    Services.scriptloader.loadSubScript(rootURI + 'init/00-script-definitions.js');
-    Services.scriptloader.loadSubScript(rootURI + 'init/01-script-loader.js');
+    if (firstLoad)
+    {
+        // Only ones we need to load directly here
+        Services.scriptloader.loadSubScript(rootURI + 'init/00-script-definitions.js', this);
+        Services.scriptloader.loadSubScript(rootURI + 'init/01-script-loader.js', this);
 
-    let scriptPaths = new ScriptDefinitions().getScriptPaths();
-    let scriptLoader = new ScriptLoader(rootURI);
+        let scriptPaths = new ScriptDefinitions().getScriptPaths();
+        let scriptLoader = new ScriptLoader(rootURI);
 
-    await scriptLoader.loadScripts(scriptPaths);
+        await scriptLoader.loadScripts(scriptPaths, this);
+
+        firstLoad = false;
+    }
 
     const directoryManager = new DirectoryManager();
     const outputManager = new OutputManager(directoryManager);
