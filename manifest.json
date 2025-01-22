@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "ZotMoov",
-  "version": "1.2.12",
+  "version": "1.2.14",
   "description": "Mooves attachments and links them (test)",
   "author": "Wiley Yu & Mr. Hoorn",
   "applications": {

@@ -1,4 +1,4 @@
-all: ../get_version.ps1 Makefile.in
+all: get_version.ps1 Makefile.in
 
 -include Makefile.in
 
@@ -14,7 +14,7 @@ zotmoov-%-fx.xpi: zotmoov.xpi
 	if exist $@ del /F /Q $@
 	ren $< $@
 
-Makefile.in: ../manifest.json
+Makefile.in: manifest.json
 	echo all: zotmoov-$(RELEASE)-fx.xpi > Makefile.in
 
 FORCE:

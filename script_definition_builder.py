@@ -13,7 +13,7 @@ class FileProcessor:
 
     @staticmethod
     def get_sub_dirs(directory: str):
-        directory_path = Path("..", directory)
+        directory_path = Path(".", directory)
         sub_dirs = []
         for subdirectory in directory_path.iterdir():
             if subdirectory.is_dir():
@@ -22,7 +22,7 @@ class FileProcessor:
 
     @staticmethod
     def get_script_files(directory: Path) -> List[Path]:
-        return [Path(file[:-3]) for file in os.listdir(Path("..", directory)) if file.endswith('.js')]
+        return [Path(file[:-3]) for file in os.listdir(Path(".", directory)) if file.endswith('.js')]
 
     @staticmethod
     def get_content_to_write(normal_directory: str, sanitized_directory: str, script_files: List[Path]) -> str:
@@ -66,7 +66,7 @@ var ScriptDefinitions = class {
 class FileWriter:
     @staticmethod
     def write_file(js_file_content: str) -> None:
-        js_path: Path = Path(os.path.dirname(__file__)).joinpath('../init', '00-script-definitions.js')
+        js_path: Path = Path(os.path.dirname(__file__)).joinpath('init', '00-script-definitions.js')
         with open(js_path, 'w') as file:
             file.write(js_file_content)
 
