@@ -15,11 +15,6 @@ class ZotMoov {
         this.version = version;
         this.sanitizer = sanitizer;
         this.zotmoov_debugger = zotmoov_debugger;
-
-        const config = Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true);
-        const getItemTemplatePossibilities = new GetItemTemplatePossibilities();
-        this.configuration_parser = new ConfigurationParser(config, zotmoov_debugger, getItemTemplatePossibilities);
-        this.item_factory = new ItemFactory(new CreatorModelFactory(), zotmoov_debugger, sanitizer, 3, ', ');
     }
 
     async _getCopyPath(zoteroItem, dst_path, arg_options = {})
@@ -52,8 +47,16 @@ class ZotMoov {
         // Optionally add subdirectory folder here
         if (options.into_subfolder)
         {
-            const item = this.item_factory.createItem(zoteroItem);
-            let custom_dir = this.configuration_parser.parse(item);
+            const item = new ItemFactory(new CreatorModelFactory(),
+                this.zotmoov_debugger,
+                this.sanitizer,
+                3,
+                ', ').createItem(zoteroItem);
+
+            let custom_dir = new ConfigurationParser(options.subdir_str,
+                this.zotmoov_debugger,
+                new GetItemTemplatePossibilities()).parse(item);
+
             let sanitized_custom_dir = custom_dir.split('/').map((dir) => this.sanitizer.sanitize(dir, '_'));
             local_dst_path = PathUtils.join(local_dst_path, ...sanitized_custom_dir);
         }
