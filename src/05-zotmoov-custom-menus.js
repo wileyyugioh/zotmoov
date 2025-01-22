@@ -1,4 +1,4 @@
-var ZotMoovCMUParser = class {
+class ZotMoovCMUParser {
     static Commands =
     {
         Move: class

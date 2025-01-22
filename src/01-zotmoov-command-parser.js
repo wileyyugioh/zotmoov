@@ -1,4 +1,4 @@
-var ZotMoovCWParser = class {
+class ZotMoovCWParser {
     static Commands =
     {
         TextCommand: class
