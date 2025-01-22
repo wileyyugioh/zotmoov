@@ -106,7 +106,7 @@ function shutdown()
     chromeHandle.destruct();
     chromeHandle = null;
     
-    zotmoovMenus.unloadAll();
+    zotmoovMenus.destroy();
     zotmoovBindings.destroy();
 
     zotmoov = null;
