@@ -57,7 +57,7 @@ var ZotMoovBindings = class {
                 // Linked files only exist in user library
                 if (libraryType != 'user') return results;
                 if (!Zotero.Prefs.get('extensions.zotmoov.delete_files', true)) return results;
-                if (!Zotero.Prefs.get('extensions.zotmoov.process_synced_files', true)) return results;
+                if (Zotero.Prefs.get('extensions.zotmoov.process_synced_files', true)) return results;
 
                 for (let key of results.deleted['items'])
                 {
@@ -79,7 +79,7 @@ var ZotMoovBindings = class {
                 let results = yield orig.apply(this, [...args]);
 
                 // ...unless the user wants it
-                if (!Zotero.Prefs.get('extensions.zotmoov.process_synced_files', true)) return results;
+                if (Zotero.Prefs.get('extensions.zotmoov.process_synced_files', true)) return results;
 
                 if(results.processed) self._callback.addKeysToIgnore([results.key]);
 
