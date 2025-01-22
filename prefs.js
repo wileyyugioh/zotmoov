@@ -25,3 +25,4 @@ pref('extensions.zotmoov.custom_menu_items', JSON.stringify({}));
 pref('extensions.zotmoov.add_zotmoov_tag', true);
 pref('extensions.zotmoov.tag_str', 'zotmoov');
 pref('extensions.zotmoov.attach_prompt', false);
+pref('extensions.zotmoov.process_synced_files', false);
