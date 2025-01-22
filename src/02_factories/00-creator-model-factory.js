@@ -1,7 +1,7 @@
 /**
  * Class representing a factory for creating `CreatorModel` objects.
  */
-var CreatorModelFactory = class {
+class CreatorModelFactory {
     create(zoteroCreatorItem, creatorType) {
         const creatorInitials = zoteroCreatorItem.firstName[0].toUpperCase() + zoteroCreatorItem.lastName[0].toUpperCase();
 

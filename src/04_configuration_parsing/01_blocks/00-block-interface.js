@@ -1,4 +1,4 @@
-var BlockInterface = class {
+class BlockInterface {
     /**
      * @param substitutions {TemplatePossibility[]} - The list of substitutions to apply to this block.
      */

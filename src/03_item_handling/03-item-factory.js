@@ -1,4 +1,4 @@
-var ItemFactory = class {
+class ItemFactory {
     constructor(creatorModelFactory, zotMoovDebugger, fileSanitizer, maxAuthors = 3, delimiter =  '\ ') {
         this._creatorModelFactory = creatorModelFactory;
         this._zotDebugger = zotMoovDebugger;

@@ -1,4 +1,4 @@
-var LastNameFormattingStrategy = class extends FormattingStrategyInterface {
+class LastNameFormattingStrategy extends FormattingStrategyInterface {
     formatCreator(creator) {
         return creator.lastName;
     }

@@ -1,4 +1,4 @@
-var ConditionalBlock = class extends BlockInterface {
+class ConditionalBlock extends BlockInterface {
     /**
      * Represents a normal block substitution.
      * @param substitutions {TemplatePossibility[]} - The list of substitutions to apply to this block.

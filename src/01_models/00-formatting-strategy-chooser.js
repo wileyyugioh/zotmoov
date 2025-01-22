@@ -1,7 +1,7 @@
 /**
  * Chooses a strategy based on the given desired strategy.
  */
-var FormattingStrategyChooser = class {
+class FormattingStrategyChooser {
     /**
      * Retrieves the desired formatting strategy based on the given desired strategy.
      *
