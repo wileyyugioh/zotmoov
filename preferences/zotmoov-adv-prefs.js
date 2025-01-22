@@ -483,13 +483,14 @@ class ZotMoovAdvancedPrefs {
 
     async pickSearchDirectory()
     {
-        let fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
+        const { FilePicker } = ChromeUtils.importESModule('chrome://zotero/content/modules/filePicker.mjs');
+        let fp = new FilePicker();
 
         fp.init(window, Zotero.getString('dataDir.selectDir'), fp.modeGetFolder);
         fp.appendFilters(fp.filterAll);
         let rv = await new Zotero.Promise(function(resolve)
         {
-            fp.open((returnConstant) => resolve(returnConstant));
+            fp.show((returnConstant) => resolve(returnConstant));
         });
         if (rv != fp.returnOK) return '';
 
