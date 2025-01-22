@@ -1,4 +1,4 @@
-var GetItemTemplatePossibilities = class {
+class GetItemTemplatePossibilities {
     /**
      * @param item {Item} - The item to process.
      * @returns {TemplatePossibility[]}

@@ -1,4 +1,4 @@
-var ZotMoovNotifyCallback = class {
+class ZotMoovNotifyCallback {
     constructor(zotmoov) {
         this._item_ids = [];
         this._ignore_keys = [];

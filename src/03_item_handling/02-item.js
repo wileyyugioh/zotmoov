@@ -2,7 +2,7 @@
  * Custom item class (a kind of wrapper around a Zotero Item).
  * To make working with items in the plugin easier.
  */
-var Item = class {
+class Item {
     /**
      * @returns {string}
      */
