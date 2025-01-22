@@ -1,4 +1,4 @@
-class GetItemEditorsStrategy extends GetItemCreatorsStrategyInterface {
+var GetItemEditorsStrategy = class extends GetItemCreatorsStrategyInterface {
     /**
      *
      * @param {CreatorModelFactory} creatorFactory - The creator factory to use.

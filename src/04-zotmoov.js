@@ -1,8 +1,6 @@
 Components.utils.importGlobalProperties(['PathUtils', 'IOUtils']);
 
-// 18 January 2025
-
-class ZotMoov {
+var ZotMoov = class {
     /**
      *
      * @param id {string}

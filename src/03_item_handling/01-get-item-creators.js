@@ -1,4 +1,4 @@
-class GetItemCreators {
+var GetItemCreators = class {
     /**
      * Creates a new instance of the GetItemCreators class.
      *

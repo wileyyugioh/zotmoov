@@ -1,4 +1,4 @@
-class LastFirstFormattingStrategy extends FormattingStrategyInterface {
+var LastFirstFormattingStrategy = class extends FormattingStrategyInterface {
     formatCreator(creator) {
         return creator.lastName + ', ' + creator.firstName;
     }
