@@ -1,5 +1,4 @@
-var ZotMoovMenus = class
-{
+class ZotMoovMenus {
     get SHORTCUTS()
     {
         return {

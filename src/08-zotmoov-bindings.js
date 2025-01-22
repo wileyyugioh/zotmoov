@@ -1,4 +1,4 @@
-var ZotMoovBindings = class {
+class ZotMoovBindings {
     constructor(zotmoov)
     {
         this._zotmoov = zotmoov;
