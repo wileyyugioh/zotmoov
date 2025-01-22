@@ -31,7 +31,9 @@ var ZotMoovBindings = class {
             return Zotero.Promise.coroutine(function* (...args) {
                 let val = yield orig.apply(this, args);
 
+                // If file in the ignore list skip the deletion
                 if (self._del_ignore.includes(this.key)) return val;
+
                 if (Zotero.Prefs.get('extensions.zotmoov.delete_files', true))
                 {
                     let prune_empty_dir = Zotero.Prefs.get('extensions.zotmoov.prune_empty_dir', true);
@@ -53,7 +55,10 @@ var ZotMoovBindings = class {
                 self._del_ignore = [];
 
                 // Linked files only exist in user library
-                if (libraryType != 'user' || !Zotero.Prefs.get('extensions.zotmoov.delete_files', true)) return results;
+                if (libraryType != 'user') return results;
+                if (!Zotero.Prefs.get('extensions.zotmoov.delete_files', true)) return results;
+                if (Zotero.Prefs.get('extensions.zotmoov.process_synced_files', true)) return results;
+
                 for (let key of results.deleted['items'])
                 {
                     let obj = Zotero.Items.getByLibraryAndKey(Zotero.Libraries.userLibraryID, key);
@@ -72,6 +77,9 @@ var ZotMoovBindings = class {
         this._patcher.monkey_patch(Zotero.Sync.Data.Local, '_saveObjectFromJSON', function (orig) {
             return Zotero.Promise.coroutine(function* (...args) {
                 let results = yield orig.apply(this, [...args]);
+
+                // ...unless the user wants it
+                if (Zotero.Prefs.get('extensions.zotmoov.process_synced_files', true)) return results;
 
                 if(results.processed) self._callback.addKeysToIgnore([results.key]);
 

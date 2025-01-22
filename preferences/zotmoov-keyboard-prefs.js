@@ -35,7 +35,7 @@ class ZotMoovKeyboardPrefs {
 
         this._pref_obs = Zotero.Prefs.registerObserver('extensions.zotmoov.custom_menu_items', () => {
             document.getElementById('zotmoov-kb-settings-custom').innerHTML = '';
-            this._loadAllCustomMenuItems(document);
+            this._loadAllCustomMenuItems();
         }, true);
 
         document.addEventListener('visibilitychange', () => {

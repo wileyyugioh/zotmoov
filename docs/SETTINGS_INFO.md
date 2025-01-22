@@ -54,3 +54,10 @@ You can also check **Confirm When Adding File** for a confirmation dialog to pop
 ```extensions.zotmoov.undefined_str```: The string of the `%U` wildcard
 
 ```extensions.zotmoov.add_zotmoov_tag```: Enable/disable whether the ```zotmoov``` tag is added to processed items
+
+```
+extensions.zotmoov.menu_items.move.hidden
+extensions.zotmoov.menu_items.convert_linked.hidden
+extensions.zotmoov.menu_items.custom_move.hidden
+```
+Hide the default menu items
