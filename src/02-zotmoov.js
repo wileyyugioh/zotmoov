@@ -387,7 +387,8 @@ var ZotMoov = class {
         let atts = this._getSelectedItems();
         if (!atts.size) return;
 
-        let fp = Components.classes['@mozilla.org/filepicker;1'].createInstance(Components.interfaces.nsIFilePicker);
+        const { FilePicker } = ChromeUtils.importESModule('chrome://zotero/content/modules/filePicker.mjs');
+        let fp = new FilePicker();
         let wm = Services.wm;
         let win = wm.getMostRecentWindow('navigator:browser');
 
@@ -395,7 +396,7 @@ var ZotMoov = class {
         fp.appendFilters(fp.filterAll);
         let rv = await new Zotero.Promise(function(resolve)
         {
-            fp.open((returnConstant) => resolve(returnConstant));
+            fp.show((returnConstant) => resolve(returnConstant));
         });
         if (rv != fp.returnOK) return '';
 
