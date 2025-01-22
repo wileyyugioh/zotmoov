@@ -83,14 +83,12 @@ class ZotMoovPrefs {
 
         fp.init(window, Zotero.getString('dataDir.selectDir'), fp.modeGetFolder);
         fp.appendFilters(fp.filterAll);
-        let rv = await new Zotero.Promise(function(resolve)
-        {
-            fp.show((returnConstant) => resolve(returnConstant));
-        });
+        
+        let rv = await fp.show();
         if (rv != fp.returnOK) return '';
 
-        Zotero.Prefs.set('extensions.zotmoov.dst_dir', fp.file.path, true);
-        document.getElementById('zotmoov-dst-dir').value = fp.file.path;
+        Zotero.Prefs.set('extensions.zotmoov.dst_dir', fp.file, true);
+        document.getElementById('zotmoov-dst-dir').value = fp.file;
     }
 
 
