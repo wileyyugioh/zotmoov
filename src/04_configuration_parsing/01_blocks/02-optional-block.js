@@ -1,4 +1,4 @@
-class OptionalBlock extends BlockInterface {
+var OptionalBlock = class extends BlockInterface {
     /**
      * Represents a block with optional substitutions.
      * @param substitutions {TemplatePossibility[]} - The list of substitutions to apply to this block in order.

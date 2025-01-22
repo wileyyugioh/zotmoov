@@ -1,4 +1,4 @@
-class ConfigurationParser {
+var ConfigurationParser = class {
     /**
      * Parses custom configuration for file naming and pathing.
      *

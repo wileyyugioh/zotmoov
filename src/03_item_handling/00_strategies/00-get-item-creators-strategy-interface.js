@@ -1,4 +1,4 @@
-class GetItemCreatorsStrategyInterface {
+var GetItemCreatorsStrategyInterface = class {
     constructor() {
         if (this.constructor === GetItemCreatorsStrategyInterface) {
             throw new Error("Interfaces can't be instantiated directly.");

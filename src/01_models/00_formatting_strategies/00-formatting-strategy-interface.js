@@ -1,4 +1,4 @@
-class FormattingStrategyInterface {
+var FormattingStrategyInterface = class {
     constructor() {
         if (this.constructor === FormattingStrategyInterface) {
             throw new Error("Interfaces can't be instantiated directly.");

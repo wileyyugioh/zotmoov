@@ -1,4 +1,4 @@
-class DefaultBlock extends BlockInterface {
+var DefaultBlock = class extends BlockInterface {
     /**
      * Represents a normal block substitution.
      * @param substitutions {TemplatePossibility[]} - The list of substitutions to apply to this block.

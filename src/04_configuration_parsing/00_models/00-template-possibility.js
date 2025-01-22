@@ -1,4 +1,4 @@
-class TemplatePossibility {
+var TemplatePossibility = class {
     /**
      * @returns {string}
      */

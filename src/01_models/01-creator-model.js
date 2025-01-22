@@ -1,4 +1,4 @@
-class CreatorModel {
+var CreatorModel = class {
     get creatorType() {
         return this._creatorType;
     }

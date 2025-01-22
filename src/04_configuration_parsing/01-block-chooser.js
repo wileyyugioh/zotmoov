@@ -1,4 +1,4 @@
-class BlockChooser {
+var BlockChooser = class {
     /**
      * @param raw_block {string}
      * @param template_possibilities {TemplatePossibility[]}

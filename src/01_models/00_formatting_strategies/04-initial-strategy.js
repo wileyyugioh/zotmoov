@@ -1,4 +1,4 @@
-class InitialFormattingStrategy extends FormattingStrategyInterface {
+var InitialFormattingStrategy = class extends FormattingStrategyInterface {
     formatCreator(creator) {
         return creator.initials;
     }

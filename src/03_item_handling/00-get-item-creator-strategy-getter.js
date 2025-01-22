@@ -1,4 +1,4 @@
-class GetItemCreatorStrategyGetter {
+var GetItemCreatorStrategyGetter = class {
     /**
      * Creates a new instance of the class.
      *
