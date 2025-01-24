@@ -29,7 +29,7 @@ var ZotMoov = class {
         let file_name = file_path.split(/[\\/]/).pop();
         if (options.rename_file && item.parentItem)
         {
-            const file_ext = file_path.split('.').pop().toLowerCase();
+            let file_ext = file_path.split('.').pop().toLowerCase();
             let renamed = await Zotero.Attachments.getRenamedFileBaseNameIfAllowedType(item.parentItem, file_path);
             if (renamed) file_name = renamed + '.' + file_ext;
         }
@@ -200,11 +200,6 @@ var ZotMoov = class {
             let i = 1;
             while(await IOUtils.exists(final_path)) final_path = rest_of_path + ' ' + (i++) + '.' + file_ext;
 
-            // Shorten the filename if needed
-            // Note that this creates a temp file
-            const short_filename = Zotero.File.createShortened(final_path, Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0o644);
-            final_path = PathUtils.join(PathUtils.parent(final_path), short_filename);
-
             let clone = item.clone(null, { includeCollections: true });
             clone.attachmentLinkMode = Zotero.Attachments.LINK_MODE_LINKED_FILE;
             clone.attachmentPath = final_path;
@@ -214,7 +209,7 @@ var ZotMoov = class {
             if (options.add_zotmoov_tag) clone.addTag(options.tag_str);
 
             promises.push((async () => {
-                await IOUtils.copy(file_path, final_path);
+                await IOUtils.copy(file_path, final_path, { noOverwrite: true });
 
                 await Zotero.DB.executeTransaction(async () => {
                     let id = await clone.save();
@@ -302,11 +297,8 @@ var ZotMoov = class {
             let i = 1;
             while (await IOUtils.exists(final_path)) final_path = rest_of_path + ' ' + (i++) + '.' + file_ext;
 
-            const short_filename = Zotero.File.createShortened(final_path, Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0o644);
-            final_path = PathUtils.join(PathUtils.parent(final_path), short_filename);
-
             promises.push((async () => {
-                await IOUtils.copy(file_path, final_path);
+                await IOUtils.copy(file_path, final_path, { noOverwrite: true });
                 return item;
             })());
         }
