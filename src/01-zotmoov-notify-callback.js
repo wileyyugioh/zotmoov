@@ -76,27 +76,27 @@ var ZotMoovNotifyCallback = class {
             const index = this._ignore_keys.indexOf(key);
             if (index > -1) this._ignore_keys.splice(index, 1);
         }
-
-        this.reenableSync();
     }
 
     async execute() {
-        if (this._need_to_process > 0)
+        if (this._need_to_process > 0 || Zotero.Sync.Runner.syncInProgress)
         {
             clearTimeout(this._timeoutID);
             this._timeoutID = setTimeout(this.execute.bind(this), Zotero.Prefs.get('extensions.zotmoov.auto_process_delay', true));
             return;
         }
 
+        // Disable syncing
+        if (this._syncDelayHandle == null) this._syncDelayHandle = Zotero.Sync.Runner.delayIndefinite();
+
         await this.lock(this._doExecute.bind(this));
+
+        this.reenableSync();
     }
 
     async addCallback(event, ids, extraData) {
         let auto_move = Zotero.Prefs.get('extensions.zotmoov.enable_automove', true);
         if (!auto_move) return;
-
-        // Disable syncing
-        if (this._syncDelayHandle == null) this._syncDelayHandle = Zotero.Sync.Runner.delayIndefinite();
 
         this._item_ids.push(...ids);
 
