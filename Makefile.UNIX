@@ -5,10 +5,11 @@ all: Makefile.in
 RELEASE:=$(shell grep version manifest.json | sed '2q;d' | sed -e 's/^ *"version": "//' -e 's/",//')
 
 zotmoov.xpi: FORCE
-	rm -rf $@
+	python3 script_definition_builder.py
 	zip -FSr $@ bootstrap.js locale manifest.json prefs.js chrome preferences src lib init -x \*.DS_Store
 
 zotmoov-%-fx.xpi: zotmoov.xpi
+	rm -rf $@
 	mv $< $@
 
 Makefile.in: manifest.json
