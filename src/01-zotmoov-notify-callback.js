@@ -78,20 +78,25 @@ var ZotMoovNotifyCallback = class {
         }
     }
 
-    async execute() {
+    async _execute() {
         if (this._need_to_process > 0 || Zotero.Sync.Runner.syncInProgress)
         {
             clearTimeout(this._timeoutID);
-            this._timeoutID = setTimeout(this.execute.bind(this), Zotero.Prefs.get('extensions.zotmoov.auto_process_delay', true));
+            this._timeoutID = setTimeout(this._execute.bind(this), Zotero.Prefs.get('extensions.zotmoov.auto_process_delay', true));
             return;
         }
 
         // Disable syncing
         if (this._syncDelayHandle == null) this._syncDelayHandle = Zotero.Sync.Runner.delayIndefinite();
 
-        await this.lock(this._doExecute.bind(this));
-
-        this.reenableSync();
+        try
+        {
+            await this.lock(this._doExecute.bind(this));
+        }
+        finally
+        {
+            this.reenableSync();
+        }
     }
 
     async addCallback(event, ids, extraData) {
@@ -101,12 +106,12 @@ var ZotMoovNotifyCallback = class {
         this._item_ids.push(...ids);
 
         clearTimeout(this._timeoutID);
-        this._timeoutID = setTimeout(this.execute.bind(this), Zotero.Prefs.get('extensions.zotmoov.auto_process_delay', true));
+        this._timeoutID = setTimeout(this._execute.bind(this), Zotero.Prefs.get('extensions.zotmoov.auto_process_delay', true));
     }
 
     async modifyCallback(event, ids, extraData) {
         clearTimeout(this._timeoutID);
-        this._timeoutID = setTimeout(this.execute.bind(this), Zotero.Prefs.get('extensions.zotmoov.auto_process_delay', true));
+        this._timeoutID = setTimeout(this._execute.bind(this), Zotero.Prefs.get('extensions.zotmoov.auto_process_delay', true));
     }
 
     async notify(event, type, ids, extraData) {
