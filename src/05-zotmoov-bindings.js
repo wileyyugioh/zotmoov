@@ -3,6 +3,8 @@ var ZotMoovBindings = class {
     {
         this._zotmoov = zotmoov;
         this._callback = new ZotMoovNotifyCallback(zotmoov);
+        this._del_queue = new ZotMoovDeleteQueue(zotmoov);
+
         this._patcher = new ZotMoovPatcher();
 
         this._notifierID = Zotero.Notifier.registerObserver(this._callback, ['item'], 'zotmoov', 100);
@@ -36,8 +38,7 @@ var ZotMoovBindings = class {
 
                 if (Zotero.Prefs.get('extensions.zotmoov.delete_files', true))
                 {
-                    let prune_empty_dir = Zotero.Prefs.get('extensions.zotmoov.prune_empty_dir', true);
-                    self._zotmoov.delete([this], Zotero.Prefs.get('extensions.zotmoov.dst_dir', true), { prune_empty_dir: prune_empty_dir });
+                    self._del_queue.add([this]);
                 }
 
                 return val;

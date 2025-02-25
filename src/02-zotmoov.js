@@ -89,43 +89,41 @@ var ZotMoov = class {
             }
             if (!ok) continue;
 
-            promises.push(((fp, fp_arr) => {
-                return async () => {
-                    // It is, so delete the file
-                    let p = await IOUtils.remove(fp);
+            promises.push(async () => {
+                // It is, so delete the file
+                let p = await IOUtils.remove(fp);
 
-                    // Delete empty directories recursively up to home directory
-                    if (options.prune_empty_dir)
+                // Delete empty directories recursively up to home directory
+                if (options.prune_empty_dir)
+                {
+                    let path_arr = fp_arr.slice();
+                    path_arr.pop();
+
+                    while(path_arr.length > home_path_arr.length)
                     {
-                        let path_arr = fp_arr.slice();
-                        path_arr.pop();
+                        let path = PathUtils.join(...path_arr);
+                        let children = await IOUtils.getChildren(path);
 
-                        while(path_arr.length > home_path_arr.length)
+                        // Filter out .DS_Store and Thumbs.db
+                        let filter_children = children.filter((c) => {
+                            let filename = PathUtils.filename(c);
+                            return !(['.DS_Store', 'Thumbs.db', 'desktop.ini'].includes(filename));
+                        });
+
+                        if (filter_children.length > 0) return;
+
+                        // Delete the pesky files we don't care about
+                        for (let child of children)
                         {
-                            let path = PathUtils.join(...path_arr);
-                            let children = await IOUtils.getChildren(path);
-
-                            // Filter out .DS_Store and Thumbs.db
-                            let filter_children = children.filter((c) => {
-                                let filename = PathUtils.filename(c);
-                                return !(['.DS_Store', 'Thumbs.db', 'desktop.ini'].includes(filename));
-                            });
-
-                            if (filter_children.length > 0) return;
-
-                            // Delete the pesky files we don't care about
-                            for (let child of children)
-                            {
-                                await IOUtils.remove(child);
-                            }
-
-                            // Remove the directory if it is empty
-                            await IOUtils.remove(path);
-                            path_arr.pop();
+                            await IOUtils.remove(child);
                         }
+
+                        // Remove the directory if it is empty
+                        await IOUtils.remove(path);
+                        path_arr.pop();
                     }
                 }
-            })(fp, fp_arr));
+            });
         }
 
         const it = promises.values();
@@ -142,7 +140,7 @@ var ZotMoov = class {
                     continue;
                 }
             }
-        })
+        });
 
         await Promise.allSettled(workers);
     }
@@ -239,36 +237,33 @@ var ZotMoov = class {
 
             if (options.add_zotmoov_tag) clone.addTag(options.tag_str);
 
-            promises.push(((item, clone, file_path, final_path) => {
-                return async () => {
-                    try
-                    {
-                        await IOUtils.copy(file_path, final_path);
+            promises.push(async () => {
+                try
+                {
+                    await IOUtils.copy(file_path, final_path);
 
-                        await Zotero.DB.executeTransaction(async () => {
-                            let id = await clone.save();
-                            await Zotero.Items.moveChildItems(item, clone);
-                            await Zotero.Relations.copyObjectSubjectRelations(item, clone);
-                            await Zotero.Fulltext.transferItemIndex(item, clone).catch((e) => { Zotero.logError(e); });
+                    await Zotero.DB.executeTransaction(async () => {
+                        let id = await clone.save();
+                        await Zotero.Items.moveChildItems(item, clone);
+                        await Zotero.Relations.copyObjectSubjectRelations(item, clone);
+                        await Zotero.Fulltext.transferItemIndex(item, clone).catch((e) => { Zotero.logError(e); });
 
-                            // Update timestamps
-                            const file_info = await IOUtils.stat(file_path);
-                            IOUtils.setModificationTime(final_path, file_info.lastModified);
+                        // Update timestamps
+                        const file_info = await IOUtils.stat(file_path);
+                        IOUtils.setModificationTime(final_path, file_info.lastModified);
 
-                            await item.erase();
-                            await IOUtils.remove(file_path); // Include this in case moving another linked file
-                        })
-
-                        return clone;
-                    }
-                    catch(e)
-                    {
-                        // In case of copy failure we need to remove the temp file generated by Zotero.File.createShortened or copied file
-                        IOUtils.remove(final_path);
-                        throw e;
-                    }
+                        await item.erase();
+                        await IOUtils.remove(file_path); // Include this in case moving another linked file
+                    })
+                    return clone;
                 }
-            })(item, clone, file_path, final_path));
+                catch(e)
+                {
+                    // In case of copy failure we need to remove the temp file generated by Zotero.File.createShortened or copied file
+                    IOUtils.remove(final_path);
+                    throw e;
+                }
+            });
         }
 
         let results = [];
@@ -286,7 +281,7 @@ var ZotMoov = class {
                     continue;
                 }
             }
-        })
+        });
 
         await Promise.allSettled(workers);
 
@@ -362,21 +357,19 @@ var ZotMoov = class {
                 continue;
             }
 
-            promises.push(((item, file_path, final_path) => {
-                return async () => {
-                    try
-                    {
-                        await IOUtils.copy(file_path, final_path);
+            promises.push(async () => {
+                try
+                {
+                    await IOUtils.copy(file_path, final_path);
 
-                        return item
-                    }
-                    catch(e)
-                    {
-                        IOUtils.remove(final_path);
-                        throw e;
-                    }
+                    return item
                 }
-            })(item, file_path, final_path));
+                catch(e)
+                {
+                    IOUtils.remove(final_path);
+                    throw e;
+                }
+            });
         }
 
         let results = [];
@@ -394,7 +387,7 @@ var ZotMoov = class {
                     continue;
                 }
             }
-        })
+        });
 
         await Promise.allSettled(workers);
 
@@ -479,7 +472,7 @@ var ZotMoov = class {
                     continue;
                 }
             }
-        })
+        });
 
         await Promise.allSettled(workers);
 
