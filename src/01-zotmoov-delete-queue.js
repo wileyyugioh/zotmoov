@@ -31,8 +31,11 @@ var ZotMoovDeleteQueue = class {
 
         if (items.length == 0) return;
 
-        let prune_empty_dir = Zotero.Prefs.get('extensions.zotmoov.prune_empty_dir', true);
-        this._zotmoov.delete(items, Zotero.Prefs.get('extensions.zotmoov.dst_dir', true), { prune_empty_dir: prune_empty_dir });
+        this._zotmoov.delete(items, Zotero.Prefs.get('extensions.zotmoov.dst_dir', true),
+            {
+                prune_empty_dir: Zotero.Prefs.get('extensions.zotmoov.prune_empty_dir', true),
+                max_io: Zotero.Prefs.get('extensions.zotmoov.max_io_concurrency', true)
+            });
 
         for (let item of items)
         {

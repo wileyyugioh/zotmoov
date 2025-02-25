@@ -254,7 +254,8 @@ var ZotMoov = class {
 
                         await item.erase();
                         await IOUtils.remove(file_path); // Include this in case moving another linked file
-                    })
+                    });
+
                     return clone;
                 }
                 catch(e)
@@ -534,7 +535,8 @@ var ZotMoov = class {
             custom_wc: JSON.parse(Zotero.Prefs.get('extensions.zotmoov.cwc_commands', true)),
             add_zotmoov_tag: Zotero.Prefs.get('extensions.zotmoov.add_zotmoov_tag', true),
             tag_str: Zotero.Prefs.get('extensions.zotmoov.tag_str', true),
-            rename_file: Zotero.Attachments.shouldAutoRenameFile()
+            rename_file: Zotero.Attachments.shouldAutoRenameFile(),
+            max_io: Zotero.Prefs.get('extensions.zotmoov.max_io_concurrency', true)
         };
     }
 }
