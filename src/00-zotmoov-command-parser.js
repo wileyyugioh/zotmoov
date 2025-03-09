@@ -154,7 +154,10 @@ var ZotMoovCWParser = class {
             apply(text)
             {
                 const reg = RegExp(this.regex, this.flags);
-                return reg.exec(text)[this.group];
+                const exec = reg.exec(text);
+
+                if (!exec || this.group >= exec.length ) return '';
+                return exec[this.group];
             }
         },
 
