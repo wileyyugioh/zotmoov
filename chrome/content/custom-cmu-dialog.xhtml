@@ -279,10 +279,7 @@
                 const { FilePicker } = ChromeUtils.importESModule('chrome://zotero/content/modules/filePicker.mjs');
                 let fp = new FilePicker();
 
-                let wm = Services.wm;
-                let win = wm.getMostRecentWindow('navigator:browser');
-
-                fp.init(win, Zotero.getString('dataDir.selectDir'), fp.modeGetFolder);
+                fp.init(window, Zotero.getString('dataDir.selectDir'), fp.modeGetFolder);
                 fp.appendFilters(fp.filterAll);
                 let rv = await fp.show();
                 if (rv != fp.returnOK) return;
