@@ -460,7 +460,21 @@ var ZotMoov = class {
 
         let promises = atts.map((item) => {
             return async () => {
+                let orig_key = item.key;
                 let stored = await Zotero.Attachments.convertLinkedFileToStoredFile(item, { move: true });
+
+                // Update links in notes
+                let parent = stored.parentItem;
+                if (parent)
+                {
+                    let notes = Zotero.Items.get(parent.getNotes());
+                    for (let note of notes)
+                    {
+                        Zotero.Notes.replaceItemKey(note, orig_key, stored.key);
+                        await note.saveTx();
+                    }
+                }
+
                 if (!options.add_zotmoov_tag) return stored;
 
                 if (stored.removeTag(options.tag_str)) await stored.saveTx();
