@@ -1,5 +1,5 @@
 var ZotMoovDeleteQueue = class {
-    constructor(zotmoov, delay=1000) {
+    constructor(zotmoov, delay=100) {
         this._items = [];
 
         this._timeoutID = 0;
