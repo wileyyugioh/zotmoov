@@ -248,6 +248,18 @@ var ZotMoov = class {
                         await Zotero.Relations.copyObjectSubjectRelations(item, clone);
                         await Zotero.Fulltext.transferItemIndex(item, clone).catch((e) => { Zotero.logError(e); });
 
+                        // Update links in notes
+                        let parent = item.parentItem;
+                        if (parent)
+                        {
+                            let notes = Zotero.Items.get(parent.getNotes());
+                            for (let note of notes)
+                            {
+                                Zotero.Notes.replaceItemKey(note, item.key, clone.key);
+                                await note.save();
+                            }
+                        }
+
                         // Update timestamps
                         const file_info = await IOUtils.stat(file_path);
                         IOUtils.setModificationTime(final_path, file_info.lastModified);
