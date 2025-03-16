@@ -13,10 +13,13 @@ var ZotMoovMenus = class
     constructor(zotmoov, bindings, custom_mu)
     {
         this.menuseparator_id = 'zotmoov-context-menuseparator';
+
         this.move_selected_item_id = 'zotmoov-context-move-selected';
         this.move_selected_item_custom_id = 'zotmoov-context-move-selected-custom-dir';
         this.attach_new_file_id = 'zotmoov-context-attach-new-file';
         this.convert_linked_to_stored_id = 'zotmoov-context-convert-linked-to-stored';
+        this.fix_note_links_id = 'zotmoov-context-fix-note-links';
+
         this.menuitem_class = 'zotmoov-context-menuitem';
 
         this._zotmoov = zotmoov;
@@ -60,6 +63,16 @@ var ZotMoovMenus = class
                 win.document.getElementById(this.move_selected_item_custom_id).hidden = hidden;
             }
         }, true);
+
+        this._fix_note_links_obs = Zotero.Prefs.registerObserver('extensions.zotmoov.menu_items.fix_note_links.hidden', () => {
+            let windows = Zotero.getMainWindows();
+            let hidden = Zotero.Prefs.get('extensions.zotmoov.menu_items.fix_note_links.hidden', true);
+            for (let win of windows)
+            {
+                if(!win.ZoteroPane) continue;
+                win.document.getElementById(this.fix_note_links_id).hidden = hidden;
+            }
+        }, true);
     }
 
     _unloadPrefObs()
@@ -67,6 +80,7 @@ var ZotMoovMenus = class
         Zotero.Prefs.unregisterObserver(this._move_pref_obs);
         Zotero.Prefs.unregisterObserver(this._convert_pref_obs);
         Zotero.Prefs.unregisterObserver(this._custom_move_pref_obs);
+        Zotero.Prefs.unregisterObserver(this._fix_note_links_obs);
     }
 
     _addCustomMenuItem(win, id, label, key)
@@ -202,13 +216,14 @@ var ZotMoovMenus = class
 
         win.document.getElementById(this.move_selected_item_id).disabled = should_disabled;
         win.document.getElementById(this.move_selected_item_custom_id).disabled = should_disabled;
-        win.document.getElementById(this.convert_linked_to_stored_id).disabled = should_disabled;
 
         const disable_attach_new_file_id = (selection.length != 1 || !selection[0].isRegularItem());
         win.document.getElementById(this.attach_new_file_id).disabled = disable_attach_new_file_id;
 
         const disable_convert_linked = !Array.from(this._zotmoov._getSelectedItems()).some(s => s.attachmentLinkMode == Zotero.Attachments.LINK_MODE_LINKED_FILE);
         win.document.getElementById(this.convert_linked_to_stored_id).disabled = disable_convert_linked;
+
+        win.document.getElementById(this.fix_note_links_id).disabled = (this._getSelectedNotes().size == 0);
     }
 
     _hasAttachments()
@@ -268,6 +283,17 @@ var ZotMoovMenus = class
             self._zotmoov.moveFromDirectory();
         });
 
+        // Fix broken links in notes
+        let fix_note_links = doc.createXULElement('menuitem');
+        fix_note_links.id = this.fix_note_links_id;
+        fix_note_links.classList.add(this.menuitem_class);
+        fix_note_links.setAttribute('data-l10n-id', 'zotmoov-context-fix-note-links');
+        fix_note_links.hidden = Zotero.Prefs.get('extensions.zotmoov.menu_items.fix_note_links.hidden', true);
+        fix_note_links.addEventListener('command', () =>
+        {
+            self.fixNoteLinks();
+        });
+
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
         zotero_itemmenu.addEventListener('popupshowing', this._popupShowing);
 
@@ -276,6 +302,7 @@ var ZotMoovMenus = class
         zotero_itemmenu.appendChild(move_selected_item_custom);
         zotero_itemmenu.appendChild(convert_linked_to_stored);
         zotero_itemmenu.appendChild(attach_new_file);
+        zotero_itemmenu.appendChild(fix_note_links);
 
         if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
@@ -381,6 +408,75 @@ var ZotMoovMenus = class
         {
             if(!win.ZoteroPane) continue;
             win.document.getElementById(this.attach_new_file_id).hidden = false;
+        }
+    }
+
+    _getSelectedNotes()
+    {
+        // Get the selected notes
+        let notes = new Set();
+        let items = Zotero.getActiveZoteroPane().getSelectedItems();
+        let note_ids = [];
+        for (let item of items)
+        {
+            if (item.isNote())
+            {
+                notes.add(item);
+                continue;
+            }
+
+            note_ids.push(...item.getNotes());
+        }
+
+        let new_notes = Zotero.Items.get(note_ids);
+        new_notes.forEach(note => notes.add(note));
+
+        return notes;
+    }
+
+    async fixNoteLinks()
+    {
+        let notes = this._getSelectedNotes();
+        for (let note of notes)
+        {
+            let doc = (new DOMParser()).parseFromString(note.getNote(), 'text/html');
+            let citations = doc.querySelectorAll('span[data-annotation] + span[data-citation]');
+            for (let citation of citations)
+            {
+                let dc = citation.getAttribute('data-citation');
+                dc = JSON.parse(decodeURIComponent(dc));
+
+                let cis = dc.citationItems
+                if (!cis) continue;
+
+                let uris = cis[0].uris;
+                if (!uris) continue;
+
+                let item = await Zotero.EditorInstance.getItemFromURIs(uris);
+                if (!item) continue;
+
+                let att = await item.getBestAttachment();
+                if (!att) continue;
+
+                let highlight = citation.previousElementSibling;
+                let da = highlight.getAttribute('data-annotation');
+                da = JSON.parse(decodeURIComponent(da));
+
+                let old_uri = da.attachmentURI;
+                if (!old_uri) continue;
+
+                let obj = Zotero.URI._getURIObject(old_uri);
+                if (!obj) continue;
+
+                let old_key = obj.key;
+                let new_key = att.key;
+
+                // Make sure old object is really gone
+                if (Zotero.Items.getIDFromLibraryAndKey(obj.libraryID, obj.key)) continue;
+
+                Zotero.Notes.replaceItemKey(note, old_key, new_key);
+                await note.saveTx();
+            }
         }
     }
 

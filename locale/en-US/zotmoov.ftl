@@ -97,6 +97,9 @@ zotmoov-context-attach-new-file =
 zotmoov-context-convert-linked =
     .label = ZotMoov: Move Selected from Directory
 
+zotmoov-context-fix-note-links =
+    .label = ZotMoov: Fix Note Links Hack
+
 zotmoov-context-custom-menuitem-title =
     .label = ZotMoov: { $text }
 
