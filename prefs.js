@@ -24,6 +24,7 @@ pref('extensions.zotmoov.keys.convert_linked', '');
 pref('extensions.zotmoov.menu_items.move.hidden', false);
 pref('extensions.zotmoov.menu_items.convert_linked.hidden', false);
 pref('extensions.zotmoov.menu_items.custom_move.hidden', false);
+pref('extensions.zotmoov.menu_items.fix_note_links.hidden', true);
 pref('extensions.zotmoov.custom_menu_items', JSON.stringify({}));
 pref('extensions.zotmoov.add_zotmoov_tag', true);
 pref('extensions.zotmoov.tag_str', 'zotmoov');
