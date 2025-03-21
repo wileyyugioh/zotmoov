@@ -57,7 +57,7 @@ var ZotMoov = class {
     {
         const default_options = {
             prune_empty_dir: true,
-            max_io: 10
+            max_io: 1
         };
 
         let options = {...default_options, ...arg_options};
@@ -159,7 +159,7 @@ var ZotMoov = class {
             add_zotmoov_tag: true,
             tag_str: 'zotmoov',
             rename_file: true,
-            max_io: 10
+            max_io: 1
         };
 
         let options = {...default_options, ...arg_options};
@@ -312,7 +312,7 @@ var ZotMoov = class {
             undefined_str: 'undefined',
             custom_wc: {},
             rename_file: true,
-            max_io: 10
+            max_io: 1
         };
 
         let options = {...default_options, ...arg_options};
@@ -451,7 +451,7 @@ var ZotMoov = class {
         const default_options = {
             add_zotmoov_tag: true,
             tag_str: 'zotmoov',
-            max_io: 10
+            max_io: 1
         };
 
         let options = {...default_options, ...arg_options};

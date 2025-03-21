@@ -30,4 +30,4 @@ pref('extensions.zotmoov.add_zotmoov_tag', true);
 pref('extensions.zotmoov.tag_str', 'zotmoov');
 pref('extensions.zotmoov.attach_prompt', false);
 pref('extensions.zotmoov.process_synced_files', false);
-pref('extensions.zotmoov.max_io_concurrency', 10);
+pref('extensions.zotmoov.max_io_concurrency', 1);
