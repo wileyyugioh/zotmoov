@@ -472,6 +472,9 @@ var ZotMoovMenus = class
                 let old_key = obj.key;
                 let new_key = att.key;
 
+                // Make sure old object is really gone
+                if (Zotero.Items.getIDFromLibraryAndKey(obj.libraryID, obj.key)) continue;
+
                 Zotero.Notes.replaceItemKey(note, old_key, new_key);
                 await note.saveTx();
             }
