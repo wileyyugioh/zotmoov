@@ -448,20 +448,16 @@ var ZotMoovMenus = class
 
                 let cis = dc.citationItems
                 if (!cis) continue;
-                Zotero.log('ZotMoov: Found citation item ' + JSON.stringify(cis));
 
                 let uris = cis[0].uris;
                 if (!uris) continue;
-                Zotero.log('ZotMoov: Found URIs ' + JSON.stringify(uris));
 
                 let item = await Zotero.EditorInstance.getItemFromURIs(uris);
                 if (!item) continue;
-                Zotero.log('ZotMoov: Found item from URI');
 
 
                 let att = await item.getBestAttachment();
                 if (!att) continue;
-                Zotero.log('ZotMoov: Found attachment');
 
                 let highlight = citation.previousElementSibling;
                 let da = highlight.getAttribute('data-annotation');
@@ -469,7 +465,6 @@ var ZotMoovMenus = class
 
                 let old_uri = da.attachmentURI;
                 if (!old_uri) continue;
-                Zotero.log('ZotMoov: Found old URI');
 
                 let obj = Zotero.URI._getURIObject(old_uri);
                 if (!obj) continue;
@@ -477,14 +472,8 @@ var ZotMoovMenus = class
                 let old_key = obj.key;
                 let new_key = att.key;
 
-                // Make sure old object is really gone
-                if (Zotero.Items.getIDFromLibraryAndKey(obj.libraryID, obj.key)) continue;
-                Zotero.log('ZotMoov: Confirmed old key no longer exists');
-
                 Zotero.Notes.replaceItemKey(note, old_key, new_key);
                 await note.saveTx();
-
-                Zotero.log('ZotMoov: Saved note with citation change')
             }
         }
     }
