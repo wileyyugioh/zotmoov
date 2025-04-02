@@ -26,12 +26,13 @@ var ZotMoov = class {
         let file_path = item.getFilePath();
         if (!file_path) return '';
 
-        let file_name = file_path.split(/[\\/]/).pop();
+        let file_name = PathUtils.filename(file_path);
         if (options.rename_file && item.parentItem)
         {
-            const file_ext = file_path.split('.').pop().toLowerCase();
+            let file_ext = decodeURIComponent(Zotero.Utilities.Internal.parseURL(filename).fileExtension).toLowerCase();
+            if (file_ext) file_ext = '.' + file_ext;
             let renamed = await Zotero.Attachments.getRenamedFileBaseNameIfAllowedType(item.parentItem, file_path);
-            if (renamed) file_name = renamed + '.' + file_ext;
+            if (renamed) file_name = renamed + file_ext;
         }
 
         let local_dst_path = dst_path;
@@ -190,7 +191,7 @@ var ZotMoov = class {
             // Test to see if file extension is allowed
             if (Array.isArray(options.allowed_file_ext))
             {
-                let file_ext = file_path.split('.').pop().toLowerCase();
+                const file_ext = decodeURIComponent(Zotero.Utilities.Internal.parseURL(filename).fileExtension).toLowerCase();
                 if (!options.allowed_file_ext.includes(file_ext)) continue;
             }
 
@@ -207,18 +208,18 @@ var ZotMoov = class {
             if (!copy_path) continue;
 
             let final_path = copy_path;
-            let path_arr = final_path.split('.');
-            let file_ext = path_arr.pop();
-            let rest_of_path = path_arr.join('.');
+            let file_ext = decodeURIComponent(Zotero.Utilities.Internal.parseURL(file_path).fileExtension);
+            if (file_ext) file_ext = '.' + file_ext;
+            let rest_of_path = final_path.substring(0, final_path.length - file_ext.length);
 
             // Have to check since later adding an entry triggers the
             // handler again
             // This checks to see if the file extension up to the number is the same
             // And if so skip it
-            if (file_path.split('.').slice(0, -1).join('.').replace(/ [0-9]+$/g, '') == rest_of_path) continue;
+            if (file_path.substring(0, file_path.length - file_ext.length).replace(/ [0-9]+$/g, '') == rest_of_path) continue;
 
             let i = 1;
-            while(await IOUtils.exists(final_path)) final_path = rest_of_path + ' ' + (i++) + '.' + file_ext;
+            while(await IOUtils.exists(final_path)) final_path = rest_of_path + ' ' + (i++) + file_ext;
 
             // Shorten the filename if needed
             // Note that this creates a temp file
@@ -339,7 +340,7 @@ var ZotMoov = class {
             // Test to see if file extension is allowed
             if (Array.isArray(options.allowed_file_ext))
             {
-                let file_ext = file_path.split('.').pop().toLowerCase();
+                const file_ext = decodeURIComponent(Zotero.Utilities.Internal.parseURL(filename).fileExtension).toLowerCase();
                 if (!options.allowed_file_ext.includes(file_ext)) continue;
             }
 
@@ -353,15 +354,14 @@ var ZotMoov = class {
             });
             
             if (!copy_path) continue;
-            if (file_path == copy_path) continue;
 
             let final_path = copy_path;
-            let path_arr = final_path.split('.');
-            let file_ext = path_arr.pop();
-            let rest_of_path = path_arr.join('.');
+            let file_ext = decodeURIComponent(Zotero.Utilities.Internal.parseURL(file_path).fileExtension);
+            if (file_ext) file_ext = '.' + file_ext;
+            let rest_of_path = final_path.substring(0, final_path.length - file_ext.length);
 
             let i = 1;
-            while (await IOUtils.exists(final_path)) final_path = rest_of_path + ' ' + (i++) + '.' + file_ext;
+            while(await IOUtils.exists(final_path)) final_path = rest_of_path + ' ' + (i++) + file_ext;
 
             try
             {
