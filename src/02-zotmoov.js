@@ -206,14 +206,16 @@ var ZotMoov = class {
             
             if (!copy_path) continue;
 
-            // Have to check since later adding an entry triggers the
-            // handler again
-            if (file_path == copy_path) continue;
-
             let final_path = copy_path;
             let path_arr = final_path.split('.');
             let file_ext = path_arr.pop();
             let rest_of_path = path_arr.join('.');
+
+            // Have to check since later adding an entry triggers the
+            // handler again
+            // This checks to see if the file extension up to the number is the same
+            // And if so skip it
+            if (file_path.split('.').slice(0, -1).join('.').replace(/ [0-9]+$/g, '') == rest_of_path) continue;
 
             let i = 1;
             while(await IOUtils.exists(final_path)) final_path = rest_of_path + ' ' + (i++) + '.' + file_ext;
