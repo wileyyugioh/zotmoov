@@ -61,3 +61,5 @@ extensions.zotmoov.menu_items.convert_linked.hidden
 extensions.zotmoov.menu_items.custom_move.hidden
 ```
 Hide the default menu items
+
+```extensions.zotmoov.menu_items.fix_note_links.hidden```: Enable/disable the menu item to run an unstable script to fix broken note links
