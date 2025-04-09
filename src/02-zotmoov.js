@@ -29,7 +29,7 @@ var ZotMoov = class {
         let file_name = PathUtils.filename(file_path);
         if (options.rename_file && item.parentItem)
         {
-            let file_ext = decodeURIComponent(Zotero.Utilities.Internal.parseURL(file_name).fileExtension).toLowerCase();
+            let file_ext = decodeURIComponent(Zotero.Utilities.Internal.parseURL(file_path).fileExtension).toLowerCase();
             if (file_ext) file_ext = '.' + file_ext;
             let renamed = await Zotero.Attachments.getRenamedFileBaseNameIfAllowedType(item.parentItem, file_path);
             if (renamed) file_name = renamed + file_ext;
@@ -191,7 +191,7 @@ var ZotMoov = class {
             // Test to see if file extension is allowed
             if (Array.isArray(options.allowed_file_ext))
             {
-                const file_ext = decodeURIComponent(Zotero.Utilities.Internal.parseURL(filename).fileExtension).toLowerCase();
+                const file_ext = decodeURIComponent(Zotero.Utilities.Internal.parseURL(file_path).fileExtension).toLowerCase();
                 if (!options.allowed_file_ext.includes(file_ext)) continue;
             }
 
@@ -340,7 +340,7 @@ var ZotMoov = class {
             // Test to see if file extension is allowed
             if (Array.isArray(options.allowed_file_ext))
             {
-                const file_ext = decodeURIComponent(Zotero.Utilities.Internal.parseURL(filename).fileExtension).toLowerCase();
+                const file_ext = decodeURIComponent(Zotero.Utilities.Internal.parseURL(file_path).fileExtension).toLowerCase();
                 if (!options.allowed_file_ext.includes(file_ext)) continue;
             }
 
