@@ -29,7 +29,7 @@ var ZotMoov = class {
         let file_name = PathUtils.filename(file_path);
         if (options.rename_file && item.parentItem)
         {
-            let file_ext = decodeURIComponent(Zotero.Utilities.Internal.parseURL(filename).fileExtension).toLowerCase();
+            let file_ext = decodeURIComponent(Zotero.Utilities.Internal.parseURL(file_name).fileExtension).toLowerCase();
             if (file_ext) file_ext = '.' + file_ext;
             let renamed = await Zotero.Attachments.getRenamedFileBaseNameIfAllowedType(item.parentItem, file_path);
             if (renamed) file_name = renamed + file_ext;
