@@ -30,8 +30,8 @@ var ZotMoovBindings = class {
         });
 
         this._patcher.monkey_patch(Zotero.Item.prototype, '_eraseData', function (orig) {
-            return Zotero.Promise.coroutine(function* (...args) {
-                let val = yield orig.apply(this, args);
+            return async function(...args) {
+                let val = await orig.apply(this, args);
 
                 // If file in the ignore list skip the deletion
                 if (self._del_ignore.includes(this.key)) return val;
@@ -42,14 +42,14 @@ var ZotMoovBindings = class {
                 }
 
                 return val;
-            });
+            };
         });
 
         // We do not want to delete the linked files upon sync
         // So we have to do this complicated stuff to preprocess the deleted files
         this._patcher.monkey_patch(Zotero.Sync.APIClient.prototype, 'getDeleted', function (orig) {
-            return Zotero.Promise.coroutine(function* (libraryType, ...other) {
-                let results = yield orig.apply(this, [libraryType, ...other]);
+            return async function(libraryType, ...other) {
+                let results = await orig.apply(this, [libraryType, ...other]);
 
                 // Sometimes when syncing _eraseData can be called twice
                 // Once when the parent item is deleted, and another time when the child attachment is deleted
@@ -71,13 +71,13 @@ var ZotMoovBindings = class {
 
 
                 return results;
-            });
+            };
         });
 
         // Don't process new files that are added
         this._patcher.monkey_patch(Zotero.Sync.Data.Local, '_saveObjectFromJSON', function (orig) {
-            return Zotero.Promise.coroutine(function* (...args) {
-                let results = yield orig.apply(this, [...args]);
+            return async function(...args) {
+                let results = await orig.apply(this, [...args]);
 
                 // ...unless the user wants it
                 if (Zotero.Prefs.get('extensions.zotmoov.process_synced_files', true)) return results;
@@ -85,7 +85,7 @@ var ZotMoovBindings = class {
                 if(results.processed) self._callback.addKeysToIgnore([results.key]);
 
                 return results;
-            });
+            };
         });
     }
 
