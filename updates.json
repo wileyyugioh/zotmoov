@@ -3,12 +3,12 @@
     "zotmoov@wileyy.com": {
       "updates": [
         {
-          "version": "1.2.21",
-          "update_link": "https://github.com/wileyyugioh/zotmoov/releases/download/1.2.21/zotmoov-1.2.21-fx.xpi",
+          "version": "1.2.22",
+          "update_link": "https://github.com/wileyyugioh/zotmoov/releases/download/1.2.22/zotmoov-1.2.22-fx.xpi",
           "applications": {
             "zotero": {
               "strict_min_version": "6.999",
-              "strict_max_version": "7.1.*"
+              "strict_max_version": "8.0.*"
             }
           }
         }
