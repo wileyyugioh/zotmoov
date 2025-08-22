@@ -73,6 +73,9 @@ var ZotMoov = class {
             // Check to see if file is a linked file
             if (item.attachmentLinkMode != Zotero.Attachments.LINK_MODE_LINKED_FILE) continue;
 
+            // Check to see if duplicates exist
+            if ((await Zotero.DB.queryAsync('SELECT 1 FROM itemAttachments WHERE PATH IS ? LIMIT 1', item.attachmentPath)).length) continue;
+
             let fp = item.getFilePath();
             if (!fp) continue;
             let fp_arr = PathUtils.split(fp);
