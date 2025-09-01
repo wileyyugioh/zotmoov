@@ -509,7 +509,7 @@ var ZotMoovMenus = class
             // Ignore invalid file extensions
             if (Array.isArray(allowed_file_ext))
             {
-                const file_ext = decodeURIComponent(Zotero.Utilities.Internal.parseURL(filename).fileExtension).toLowerCase();
+                const file_ext = Zotero.File.getExtension(filename).toLowerCase();
                 if (!allowed_file_ext.includes(file_ext)) continue;
             }
 
@@ -531,7 +531,11 @@ var ZotMoovMenus = class
 
         if (Zotero.Prefs.get('extensions.zotmoov.attach_prompt', true))
         {
-            const orig_filename = decodeURIComponent(Zotero.Utilities.Internal.parseURL(lastFilePath).fileBaseName);
+            let file_ext = Zotero.File.getExtension(file_path);
+            if (file_ext) file_ext = '.' + file_ext;
+            let orig_filename = PathUtils.filename(file_path);
+            orig_filename = orig_filename.substring(0, orig_filename.length - file_ext.length);
+
             const new_filename = await new Promise((resolve, reject) =>
             {
                 Zotero.getMainWindow().openDialog('chrome://zotmoov/content/add-att-confirm.xhtml',
