@@ -509,7 +509,7 @@ var ZotMoovMenus = class
             // Ignore invalid file extensions
             if (Array.isArray(allowed_file_ext))
             {
-                const file_ext = Zotero.File.getExtension(filename).toLowerCase();
+                const file_ext = Zotero.File.getExtension(path).toLowerCase();
                 if (!allowed_file_ext.includes(file_ext)) continue;
             }
 
@@ -531,9 +531,9 @@ var ZotMoovMenus = class
 
         if (Zotero.Prefs.get('extensions.zotmoov.attach_prompt', true))
         {
-            let file_ext = Zotero.File.getExtension(file_path);
+            let file_ext = Zotero.File.getExtension(lastFilePath);
             if (file_ext) file_ext = '.' + file_ext;
-            let orig_filename = PathUtils.filename(file_path);
+            let orig_filename = PathUtils.filename(lastFilePath);
             orig_filename = orig_filename.substring(0, orig_filename.length - file_ext.length);
 
             const new_filename = await new Promise((resolve, reject) =>
