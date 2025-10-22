@@ -57,7 +57,7 @@ zotmoov-adv-settings-add2parent =
 zotmoov-adv-settings-directory-checkbox1 =
     .label = Enable Custom Directory
 
-zotmoov-adv-settings-other-adv-settings-title = Other Advanced Settings
+zotmoov-adv-settings-other-adv-settings-title = Other Advanced Options
 
 zotmoov-adv-settings-strip-diacritics =
     .label = Strip Diacritics From File Names
