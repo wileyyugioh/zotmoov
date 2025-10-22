@@ -46,9 +46,9 @@ You can also check **Confirm When Adding File** for a confirmation dialog to pop
 
 ### [Custom Menu Items](CUSTOM_MENUITEM_INFO.md)
 
-### Strip Diacritics From File Names
+### Strip Diacritics From File Names/Paths
 
-When Zotero renames a file and ZotMoov intercepts it, ZotMoov will change the file name to remove all of the diacritics. This is useful for ensuring compatibility across various operating systems, for example. 
+When Zotero renames a file and ZotMoov intercepts it, ZotMoov will change the file name/path to remove all of the diacritics. This is useful for ensuring compatibility across various operating systems, for example. Note that only file names/paths within the base directory will be altered.
 
 ## Selected Hidden Preferences
 
