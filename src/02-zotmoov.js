@@ -48,8 +48,14 @@ var ZotMoov = class {
                 undefined_str: options.undefined_str,
                 custom_wc: options.custom_wc
             });
-            if (options.strip_diacritics) custom_dir = Zotero.Utilities.removeDiacritics(custom_dir);
-            let sanitized_custom_dir = custom_dir.split('/').map((dir) => this.sanitizer.sanitize(dir, '_'));
+
+            let sanitized_custom_dir = custom_dir.split('/').map((dir) => {
+                let sanitized_dir = this.sanitizer.sanitize(dir, '_');
+                if (options.strip_diacritics) sanitized_dir = Zotero.Utilities.removeDiacritics(sanitized_dir);
+
+                return sanitized_dir;
+            });
+
             local_dst_path = PathUtils.join(local_dst_path, ...sanitized_custom_dir);
         }
 
