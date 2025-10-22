@@ -45,6 +45,12 @@ You can also check **Confirm When Adding File** for a confirmation dialog to pop
 
 ### [Custom Menu Items](CUSTOM_MENUITEM_INFO.md)
 
+### Other Advanced Options
+
+#### Strip Diacritics From File Names
+
+When Zotero renames a file and ZotMoov intercepts it, ZotMoov will change the file name to remove all of the diacritics. This is useful for ensuring compatibility across various operating systems, for example. 
+
 ## Selected Hidden Preferences
 
 [Hidden preferences can be accessed/modified to change some of ZotMoov's behavior](https://www.zotero.org/support/preferences/hidden_preferences)
