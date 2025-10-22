@@ -18,6 +18,7 @@ var ZotMoov = class {
             undefined_str: 'undefined',
             custom_wc: {},
             rename_file: true,
+            strip_diacritics: false,
         };
         let options = {...default_options, ...arg_options};
 
@@ -30,7 +31,11 @@ var ZotMoov = class {
             let file_ext = Zotero.File.getExtension(file_path).toLowerCase();
             if (file_ext) file_ext = '.' + file_ext;
             let renamed = await Zotero.Attachments.getRenamedFileBaseNameIfAllowedType(item.parentItem, file_path);
-            if (renamed) file_name = renamed + file_ext;
+            if (renamed)
+            {
+                file_name = renamed + file_ext;
+                if (options.strip_diacritics) file_name = Zotero.Utilities.removeDiacritics(file_name);
+            }
         }
 
         let local_dst_path = dst_path;
@@ -161,7 +166,8 @@ var ZotMoov = class {
             add_zotmoov_tag: true,
             tag_str: 'zotmoov',
             rename_file: true,
-            max_io: 1
+            max_io: 1,
+            strip_diacritics: false,
         };
 
         let options = {...default_options, ...arg_options};
@@ -203,7 +209,8 @@ var ZotMoov = class {
                     preferred_collection: options.preferred_collection,
                     undefined_str: options.undefined_str,
                     custom_wc: options.custom_wc,
-                    rename_file: options.rename_file
+                    rename_file: options.rename_file,
+                    strip_diacritics: options.strip_diacritics
             });
             
             if (!copy_path) continue;
@@ -316,7 +323,8 @@ var ZotMoov = class {
             undefined_str: 'undefined',
             custom_wc: {},
             rename_file: true,
-            max_io: 1
+            max_io: 1,
+            strip_diacritics: false,
         };
 
         let options = {...default_options, ...arg_options};
@@ -351,7 +359,8 @@ var ZotMoov = class {
                     preferred_collection: options.preferred_collection,
                     undefined_str: options.undefined_str,
                     custom_wc: options.custom_wc,
-                    rename_file: options.rename_file
+                    rename_file: options.rename_file,
+                    strip_diacritics: options.strip_diacritics
             });
             
             if (!copy_path) continue;
@@ -565,7 +574,8 @@ var ZotMoov = class {
             add_zotmoov_tag: Zotero.Prefs.get('extensions.zotmoov.add_zotmoov_tag', true),
             tag_str: Zotero.Prefs.get('extensions.zotmoov.tag_str', true),
             rename_file: Zotero.Attachments.shouldAutoRenameFile(),
-            max_io: Zotero.Prefs.get('extensions.zotmoov.max_io_concurrency', true)
+            max_io: Zotero.Prefs.get('extensions.zotmoov.max_io_concurrency', true),
+            strip_diacritics: Zotero.Prefs.get('extensions.zotmoov.strip_diacritics', true)
         };
     }
 }
