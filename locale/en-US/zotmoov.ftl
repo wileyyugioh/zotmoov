@@ -60,7 +60,7 @@ zotmoov-adv-settings-directory-checkbox1 =
 zotmoov-adv-settings-other-adv-settings-title = Other Advanced Options
 
 zotmoov-adv-settings-strip-diacritics =
-    .label = Strip Diacritics From File Names
+    .label = Strip Diacritics From File Names/Paths
 
 zotmoov-adv-settings-cmu-title = Custom Menu Items
 
