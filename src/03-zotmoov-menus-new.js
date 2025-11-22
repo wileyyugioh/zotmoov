@@ -1,5 +1,10 @@
 var ZotMoovNewMenus = class
 {
+    static get hasFeatures()
+    {
+        return 'MenuManager' in Zotero;
+    }
+
     get SHORTCUTS()
     {
         return {
@@ -10,15 +15,8 @@ var ZotMoovNewMenus = class
         };
     }
 
-    get hasFeatures()
-    {
-        return 'MenuManager' in Zotero;
-    }
-
     _genMenus()
     {
-        let options = {...default_options, ...arg_options};
-
         let self = this;
         const mv_move = [
             // Move Selected Menu item
@@ -136,28 +134,31 @@ var ZotMoovNewMenus = class
         let menus = [];
         if (this._move_visible)
         {
-            if (!Zotero.Prefs.get('extensions.zotmoov.menu_items.move.hidden', true)) menus.concat(mv_move);
-            if (!Zotero.Prefs.get('extensions.zotmoov.menu_items.custom_move.hidden', true)) menus.concat(mv_custom_move);
+            if (!Zotero.Prefs.get('extensions.zotmoov.menu_items.move.hidden', true)) menus.push(...mv_move);
+            if (!Zotero.Prefs.get('extensions.zotmoov.menu_items.custom_move.hidden', true)) menus.push(...mv_custom_move);
         } else
         {
-            if (!Zotero.Prefs.get('extensions.zotmoov.menu_items.move.hidden', true)) menus.concat(cp_move);
-            if (!Zotero.Prefs.get('extensions.zotmoov.menu_items.custom_move.hidden', true)) menus.concat(cp_custom_move);
+            if (!Zotero.Prefs.get('extensions.zotmoov.menu_items.move.hidden', true)) menus.push(...cp_move);
+            if (!Zotero.Prefs.get('extensions.zotmoov.menu_items.custom_move.hidden', true)) menus.push(...cp_custom_move);
         }
 
         if (this._attach_visible)
         {
-            menus.concat(attach_menus);
+            menus.push(...attach_menus);
         }
 
         if (Zotero.Prefs.get('extensions.zotmoov.menu_items.fix_note_links.hidden', true))
         {
-            menus.concat(convert_menus);
+            menus.push(...convert_menus);
         }
 
         for (let menu of Object.values(this._custom_mus))
         {
-            menus.concat([menu]);
+            menus.push(menu);
         }
+
+        // RIP. No way to update menus...
+        if (this._menumanager_id) Zotero.MenuManager.unregisterMenu(this._menumanager_id);
 
         this._menumanager_id = Zotero.MenuManager.registerMenu({
             menuID: 'zotmoov-itemmenu',
@@ -182,6 +183,34 @@ var ZotMoovNewMenus = class
 
         this._custom_mus = {};
         this._menumanager_id = null;
+    }
+
+    _loadPrefObs()
+    {
+        let self = this;
+        this._move_pref_obs = Zotero.Prefs.registerObserver('extensions.zotmoov.menu_items.move.hidden', () => {
+            self._genMenus();
+        }, true);
+
+        this._convert_pref_obs = Zotero.Prefs.registerObserver('extensions.zotmoov.menu_items.convert_linked.hidden', () => {
+            self._genMenus();
+        }, true);
+
+        this._custom_move_pref_obs = Zotero.Prefs.registerObserver('extensions.zotmoov.menu_items.custom_move.hidden', () => {
+            self._genMenus();
+        }, true);
+
+        this._fix_note_links_obs = Zotero.Prefs.registerObserver('extensions.zotmoov.menu_items.fix_note_links.hidden', () => {
+            self._genMenus();
+        }, true);
+    }
+
+    _unloadPrefObs()
+    {
+        Zotero.Prefs.unregisterObserver(this._move_pref_obs);
+        Zotero.Prefs.unregisterObserver(this._convert_pref_obs);
+        Zotero.Prefs.unregisterObserver(this._custom_move_pref_obs);
+        Zotero.Prefs.unregisterObserver(this._fix_note_links_obs);
     }
 
     _addCustomMenuItem(id, label, key)
@@ -214,6 +243,8 @@ var ZotMoovNewMenus = class
                 let cmu = JSON.parse(Zotero.Prefs.get('extensions.zotmoov.custom_menu_items', true));
                 (new this._custom_mu_parser(cmu)).apply(key, Array.from(this._zotmoov._getSelectedItems()));
         };
+
+        this._genMenus();
     }
 
     _removeCustomMenuItem(id, key)
@@ -300,24 +331,40 @@ var ZotMoovNewMenus = class
 
     load(win)
     {
-        Zotero.warn('ZotMoovMenus.load is unsupported after Zotero 8 due to the new API.');
+        let doc = win.document;
+        doc.addEventListener('keydown', (event) =>
+        {
+            this._doKeyDown(event);
+        });
+
+        // Enable localization
+        win.MozXULElement.insertFTLIfNeeded('zotmoov.ftl');
+    }
+
+    _doSetMove()
+    {
+        this._move_visible = true;
     }
 
     setMove()
     {
-        this._move_visible = true;
+        this._doSetMove();
         this._genMenus();
+    }
+
+    _doSetCopy()
+    {
+        this._move_visible = false;
     }
 
     setCopy()
     {
-        this._move_visible = false;
+        this._doSetCopy();
         this._genMenus();
     }
 
     unload(win)
     {
-        Zotero.warn('ZotMoovMenus.unload is unsupported after Zotero 8 due to the new API.');
     }
 
     init()
@@ -328,29 +375,23 @@ var ZotMoovNewMenus = class
 
     loadAll()
     {
-        let registered_id = Zotero.MenuManager.registerMenu({
-            menuID: 'zotmoov-itemmenu',
-            pluginID: 'zotmoov@wileyy.com', // Hard coded...
-            target: 'main/library/item',
-            menus: self._menus
-        });
-
         if(Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
         {
-            this.setMove();
+            this._doSetMove();
         } else
         {
-            this.setCopy();
+            this._doSetCopy();
         }
 
         if(!Zotero.Prefs.get('extensions.zotmoov.enable_attach_dir', true)) this.hideAttachNewFile();
 
         this._loadCMUFromPrefs();
 
-        doc.addEventListener('keydown', (event) =>
+        let windows = Zotero.getMainWindows();
+        for(let win of windows)
         {
-            this._doKeyDown(event);
-        });
+            this.load(win);
+        }
 
         this._genMenus();
     }
@@ -363,6 +404,7 @@ var ZotMoovNewMenus = class
     destroy()
     {
         this.unloadAll();
+        this._unloadPrefObs();
     }
 
     hideAttachNewFile()

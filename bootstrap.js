@@ -102,11 +102,11 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 }
 
 function onMainWindowLoad({ window }) {
-    if (!ZotMoovNewMenus.hasFeatures) zotmoovMenus.load(window);
+    zotmoovMenus.load(window);
 }
 
 function onMainWindowUnload({ window }) {
-    if (!ZotMoovNewMenus.hasFeatures zotmoovMenus.unload(window);
+    zotmoovMenus.unload(window);
 }
 
 function shutdown()
