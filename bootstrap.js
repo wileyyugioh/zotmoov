@@ -47,7 +47,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
     zotmoov = new ZotMoov(id, version, rootURI, zotmoovWildcard, sanitizer, zotmoovDebugger);
     zotmoovBindings = new ZotMoovBindings(zotmoov);
 
-    if (ZotMoovNewMenus.hasFeatures)
+    if (ZotMoovNewMenus.hasFeatures && !Zotero.Prefs.get('extensions.zotmoov.force_legacy_menus', true))
     {
         // Use the new MenuManager API if available (Zotero 8+)
         zotmoovMenus = new ZotMoovNewMenus(zotmoov, zotmoovBindings, ZotMoovCMUParser);
