@@ -147,9 +147,14 @@ var ZotMoovNewMenus = class
             menus.push(...attach_menus);
         }
 
-        if (Zotero.Prefs.get('extensions.zotmoov.menu_items.fix_note_links.hidden', true))
+        if (!Zotero.Prefs.get('extensions.zotmoov.menu_items.convert_linked.hidden', true))
         {
             menus.push(...convert_menus);
+        }
+
+        if (!Zotero.Prefs.get('extensions.zotmoov.menu_items.fix_note_links.hidden', true))
+        {
+            menus.push(...note_fix_menus);
         }
 
         for (let menu of Object.values(this._custom_mus))
@@ -179,7 +184,7 @@ var ZotMoovNewMenus = class
         this._scs = {};
 
         this._move_visible = true;
-        this._attach_visible = false;
+        this._attach_visible = true;
 
         this._custom_mus = {};
         this._menumanager_id = null;
@@ -383,7 +388,7 @@ var ZotMoovNewMenus = class
             this._doSetCopy();
         }
 
-        if(!Zotero.Prefs.get('extensions.zotmoov.enable_attach_dir', true)) this.hideAttachNewFile();
+        if(!Zotero.Prefs.get('extensions.zotmoov.enable_attach_dir', true)) this._doHideAttachNewFile();
 
         this._loadCMUFromPrefs();
 
@@ -407,15 +412,25 @@ var ZotMoovNewMenus = class
         this._unloadPrefObs();
     }
 
-    hideAttachNewFile()
+    _doHideAttachNewFile()
     {
         this._attach_visible = false;
+    }
+
+    hideAttachNewFile()
+    {
+        this._doHideAttachNewFile();
         this._genMenus();
+    }
+
+    _doShowAttachNewFile()
+    {
+        this._attach_visible = true;
     }
 
     showAttachNewFile()
     {
-        this._attach_visible = true;
+        this._doShowAttachNewFile();
         this._genMenus();
     }
 

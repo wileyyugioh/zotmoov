@@ -84,28 +84,28 @@ zotmoov-kb-settings-convert-item = Move/Copy Files from Subdirectory
 
 zotmoov-kb-settings-warning = Warning: Shortcut is already in use
 
-zotmoov-context-move-selected =
+zotmoov-context-move-selected = ZotMoov: Move Selected to Directory
     .label = ZotMoov: Move Selected to Directory
 
-zotmoov-context-move-selected-custom-dir =
+zotmoov-context-move-selected-custom-dir = ZotMoov: Move Selected to Custom Directory
     .label = ZotMoov: Move Selected to Custom Directory
 
 zotmoov-context-copy-selected =
     .label = ZotMoov: Copy Selected to Directory
 
-zotmoov-context-copy-selected-custom-dir =
+zotmoov-context-copy-selected-custom-dir = ZotMoov: Copy Selected to Custom Directory
     .label = ZotMoov: Copy Selected to Custom Directory
 
-zotmoov-context-attach-new-file =
+zotmoov-context-attach-new-file = ZotMoov: Attach New File
     .label = ZotMoov: Attach New File
 
-zotmoov-context-convert-linked =
+zotmoov-context-convert-linked = ZotMoov: Move Selected from Directory
     .label = ZotMoov: Move Selected from Directory
 
-zotmoov-context-fix-note-links =
+zotmoov-context-fix-note-links = ZotMoov: Fix Note Links Hack
     .label = ZotMoov: Fix Note Links Hack
 
-zotmoov-context-custom-menuitem-title =
+zotmoov-context-custom-menuitem-title = ZotMoov: { $text }
     .label = ZotMoov: { $text }
 
 zotmoov-settings-enable-automove-label =
