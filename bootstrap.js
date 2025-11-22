@@ -46,7 +46,16 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 
     zotmoov = new ZotMoov(id, version, rootURI, zotmoovWildcard, sanitizer, zotmoovDebugger);
     zotmoovBindings = new ZotMoovBindings(zotmoov);
-    zotmoovMenus = new ZotMoovMenus(zotmoov, zotmoovBindings, ZotMoovCMUParser);
+
+    if (ZotMoovNewMenus.hasFeatures)
+    {
+        // Use the new MenuManager API if available (Zotero 8+)
+        zotmoovMenus = new ZotMoovNewMenus(zotmoov, zotmoovBindings, ZotMoovCMUParser);
+    }
+    else
+    {
+        zotmoovMenus = new ZotMoovMenus(zotmoov, zotmoovBindings, ZotMoovCMUParser);
+    }
 
     Zotero.PreferencePanes.register(
         {
@@ -93,11 +102,11 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 }
 
 function onMainWindowLoad({ window }) {
-    zotmoovMenus.load(window);
+    if (!ZotMoovNewMenus.hasFeatures) zotmoovMenus.load(window);
 }
 
 function onMainWindowUnload({ window }) {
-    zotmoovMenus.unload(window);
+    if (!ZotMoovNewMenus.hasFeatures zotmoovMenus.unload(window);
 }
 
 function shutdown()
