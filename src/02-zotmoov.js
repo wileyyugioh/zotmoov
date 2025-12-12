@@ -11,6 +11,20 @@ var ZotMoov = class {
 
     async _getCopyPath(item, dst_path, arg_options = {})
     {
+
+        // We need to modify this function over the Zotero one cause we do not want to change the attachmentTitle!
+        // We added arg item cause fug
+        const getRenamedFileBaseNameIfAllowedType = async function (parentItem, file, item) {
+            var contentType = file.endsWith('.pdf')
+                // Don't bother reading file if there's a .pdf extension
+                ? 'application/pdf'
+                : await Zotero.MIME.getMIMETypeFromFile(file);
+            if (!this.isRenameAllowedForType(contentType, parentItem.libraryID)) {
+                return false;
+            }
+            return this.getFileBaseNameFromItem(parentItem, { attachmentTitle: item.getField('title') });
+        }.bind(Zotero.Attachments);
+
         const default_options = {
             into_subfolder: false,
             subdir_str: '',
@@ -30,7 +44,7 @@ var ZotMoov = class {
         {
             let file_ext = Zotero.File.getExtension(file_path).toLowerCase();
             if (file_ext) file_ext = '.' + file_ext;
-            let renamed = await Zotero.Attachments.getRenamedFileBaseNameIfAllowedType(item.parentItem, file_path);
+            let renamed = await getRenamedFileBaseNameIfAllowedType(item.parentItem, file_path, item);
             if (renamed)
             {
                 file_name = renamed + file_ext;
