@@ -81,6 +81,7 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 
     // Need to expose our addon to rest of Zotero
     Zotero.ZotMoov = zotmoov;
+    Zotero.ZotMoov.Zotlib = Zotlib;
     Zotero.ZotMoov.Menus = zotmoovMenus;
     Zotero.ZotMoov.Menus.Custom = { 'Parser': ZotMoovCMUParser, 'Commands': ZotMoovCMUParser.Commands };
     Zotero.ZotMoov.Commands = { 'Parser': ZotMoovCWParser, 'Commands': ZotMoovCWParser.Commands };
