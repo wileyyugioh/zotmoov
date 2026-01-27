@@ -400,7 +400,14 @@ var ZotMoov = class {
             if (file_ext) file_ext = '.' + file_ext;
             let rest_of_path = final_path.substring(0, final_path.length - file_ext.length);
 
-            if (!options.copy_overwrite) final_path = await this.genUniqueFilepath(rest_of_path, file_ext);
+            if (options.copy_overwrite)
+            {
+                final_path = rest_of_path + ' ' + item.id + file_ext;
+            } else
+            {
+                final_path = await this.genUniqueFilepath(rest_of_path, file_ext);
+            }
+
             if (final_path == '')
             {
                 Zotero.warn('ZotMoov: Reached attempt limit to create unique file ' + copy_path);
@@ -409,7 +416,15 @@ var ZotMoov = class {
 
             try
             {
-                const short_filename = Zotero.ZotMoov.Zotlib.createShortened(final_path, Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0o644, undefined, options.copy_overwrite);
+                let short_filename = '';
+                if (options.copy_overwrite)
+                {
+                    short_filename = Zotero.ZotMoov.Zotlib.createShortenedOverwrite(final_path, Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0o644, undefined, item.id);
+                } else
+                {
+                    short_filename = Zotero.ZotMoov.Zotlib.createShortened(final_path, Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0o644);
+                }
+
                 final_path = PathUtils.join(PathUtils.parent(final_path), short_filename);
             } catch (e) {
                 Zotero.logError(e);
