@@ -400,10 +400,12 @@ var ZotMoov = class {
             if (file_ext) file_ext = '.' + file_ext;
             let rest_of_path = final_path.substring(0, final_path.length - file_ext.length);
 
-            const step = Math.max(0, item.parentItem.getAttachments().indexOf(item.id));
+            let step = 0;
 
             if (options.copy_overwrite)
             {
+                if (item.parentItem) step = Math.max(0, item.parentItem.getAttachments().indexOf(item.id));
+
                 if (step > 0)
                 {
                     final_path = rest_of_path + ' ' + step + file_ext;
