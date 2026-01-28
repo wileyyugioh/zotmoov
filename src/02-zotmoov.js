@@ -398,11 +398,19 @@ var ZotMoov = class {
             let final_path = copy_path;
             let file_ext = Zotero.File.getExtension(file_path);
             if (file_ext) file_ext = '.' + file_ext;
-            let rest_of_path = final_path.substring(0, final_path.length - file_ext.length) + ' ' + item.id;
+            let rest_of_path = final_path.substring(0, final_path.length - file_ext.length);
+
+            const step = Math.max(0, item.parentItem.getAttachments().indexOf(item.id));
 
             if (options.copy_overwrite)
             {
-                final_path = rest_of_path + file_ext;
+                if (step > 0)
+                {
+                    final_path = rest_of_path + ' ' + step + file_ext;
+                } else {
+                    final_path = rest_of_path + file_ext;
+                }
+
             } else
             {
                 final_path = await this.genUniqueFilepath(rest_of_path, file_ext);
@@ -419,7 +427,7 @@ var ZotMoov = class {
                 let short_filename = '';
                 if (options.copy_overwrite)
                 {
-                    short_filename = Zotero.ZotMoov.Zotlib.createShortenedOverwrite(final_path, Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0o644, undefined, item.id);
+                    short_filename = Zotero.ZotMoov.Zotlib.createShortenedOverwrite(final_path, Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0o644, step);
                 } else
                 {
                     short_filename = Zotero.ZotMoov.Zotlib.createShortened(final_path, Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0o644);
