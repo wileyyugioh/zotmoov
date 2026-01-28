@@ -50,6 +50,10 @@ You can also check **Confirm When Adding File** for a confirmation dialog to pop
 
 When Zotero renames a file and ZotMoov intercepts it, ZotMoov will change the file name/path to remove all of the diacritics. This is useful for ensuring compatibility across various operating systems, for example. Note that only file names/paths within the base directory will be altered.
 
+### Overwrite Files When In Copy Mode
+
+When in copy mode, overwrite existing files rather than creating a new copy with the number increment. Useful for keeping a backup directory with updates.
+
 ## Selected Hidden Preferences
 
 [Hidden preferences can be accessed/modified to change some of ZotMoov's behavior](https://www.zotero.org/support/preferences/hidden_preferences)

@@ -398,11 +398,11 @@ var ZotMoov = class {
             let final_path = copy_path;
             let file_ext = Zotero.File.getExtension(file_path);
             if (file_ext) file_ext = '.' + file_ext;
-            let rest_of_path = final_path.substring(0, final_path.length - file_ext.length);
+            let rest_of_path = final_path.substring(0, final_path.length - file_ext.length) + ' ' + item.id;
 
             if (options.copy_overwrite)
             {
-                final_path = rest_of_path + ' ' + item.id + file_ext;
+                final_path = rest_of_path + file_ext;
             } else
             {
                 final_path = await this.genUniqueFilepath(rest_of_path, file_ext);

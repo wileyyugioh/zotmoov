@@ -62,6 +62,9 @@ zotmoov-adv-settings-other-adv-settings-title = Other Advanced Options
 zotmoov-adv-settings-strip-diacritics =
     .label = Strip Diacritics From File Names/Paths
 
+zotmoov-adv-settings-copy-overwrite =
+    .label = Overwrite Files When In Copy Mode
+
 zotmoov-adv-settings-cmu-title = Custom Menu Items
 
 zotmoov-adv-settings-cmu-sel-prefix = Menu Item
