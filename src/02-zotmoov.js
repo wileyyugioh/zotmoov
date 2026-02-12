@@ -632,7 +632,7 @@ var ZotMoov = class {
             custom_wc: JSON.parse(Zotero.Prefs.get('extensions.zotmoov.cwc_commands', true)),
             add_zotmoov_tag: Zotero.Prefs.get('extensions.zotmoov.add_zotmoov_tag', true),
             tag_str: Zotero.Prefs.get('extensions.zotmoov.tag_str', true),
-            rename_file: Zotero.Attachments.shouldAutoRenameFile(),
+            rename_file: Zotero.Attachments.shouldAutoRenameFile() && Zotero.Prefs.get('extensions.zotmoov.rename_file', true),
             max_io: Zotero.Prefs.get('extensions.zotmoov.max_io_concurrency', true),
             strip_diacritics: Zotero.Prefs.get('extensions.zotmoov.strip_diacritics', true),
             copy_overwrite: Zotero.Prefs.get('extensions.zotmoov.copy_overwrite', true)
