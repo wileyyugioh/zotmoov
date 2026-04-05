@@ -46,15 +46,16 @@ async function startup({ id, version, resourceURI, rootURI = resourceURI.spec })
 
     zotmoov = new ZotMoov(id, version, rootURI, zotmoovWildcard, sanitizer, zotmoovDebugger);
     zotmoovBindings = new ZotMoovBindings(zotmoov);
+    zotmoovMenuHelper = new ZotMoovMenuHelper(zotmoov, zotmoovBindings);
 
     if (ZotMoovNewMenus.hasFeatures && !Zotero.Prefs.get('extensions.zotmoov.force_legacy_menus', true))
     {
         // Use the new MenuManager API if available (Zotero 8+)
-        zotmoovMenus = new ZotMoovNewMenus(zotmoov, zotmoovBindings, ZotMoovCMUParser);
+        zotmoovMenus = new ZotMoovNewMenus(zotmoov, zotmoovMenuHelper, ZotMoovCMUParser);
     }
     else
     {
-        zotmoovMenus = new ZotMoovMenus(zotmoov, zotmoovBindings, ZotMoovCMUParser);
+        zotmoovMenus = new ZotMoovMenus(zotmoov, zotmoovMenuHelper, ZotMoovCMUParser);
     }
 
     Zotero.PreferencePanes.register(
