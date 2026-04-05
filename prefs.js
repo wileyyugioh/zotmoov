@@ -33,3 +33,4 @@ pref('extensions.zotmoov.process_synced_files', false);
 pref('extensions.zotmoov.max_io_concurrency', 1);
 pref('extensions.zotmoov.strip_diacritics', false);
 pref('extensions.zotmoov.force_legacy_menus', false);
+pref('extensions.zotmoov.copy_overwrite', false);
