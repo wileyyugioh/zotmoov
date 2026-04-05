@@ -30,7 +30,7 @@ var ZotMoov = class {
         {
             let file_ext = Zotero.File.getExtension(file_path).toLowerCase();
             if (file_ext) file_ext = '.' + file_ext;
-            let renamed = await Zotero.Attachments.getRenamedFileBaseNameIfAllowedType(item.parentItem, file_path);
+            let renamed = await Zotero.ZotMoov.Zotlib.getRenamedFileBaseNameIfAllowedType(item.parentItem, file_path, item);
             if (renamed)
             {
                 file_name = renamed + file_ext;
@@ -62,6 +62,24 @@ var ZotMoov = class {
         let copy_path = PathUtils.join(local_dst_path, file_name);
 
         return copy_path;
+    }
+
+    async genUniqueFilepath(rest_of_path, file_ext, max_tries = 100)
+    {
+        let final_path = rest_of_path + file_ext;
+
+        let i = 1;
+        while(await IOUtils.exists(final_path))
+        {
+            if (i >= max_tries)
+            {
+                return '';
+            }
+
+            final_path = rest_of_path + ' ' + (i++) + file_ext;
+        }
+
+        return final_path;
     }
 
    async delete(items, home_path, arg_options = {})
@@ -233,14 +251,18 @@ var ZotMoov = class {
             // And if so skip it
             if (file_path.substring(0, file_path.length - file_ext.length).replace(/ [0-9]+$/g, '') == rest_of_path) continue;
 
-            let i = 1;
-            while(await IOUtils.exists(final_path)) final_path = rest_of_path + ' ' + (i++) + file_ext;
+            final_path = await this.genUniqueFilepath(rest_of_path, file_ext);
+            if (final_path == '')
+            {
+                Zotero.warn('ZotMoov: Reached attempt limit to create unique file ' + copy_path);
+                continue;
+            }
 
             // Shorten the filename if needed
             // Note that this creates a temp file
             try
             {
-                const short_filename = Zotero.File.createShortened(final_path, Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0o644);
+                const short_filename = Zotero.ZotMoov.Zotlib.createShortened(final_path, Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0o644);
                 final_path = PathUtils.join(PathUtils.parent(final_path), short_filename);
             } catch (e) {
                 Zotero.logError(e);
@@ -332,6 +354,7 @@ var ZotMoov = class {
             rename_file: true,
             max_io: 1,
             strip_diacritics: false,
+            copy_overwrite: false
         };
 
         let options = {...default_options, ...arg_options};
@@ -377,12 +400,41 @@ var ZotMoov = class {
             if (file_ext) file_ext = '.' + file_ext;
             let rest_of_path = final_path.substring(0, final_path.length - file_ext.length);
 
-            let i = 1;
-            while(await IOUtils.exists(final_path)) final_path = rest_of_path + ' ' + (i++) + file_ext;
+            let step = 0;
+
+            if (options.copy_overwrite)
+            {
+                if (item.parentItem) step = Math.max(0, item.parentItem.getAttachments().indexOf(item.id));
+
+                if (step > 0)
+                {
+                    final_path = rest_of_path + ' ' + step + file_ext;
+                } else {
+                    final_path = rest_of_path + file_ext;
+                }
+
+            } else
+            {
+                final_path = await this.genUniqueFilepath(rest_of_path, file_ext);
+            }
+
+            if (final_path == '')
+            {
+                Zotero.warn('ZotMoov: Reached attempt limit to create unique file ' + copy_path);
+                continue;
+            }
 
             try
             {
-                const short_filename = Zotero.File.createShortened(final_path, Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0o644);
+                let short_filename = '';
+                if (options.copy_overwrite)
+                {
+                    short_filename = Zotero.ZotMoov.Zotlib.createShortenedOverwrite(final_path, Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0o644, step);
+                } else
+                {
+                    short_filename = Zotero.ZotMoov.Zotlib.createShortened(final_path, Components.interfaces.nsIFile.NORMAL_FILE_TYPE, 0o644);
+                }
+
                 final_path = PathUtils.join(PathUtils.parent(final_path), short_filename);
             } catch (e) {
                 Zotero.logError(e);
@@ -582,7 +634,8 @@ var ZotMoov = class {
             tag_str: Zotero.Prefs.get('extensions.zotmoov.tag_str', true),
             rename_file: Zotero.Attachments.shouldAutoRenameFile(),
             max_io: Zotero.Prefs.get('extensions.zotmoov.max_io_concurrency', true),
-            strip_diacritics: Zotero.Prefs.get('extensions.zotmoov.strip_diacritics', true)
+            strip_diacritics: Zotero.Prefs.get('extensions.zotmoov.strip_diacritics', true),
+            copy_overwrite: Zotero.Prefs.get('extensions.zotmoov.copy_overwrite', true)
         };
     }
 }
