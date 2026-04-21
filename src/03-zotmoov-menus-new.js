@@ -370,6 +370,8 @@ var ZotMoovNewMenus = class
 
     unload(win)
     {
+        let loc = win.document.querySelector('[href="zotmoov.ftl"]');
+        if (loc) loc.remove();
     }
 
     init()
@@ -395,6 +397,7 @@ var ZotMoovNewMenus = class
         let windows = Zotero.getMainWindows();
         for(let win of windows)
         {
+            if(!win.ZoteroPane) continue;
             this.load(win);
         }
 
@@ -403,7 +406,13 @@ var ZotMoovNewMenus = class
 
     unloadAll()
     {
-        Zotero.MenuManager.unregisterMenu(this._menumanager_id);
+        if (this._menumanager_id) Zotero.MenuManager.unregisterMenu(this._menumanager_id);
+        let windows = Zotero.getMainWindows();
+        for (let win of windows)
+        {
+            if(!win.ZoteroPane) continue;
+            this.unload(win);
+        }
     }
 
     destroy()
