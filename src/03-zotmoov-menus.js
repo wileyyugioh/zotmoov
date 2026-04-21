@@ -352,7 +352,7 @@ var ZotMoovMenus = class
         let doc = win.document;
         doc.querySelectorAll('.'+this.menuitem_class).forEach(e => e.remove());
         
-        let loc = doc.querySelector('[href="zotmoov.ftl"]')
+        let loc = doc.querySelector('[href="zotmoov.ftl"]');
         if (loc) loc.remove();
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
