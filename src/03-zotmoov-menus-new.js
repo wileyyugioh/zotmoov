@@ -406,13 +406,13 @@ var ZotMoovNewMenus = class
 
     unloadAll()
     {
-        if (this._menumanager_id) Zotero.MenuManager.unregisterMenu(this._menumanager_id);
         let windows = Zotero.getMainWindows();
         for (let win of windows)
         {
             if(!win.ZoteroPane) continue;
             this.unload(win);
         }
+        //if (this._menumanager_id) Zotero.MenuManager.unregisterMenu(this._menumanager_id);
     }
 
     destroy()
