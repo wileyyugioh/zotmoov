@@ -188,6 +188,11 @@ var ZotMoovNewMenus = class
 
         this._custom_mus = {};
         this._menumanager_id = null;
+
+        this._input_listener = (event) =>
+        {
+            this._doKeyDown(event);
+        };
     }
 
     _loadPrefObs()
@@ -337,10 +342,7 @@ var ZotMoovNewMenus = class
     load(win)
     {
         let doc = win.document;
-        doc.addEventListener('keydown', (event) =>
-        {
-            this._doKeyDown(event);
-        });
+        doc.addEventListener('keydown', this._input_listener);
 
         // Enable localization
         win.MozXULElement.insertFTLIfNeeded('zotmoov.ftl');
@@ -370,8 +372,12 @@ var ZotMoovNewMenus = class
 
     unload(win)
     {
-        let loc = win.document.querySelector('[href="zotmoov.ftl"]');
+        let doc = win.document;
+
+        let loc = doc.querySelector('[href="zotmoov.ftl"]');
         if (loc) loc.remove();
+
+        doc.removeEventListener('keydown', this._input_listener);
     }
 
     init()
