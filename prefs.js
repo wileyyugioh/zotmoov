@@ -33,5 +33,5 @@ pref('extensions.zotmoov.process_synced_files', false);
 pref('extensions.zotmoov.max_io_concurrency', 1);
 pref('extensions.zotmoov.strip_diacritics', false);
 pref('extensions.zotmoov.copy_overwrite', false);
-pref('extensions.zotmoov.rename_file', true);
+pref('extensions.zotmoov.no_rename_file', false);
 pref('extensions.zotmoov.force_legacy_menus', false);
