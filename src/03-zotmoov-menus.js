@@ -30,6 +30,11 @@ var ZotMoovMenus = class
 
         this._keydown_commands = {};
         this._scs = {};
+
+        this._input_listener = (event) =>
+        {
+            this._doKeyDown(event);
+        };
     }
 
     _loadPrefObs()
@@ -319,10 +324,7 @@ var ZotMoovMenus = class
 
         this._loadCMUFromPrefs(win);
 
-        doc.addEventListener('keydown', (event) =>
-        {
-            this._doKeyDown(event);
-        });
+        doc.addEventListener('keydown', this._input_listener);
     }
 
     setMove()
@@ -357,6 +359,8 @@ var ZotMoovMenus = class
 
         let zotero_itemmenu = doc.getElementById('zotero-itemmenu');
         if (zotero_itemmenu) zotero_itemmenu.removeEventListener('popupshowing', this._popupShowing);
+
+        doc.removeEventListener('keydown', this._input_listener);
     }
 
     init()
