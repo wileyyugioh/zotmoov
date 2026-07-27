@@ -86,6 +86,12 @@ var ZotMoovNotifyCallback = class {
             return;
         }
 
+        if (Zotero.Prefs.get('extensions.zotero.sync.storage.enabled', true))
+        {
+            // We need to force a sync if cloud file sync is enabled or else merge conflicts occur
+            await Zotero.Sync.Runner.sync({libraries: [Zotero.Libraries.userLibraryID]});
+        }
+
         // Disable syncing
         if (this._syncDelayHandle == null) this._syncDelayHandle = Zotero.Sync.Runner.delayIndefinite();
 
