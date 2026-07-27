@@ -79,7 +79,7 @@ var ZotMoovNotifyCallback = class {
     }
 
     async _execute() {
-        if (this._need_to_process > 0 || Zotero.Sync.Runner.lastSyncStatus !== Zotero.getString('sync.status.waiting')) // Kinda disgusting...
+        if (this._need_to_process > 0 || (Zotero.Sync.Runner.syncInProgress && Zotero.Sync.Runner.lastSyncStatus !== Zotero.getString('sync.status.waiting'))) // Kinda disgusting...
         {
             clearTimeout(this._timeoutID);
             this._timeoutID = setTimeout(this._execute.bind(this), Zotero.Prefs.get('extensions.zotmoov.auto_process_delay', true));
