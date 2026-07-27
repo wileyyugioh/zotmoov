@@ -79,21 +79,12 @@ var ZotMoovNotifyCallback = class {
     }
 
     async _execute() {
-        if (this._need_to_process > 0 || Zotero.Sync.Runner.syncInProgress)
+        if (this._need_to_process > 0 || Zotero.Sync.Runner.lastSyncStatus !== Zotero.getString('sync.status.waiting')) // Kinda disgusting...
         {
             clearTimeout(this._timeoutID);
             this._timeoutID = setTimeout(this._execute.bind(this), Zotero.Prefs.get('extensions.zotmoov.auto_process_delay', true));
             return;
         }
-
-        if (Zotero.Prefs.get('extensions.zotero.sync.storage.enabled', true))
-        {
-            // We need to force a sync if cloud file sync is enabled or else merge conflicts occur
-            await Zotero.Sync.Runner.sync({libraries: [Zotero.Libraries.userLibraryID]});
-        }
-
-        // Disable syncing
-        if (this._syncDelayHandle == null) this._syncDelayHandle = Zotero.Sync.Runner.delayIndefinite();
 
         try
         {
@@ -110,6 +101,9 @@ var ZotMoovNotifyCallback = class {
         if (!auto_move) return;
 
         this._item_ids.push(...ids);
+
+        // Disable syncing
+        if (this._syncDelayHandle == null) this._syncDelayHandle = Zotero.Sync.Runner.delayIndefinite();
 
         clearTimeout(this._timeoutID);
         this._timeoutID = setTimeout(this._execute.bind(this), Zotero.Prefs.get('extensions.zotmoov.auto_process_delay', true));
