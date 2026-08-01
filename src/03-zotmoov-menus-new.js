@@ -24,7 +24,7 @@ var ZotMoovNewMenus = class
             return pane.getSelectedLibraryIDs().includes(Zotero.Libraries.userLibraryID);
         }
 
-        return pane.getSelectedLibraryID() != Zotero.Libraries.userLibraryID;
+        return pane.getSelectedLibraryID() == Zotero.Libraries.userLibraryID;
     }
 
     _genMenus()
