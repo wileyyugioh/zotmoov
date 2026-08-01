@@ -626,7 +626,7 @@ var ZotMoov = class {
             subdir_str: Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true),
             rename_title: Zotero.Prefs.get('extensions.zotmoov.rename_title', true),
             allowed_file_ext: allowed_file_ext,
-            preferred_collection: (Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null),
+            preferred_collection: (Zotero.getActiveZoteroPane().getSelectedCollections().length ? Zotero.getActiveZoteroPane().getSelectedCollections()[0].id : null),
             undefined_str: Zotero.Prefs.get('extensions.zotmoov.undefined_str', true),
             allow_group_libraries: Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true),
             custom_wc: JSON.parse(Zotero.Prefs.get('extensions.zotmoov.cwc_commands', true)),
