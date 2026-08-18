@@ -620,13 +620,24 @@ var ZotMoov = class {
         // Pass null if empty
         allowed_file_ext = (allowed_file_ext.length) ? allowed_file_ext : null;
 
+        let preferred_collection = (() => {
+            let pane = Zotero.getActiveZoteroPane();
+
+            if (pane.getSelectedCollections)
+            {
+                return (pane.getSelectedCollections().length ? pane.getSelectedCollections()[0].id : null);
+            }
+
+            return (pane.getSelectedCollection() ? pane.getSelectedCollection().id : null);
+        })();
+
         return {
             ignore_linked: false,
             into_subfolder: Zotero.Prefs.get('extensions.zotmoov.enable_subdir_move', true),
             subdir_str: Zotero.Prefs.get('extensions.zotmoov.subdirectory_string', true),
             rename_title: Zotero.Prefs.get('extensions.zotmoov.rename_title', true),
             allowed_file_ext: allowed_file_ext,
-            preferred_collection: (Zotero.getActiveZoteroPane().getSelectedCollection() ? Zotero.getActiveZoteroPane().getSelectedCollection().id : null),
+            preferred_collection: preferred_collection,
             undefined_str: Zotero.Prefs.get('extensions.zotmoov.undefined_str', true),
             allow_group_libraries: Zotero.Prefs.get('extensions.zotmoov.copy_group_libraries', true),
             custom_wc: JSON.parse(Zotero.Prefs.get('extensions.zotmoov.cwc_commands', true)),
