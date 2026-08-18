@@ -15,6 +15,18 @@ var ZotMoovNewMenus = class
         };
     }
 
+    // We need to do this for multiple version compatibility
+    _userLibrarySelected()
+    {
+        let pane = Zotero.getActiveZoteroPane();
+        if (pane.getSelectedLibraryIDs)
+        {
+            return pane.getSelectedLibraryIDs().includes(Zotero.Libraries.userLibraryID);
+        }
+
+        return pane.getSelectedLibraryID() == Zotero.Libraries.userLibraryID;
+    }
+
     _genMenus()
     {
         let self = this;
@@ -25,7 +37,7 @@ var ZotMoovNewMenus = class
                 l10nID: 'zotmoov-context-move-selected',
                 onShowing: (event, context) => {
                     let should_disabled = (!this._hasAttachments() ||
-                        (Zotero.getActiveZoteroPane().getSelectedLibraryID() != Zotero.Libraries.userLibraryID && Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
+                        (!self._userLibrarySelected() && Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
                     );
                     context.setEnabled(!should_disabled);
                 },
@@ -42,7 +54,7 @@ var ZotMoovNewMenus = class
                 l10nID: 'zotmoov-context-move-selected-custom-dir',
                 onShowing: (event, context) => {
                     let should_disabled = (!this._hasAttachments() ||
-                        (Zotero.getActiveZoteroPane().getSelectedLibraryID() != Zotero.Libraries.userLibraryID && Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
+                        (!self._userLibrarySelected() && Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
                     );
                     context.setEnabled(!should_disabled);
                 },
@@ -59,7 +71,7 @@ var ZotMoovNewMenus = class
                 l10nID: 'zotmoov-context-copy-selected',
                 onShowing: (event, context) => {
                     let should_disabled = (!this._hasAttachments() ||
-                        (Zotero.getActiveZoteroPane().getSelectedLibraryID() != Zotero.Libraries.userLibraryID && Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
+                        (!self._userLibrarySelected() && Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
                     );
                     context.setEnabled(!should_disabled);
                 },
@@ -76,7 +88,7 @@ var ZotMoovNewMenus = class
                 l10nID: 'zotmoov-context-copy-selected-custom-dir',
                 onShowing: (event, context) => {
                     let should_disabled = (!this._hasAttachments() ||
-                        (Zotero.getActiveZoteroPane().getSelectedLibraryID() != Zotero.Libraries.userLibraryID && Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
+                        (!self._userLibrarySelected() && Zotero.Prefs.get('extensions.zotmoov.file_behavior', true) == 'move')
                     );
                     context.setEnabled(!should_disabled);
                 },
@@ -188,6 +200,11 @@ var ZotMoovNewMenus = class
 
         this._custom_mus = {};
         this._menumanager_id = null;
+
+        this._input_listener = (event) =>
+        {
+            this._doKeyDown(event);
+        };
     }
 
     _loadPrefObs()
@@ -337,10 +354,7 @@ var ZotMoovNewMenus = class
     load(win)
     {
         let doc = win.document;
-        doc.addEventListener('keydown', (event) =>
-        {
-            this._doKeyDown(event);
-        });
+        doc.addEventListener('keydown', this._input_listener);
 
         // Enable localization
         win.MozXULElement.insertFTLIfNeeded('zotmoov.ftl');
@@ -370,8 +384,12 @@ var ZotMoovNewMenus = class
 
     unload(win)
     {
-        let loc = win.document.querySelector('[href="zotmoov.ftl"]');
+        let doc = win.document;
+
+        let loc = doc.querySelector('[href="zotmoov.ftl"]');
         if (loc) loc.remove();
+
+        doc.removeEventListener('keydown', this._input_listener);
     }
 
     init()
