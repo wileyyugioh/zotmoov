@@ -9,6 +9,19 @@ var ZotMoov = class {
         this.zotmoov_debugger = zotmoov_debugger;
     }
 
+    async _showErrorPopup(l10n_string, args={}, timeout=10000)
+    {
+        let pw = new Zotero.ProgressWindow({ closeOnClick: true });
+        let l10n = new Localization(['zotmoov.ftl'])
+
+        pw.changeHeadline(await l10n.formatValue('zotmoov-zotmoov'));
+        pw.addDescription(await l10n.formatValue(l10n_string, args));
+
+        pw.show();
+
+        pw.startCloseTimer(timeout); // Fade away after N ms
+    }
+
     async _getCopyPath(item, dst_path, arg_options = {})
     {
         const default_options = {
@@ -193,6 +206,7 @@ var ZotMoov = class {
             rename_file: true,
             max_io: 1,
             strip_diacritics: false,
+            show_error_window: true,
         };
 
         let options = {...default_options, ...arg_options};
@@ -304,6 +318,9 @@ var ZotMoov = class {
                         const file_info = await IOUtils.stat(file_path);
                         IOUtils.setModificationTime(final_path, file_info.lastModified);
 
+                        // DEBUG
+                        throw Error('HIEY');
+
                         await item.erase();
                         await IOUtils.remove(file_path); // Include this in case moving another linked file
                     });
@@ -337,6 +354,13 @@ var ZotMoov = class {
         });
 
         await Promise.allSettled(workers);
+
+        let diff = promises.length - results.length;
+        Zotero.log(promises.length)
+        if(options.show_error_window && diff > 0)
+        {
+            await this._showErrorPopup('zotmoov-pw-move-fail', { 'count': diff });
+        }
 
         return results;
     }
@@ -474,6 +498,12 @@ var ZotMoov = class {
         });
 
         await Promise.allSettled(workers);
+
+        let diff = promises.length - results.length;
+        if(options.show_error_window && diff > 0)
+        {
+            await this._showErrorPopup('zotmoov-pw-copy-fail', { 'count': diff });
+        }
 
         return results;
     }

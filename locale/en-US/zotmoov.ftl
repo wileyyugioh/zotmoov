@@ -1,3 +1,5 @@
+zotmoov-zotmoov = ZotMoov
+
 zotmoov-settings-title = ZotMoov Settings
 
 zotmoov-settings-filepath-intro = Directory to Move/Copy Files To
@@ -189,3 +191,7 @@ zotmoov-menu-item-ann2note-title = Annotation to Note
 zotmoov-menu-item-ann2note = Add note from annotations
 
 zotmoov-add-att-confirm = Attach <em>{ $filename }</em> as:
+
+zotmoov-pw-move-fail = Failed to move { $count } item(s). See the error log for more information.
+
+zotmoov-pw-copy-fail = Failed to copy { $count } item(s). See the error log for more information.
