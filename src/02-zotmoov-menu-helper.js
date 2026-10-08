@@ -161,7 +161,15 @@ var ZotMoovMenuHelper = class
             this._zotmoov_bindings.ignoreAdd([att.key]);
         });
 
-        if (att.getFilePath() != lastFilePath) await IOUtils.remove(lastFilePath);
+        try
+        {
+            if (att.getFilePath() != lastFilePath) await IOUtils.remove(lastFilePath);
+        }
+        catch (e)
+        {
+            // If we can't delete the file just keep going
+            Zotero.logError(e);
+        }
 
         let dst_path = Zotero.Prefs.get('extensions.zotmoov.dst_dir', true);
 
