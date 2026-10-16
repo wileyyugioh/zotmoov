@@ -285,7 +285,7 @@ var ZotMoov = class {
                     await Zotero.DB.executeTransaction(async () => {
                         let id = await clone.save();
                         await Zotero.Items.moveChildItems(item, clone);
-                        await Zotero.Relations.copyObjectSubjectRelations(item, clone);
+                        await Zotero.ZotMoov.Zotlib.copyObjectSubjectRelations(item, clone);
                         await Zotero.Fulltext.transferItemIndex(item, clone).catch((e) => { Zotero.logError(e); });
 
                         // Update links in notes
