@@ -89,6 +89,8 @@ AddTagState = class {
         const parent = document.getElementById('zotmoov-enable-subdir');
         parent.style.display = 'none';
         parent.setAttribute('data-l10n-id', '');
+
+        document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = false;
     }
 
     static onAccept()
