@@ -10,8 +10,7 @@
     title="ZotMoov"
     drawintitlebar-platforms="mac"
     class="zotero-dialog"
-    style="min-width: 300px;"
-    onload="myOnLoad();">
+    style="min-width: 300px;">
 <dialog buttons="cancel,accept" id="zotmoov-file-ext-dialog">
     <script src="chrome://zotero/content/include.js"/>
 
@@ -21,33 +20,6 @@
         <hbox><label><html:h3 id="zotmoov-dialog-title" data-l10n-id="zotmoov-adv-settings-cmu-del-dialog-title"/></label></hbox>
     </vbox>
 
-    <script>
-    <![CDATA[
-        document.addEventListener('dialogaccept', () => myOnAccept());
-        let window_args = {
-            index: 0,
-            title: ''
-        }
-
-        function myOnLoad()
-        {
-            if (window.arguments)
-            {
-                window_args = {...window_args, ...window.arguments[0]};
-
-                document.l10n.setArgs(document.getElementById('zotmoov-dialog-title'), { 'cmu-title': window_args.title });
-
-                document.addEventListener('L10nMutationsFinished', () => {
-                    window.sizeToContent();
-                });
-            }
-        }
-
-        function myOnAccept()
-        {
-            Zotero.ZotMoov.Prefs.Advanced.Cmu.deleteMenuItem(window_args.index, window_args.title);
-        }
-    ]]>
-    </script>
+    <script src="chrome://zotmoov/content/del-cmu-dialog.js"/>
 </dialog>
 </window>

@@ -1,0 +1,325 @@
+document.addEventListener('dialogaccept', () => myOnAccept());
+
+let cwentry_todo = Zotero.ZotMoov.Prefs.Advanced.Cmu.createEntryFromDialog.bind(Zotero.ZotMoov.Prefs.Advanced.Cmu);
+let window_args =
+{
+    wc: '',
+    data: null,
+    index: null,
+    operation: 'create'
+};
+
+MoveFromState = class {
+    static command_name = Zotero.ZotMoov.Menus.Custom.Commands.MoveFrom.COMMAND_NAME;
+
+    static load(data)
+    {
+        document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', 'zotmoov-adv-settings-movefrom-label1');
+    }
+
+    static unload()
+    {
+        document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', '');
+    }
+
+    static onAccept()
+    {
+        cwentry_todo(window_args.wc,
+            this.command_name,
+            window_args.index,
+            {}
+        );
+    }
+}
+
+AnnToNoteState = class {
+    static command_name = Zotero.ZotMoov.Menus.Custom.Commands.AnnotationToNote.COMMAND_NAME;
+
+    static load(data)
+    {
+        document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', 'zotmoov-adv-settings-ann2note-label1');
+    }
+
+    static unload()
+    {
+        document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', '');
+    }
+
+    static onAccept()
+    {
+        cwentry_todo(window_args.wc,
+            this.command_name,
+            window_args.index,
+            {}
+        );
+    }
+}
+
+AddTagState = class {
+    static command_name = Zotero.ZotMoov.Menus.Custom.Commands.AddTag.COMMAND_NAME;
+
+    static load(data)
+    {
+        document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', 'zotmoov-adv-settings-tag-label1');
+        let txt_input = document.getElementById('zotmoov-cw-text-input1');
+        txt_input.style.display = '';
+        txt_input.setAttribute('oninput', 'States["' + Zotero.ZotMoov.Menus.Custom.Commands.AddTag.COMMAND_NAME + '"].onInput();');
+
+        const parent = document.getElementById('zotmoov-enable-subdir');
+        parent.style.display = '';
+        parent.setAttribute('data-l10n-id', 'zotmoov-adv-settings-add2parent');
+
+        if (data)
+        {
+            txt_input.value = data.tag;
+            parent.checked = data.do_parent || false;
+        }
+
+        document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = txt_input.value.trim() === '';
+    }
+
+    static unload()
+    {
+        document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', '');
+
+        let txt_input = document.getElementById('zotmoov-cw-text-input1');
+        txt_input.style.display = 'none';
+        txt_input.setAttribute('oninput', '');
+
+        const parent = document.getElementById('zotmoov-enable-subdir');
+        parent.style.display = 'none';
+        parent.setAttribute('data-l10n-id', '');
+    }
+
+    static onAccept()
+    {
+        const tag = document.getElementById('zotmoov-cw-text-input1').value;
+        const do_parent = document.getElementById('zotmoov-enable-subdir').checked;
+
+        cwentry_todo(window_args.wc,
+            this.command_name,
+            window_args.index,
+            {
+                tag: tag,
+                do_parent: do_parent
+            }
+        );
+    }
+
+    static onInput()
+    {
+        document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = event.target.value.trim() === '';
+    }
+}
+
+MoveCopyState = class {
+    static command_name = null;
+
+    static load(data)
+    {
+            document.getElementById('zotmoov-cw-label1').setAttribute('data-l10n-id', 'zotmoov-adv-settings-directory-label1');
+
+            const customdir_but = document.getElementById('zotmoov-cw-dir-input1-checkbox');
+            customdir_but.style.display = '';
+            customdir_but.addEventListener('command', (event) => {
+                States[this.command_name].onCheck(event.currentTarget);
+            });
+
+            const dst_dir = document.getElementById('zotmoov-dst-dir');
+
+            const but = document.getElementById('zotmoov-dst-dir-button');
+            but.addEventListener('command', (event) => {
+                States[this.command_name].onChooseDir();
+            });
+
+            let dir_input = document.getElementById('zotmoov-cw-dir-input1');
+            dir_input.style.display = '';
+
+            const subdir = document.getElementById('zotmoov-enable-subdir');
+            subdir.style.display = '';
+            subdir.setAttribute('data-l10n-id', 'zotmoov-settings-enable-subdir-move-label');
+
+            if (data)
+            {
+                dst_dir.value = data.directory;
+                customdir_but.checked = data.enable_customdir;
+                subdir.checked = data.enable_subdir;
+
+                this.onCheck(customdir_but);
+            }
+    }
+
+    static unload()
+    {
+        let label = document.getElementById('zotmoov-cw-label1');
+        label.setAttribute('data-l10n-id', '');
+
+        let cb = document.getElementById('zotmoov-cw-dir-input1-checkbox');
+        if (cb)
+        {
+            let clone = cb.cloneNode(true);
+            cb.parentNode.replaceChild(clone, cb);
+        }
+
+        let but = document.getElementById('zotmoov-dst-dir-button');
+        if (but)
+        {
+            let clone = but.cloneNode(true);
+            but.parentNode.replaceChild(clone, but);
+        }
+
+        let dir_input = document.getElementById('zotmoov-cw-dir-input1');
+        dir_input.style.display = 'none';
+
+        const subdir = document.getElementById('zotmoov-enable-subdir');
+        subdir.style.display = 'none';
+        subdir.setAttribute('data-l10n-id', '');
+    }
+
+    static onAccept()
+    {
+        const directory = document.getElementById('zotmoov-dst-dir').value;
+        const enable_customdir = document.getElementById('zotmoov-cw-dir-input1-checkbox').checked;
+        const enable_subdir = document.getElementById('zotmoov-enable-subdir').checked;
+
+        cwentry_todo(window_args.wc,
+            this.command_name,
+            window_args.index,
+            {
+                directory: directory,
+                enable_customdir: enable_customdir,
+                enable_subdir: enable_subdir,
+            }
+        );
+    }
+
+    static onCheck(button)
+    {
+        const dst_dir = document.getElementById('zotmoov-dst-dir');
+        dst_dir.disabled = !button.checked;
+
+        document.getElementById('zotmoov-dst-dir-button').disabled = !button.checked;
+
+        const dialog = document.getElementById('zotmoov-cw-dialog');
+
+        if(!button.checked)
+        {
+            dialog.getButton('accept').disabled = false;
+        } else
+        {
+            let to_disable = dst_dir.value.trim() === '';
+            dialog.getButton('accept').disabled = to_disable;
+        }
+    }
+
+    static onInput(textbox)
+    {
+        let to_disable = textbox.value.trim() === '' && document.getElementById('zotmoov-cw-dir-input1-checkbox').checked;
+        document.getElementById('zotmoov-cw-dialog').getButton('accept').disabled = to_disable;
+    }
+
+    static async onChooseDir()
+    {
+        const { FilePicker } = ChromeUtils.importESModule('chrome://zotero/content/modules/filePicker.mjs');
+        let fp = new FilePicker();
+
+        fp.init(window, Zotero.getString('dataDir.selectDir'), fp.modeGetFolder);
+        fp.appendFilters(fp.filterAll);
+        let rv = await fp.show();
+        if (rv != fp.returnOK) return;
+
+        let dst_dir = document.getElementById('zotmoov-dst-dir');
+        dst_dir.value = fp.file;
+        this.onInput(dst_dir);
+    }
+}
+
+const States =
+{
+    [Zotero.ZotMoov.Menus.Custom.Commands.Move.COMMAND_NAME]: class extends MoveCopyState
+    {
+        static command_name = Zotero.ZotMoov.Menus.Custom.Commands.Move.COMMAND_NAME;
+    },
+
+    [Zotero.ZotMoov.Menus.Custom.Commands.Copy.COMMAND_NAME]: class extends MoveCopyState
+    {
+        static command_name = Zotero.ZotMoov.Menus.Custom.Commands.Copy.COMMAND_NAME;
+    },
+
+    [Zotero.ZotMoov.Menus.Custom.Commands.AddTag.COMMAND_NAME]: AddTagState,
+
+    [Zotero.ZotMoov.Menus.Custom.Commands.RemoveTag.COMMAND_NAME]: class extends AddTagState
+    {
+        static command_name = Zotero.ZotMoov.Menus.Custom.Commands.RemoveTag.COMMAND_NAME;
+    },
+
+
+    [Zotero.ZotMoov.Menus.Custom.Commands.MoveFrom.COMMAND_NAME]: MoveFromState,
+
+    [Zotero.ZotMoov.Menus.Custom.Commands.AnnotationToNote.COMMAND_NAME]: AnnToNoteState
+};
+
+{
+    let current_state;
+    function loadState(state, data)
+    {
+        if (current_state) current_state.unload();
+        current_state = null;
+        state.load(data);
+        current_state = state;
+    }
+
+    function myOnAccept()
+    {
+        current_state.onAccept();
+    }
+}
+
+function myOnLoad()
+{
+    if (window.arguments) window_args = {...window_args, ...window.arguments[0]};
+
+    let sel_menu = document.getElementById('zotmoov-adv-settings-wc-sel-menu');
+
+    // Disable everything except text or field if index is zero
+    loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.Move.COMMAND_NAME]);
+
+    // Change operation to edit
+    if (window_args.operation == 'edit') cwentry_todo = Zotero.ZotMoov.Prefs.Advanced.Cmu.editEntryFromDialog.bind(Zotero.ZotMoov.Prefs.Advanced.Cmu);
+
+    if (!window_args.data) return;
+    for (const [index, commands] of Object.values(Zotero.ZotMoov.Menus.Custom.Commands).entries())
+    {
+        if (commands.COMMAND_NAME != window_args.data.command_name) continue;
+        sel_menu.selectedIndex = index;
+        loadState(States[commands.COMMAND_NAME], window_args.data);
+    }
+}
+
+window.addEventListener('load', (event) => {
+    myOnLoad();
+});
+
+document.getElementById('zotmoov-cw-item-move').addEventListener('command', (event) => {
+    loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.Move.COMMAND_NAME]);
+});
+
+document.getElementById('zotmoov-cw-item-copy').addEventListener('command', (event) => {
+    loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.Copy.COMMAND_NAME]);
+});
+
+document.getElementById('zotmoov-cw-item-add_tag').addEventListener('command', (event) => {
+    loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.AddTag.COMMAND_NAME]);
+});
+
+document.getElementById('zotmoov-cw-item-rem_tag').addEventListener('command', (event) => {
+    loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.RemoveTag.COMMAND_NAME]);
+});
+
+document.getElementById('zotmoov-cw-item-move_from').addEventListener('command', (event) => {
+    loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.MoveFrom.COMMAND_NAME]);
+});
+
+document.getElementById('zotmoov-cw-item-ann2note').addEventListener('command', (event) => {
+    loadState(States[Zotero.ZotMoov.Menus.Custom.Commands.AnnotationToNote.COMMAND_NAME]);
+});

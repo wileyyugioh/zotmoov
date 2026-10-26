@@ -10,8 +10,7 @@
     title="ZotMoov"
     drawintitlebar-platforms="mac"
     class="zotero-dialog"
-    style="min-width: 300px;"
-    onload="myOnLoad();">
+    style="min-width: 300px;">
 <dialog buttons="cancel,accept" id="zotmoov-file-ext-dialog">
     <script src="chrome://zotero/content/include.js"/>
 
@@ -19,30 +18,9 @@
 
     <vbox style='margin-bottom: 10px;'>
         <hbox><label><html:h3 data-l10n-id="zotmoov-adv-settings-cmu-new-dialog-title"/></label></hbox>
-        <hbox><html:input id="zotmoov-file-ext-dialog-input" type="text" style="flex: 1;" oninput="myOnInput(event);"/></hbox>
+        <hbox><html:input id="zotmoov-file-ext-dialog-input" type="text" style="flex: 1;"/></hbox>
     </vbox>
 
-    <script>
-    <![CDATA[
-        document.addEventListener('dialogaccept', () => myOnAccept());
-
-        function myOnLoad()
-        {
-            document.getElementById('zotmoov-file-ext-dialog').getButton('accept').disabled = true;
-        }
-
-        function myOnAccept()
-        {
-            const text = document.getElementById('zotmoov-file-ext-dialog-input').value;
-            Zotero.ZotMoov.Prefs.Advanced.Cmu.createMenuItem(text);
-        }
-
-        function myOnInput(event)
-        {
-            document.getElementById('zotmoov-file-ext-dialog').getButton('accept').disabled = event.target.value.trim() === '';
-        }
-
-    ]]>
-    </script>
+    <script src="chrome://zotmoov/content/add-cmu-dialog.js"/>
 </dialog>
 </window>
