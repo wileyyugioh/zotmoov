@@ -73,4 +73,8 @@ Hide the default menu items
 
 ```extensions.zotmoov.menu_items.fix_note_links.hidden```: Enable/disable the menu item to run an unstable script to fix broken note links
 
-```extensions.zotmoov.authors_etal```: Change the number of authors before adding et al. in the wildcard flags
+```
+extensions.zotmoov.wildcard_max_authors
+extensions.zotmoov.wildcard_etal
+extensions.zotmoov.wildcard_author_delimitter
+```: Change the Zotfile author info when generating wildcards
