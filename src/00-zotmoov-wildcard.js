@@ -6,7 +6,7 @@ var ZotMoovWildcard = class {
         this.custom_wc_parser = custom_wc;
     }
 
-    _format_authors(item) {
+    _format_authors(item, max_authors=1) {
         // get creator and create authors string
         var itemType = Zotero.ItemTypes.getName(item.itemTypeID);
         var creatorTypeIDs  = [Zotero.CreatorTypes.getPrimaryIDForType(item.itemTypeID)];
@@ -17,7 +17,7 @@ var ZotMoovWildcard = class {
         for (var i = 0; i < creators.length; ++i) {
             if (creatorTypeIDs.indexOf(creators[i].creatorTypeID) === -1) numauthors=numauthors-1;
         }
-        var max_authors = 1; // Hard coded lol
+        //var max_authors = 1; // Hard coded lol
         if (numauthors <= max_authors) add_etal = false;
         else numauthors = max_authors;
         var delimiter = '\ ';
@@ -157,14 +157,15 @@ var ZotMoovWildcard = class {
     _get_fields(item, arg_options = {})
     {
         const default_options = {
-            preferred_collection: null
+            preferred_collection: null,
+            authors_etal: 1,
         };
         let options = {...default_options, ...arg_options};
 
         let item_type = item.itemTypeID;
         let item_type_name = Zotero.ItemTypes.getName(item_type);
         // get formated author strings
-        let authors = this._format_authors(item);
+        let authors = this._format_authors(item, options.authors_etal);
 
         let _item_fields =
             {
@@ -302,7 +303,8 @@ var ZotMoovWildcard = class {
         const default_options = {
             preferred_collection: null,
             undefined_str: 'undefined',
-            custom_wc: {}
+            custom_wc: {},
+            authors_etal: 1,
         };
         let options = {...default_options, ...arg_options};
 
@@ -324,7 +326,12 @@ var ZotMoovWildcard = class {
 
         if (item.isAttachment() && item.parentItem) item = item.parentItem;
 
-        let item_fields = this._get_fields(item, { preferred_collection: options.preferred_collection });
+        let item_fields = this._get_fields(item,
+            {
+                preferred_collection: options.preferred_collection,
+                authors_etal: options.authors_etal,
+            }
+        );
         const sub_strs = sub_brackets.map((bracket) => this._process_wildcard(item, item_fields, bracket.slice(1, -1),
             { undefined_str: options.undefined_str, custom_wc: options.custom_wc }));
 

@@ -35,3 +35,4 @@ pref('extensions.zotmoov.strip_diacritics', false);
 pref('extensions.zotmoov.copy_overwrite', false);
 pref('extensions.zotmoov.no_rename_file', false);
 pref('extensions.zotmoov.force_legacy_menus', false);
+pref('extensions.zotmoov.authors_etal', 1);
