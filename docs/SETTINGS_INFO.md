@@ -77,4 +77,5 @@ Hide the default menu items
 extensions.zotmoov.wildcard_max_authors
 extensions.zotmoov.wildcard_etal
 extensions.zotmoov.wildcard_author_delimitter
+extensions.zotmoov.wildcard.truncate_authors
 ```: Change the Zotfile author info when generating wildcards

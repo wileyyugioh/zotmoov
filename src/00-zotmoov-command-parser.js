@@ -28,7 +28,11 @@ var ZotMoovCWParser = class {
                 return Zotero.ZotMoov.wildcard.process_string(item, this.text, {
                     preferred_collection: options.preferred_collection,
                     undefined_str: options.undefined_str,
-                    custom_wc: options.custom_wc
+                    custom_wc: options.custom_wc,
+                    wc_max_authors: options.wc_max_authors,
+                    wc_truncate_authors: options.wc_truncate_authors,
+                    wc_etal: options.wc_etal,
+                    wc_delimitter: options.wc_delimitter,
                 });
             }
         },

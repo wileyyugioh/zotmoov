@@ -6,7 +6,7 @@ var ZotMoovWildcard = class {
         this.custom_wc_parser = custom_wc;
     }
 
-    _format_authors(item, max_authors=1, add_etal=false, delimiter='\ ') {
+    _format_authors(item, max_authors=1, truncate_authors=1, add_etal=false, delimiter='\ ') {
         // get creator and create authors string
         var itemType = Zotero.ItemTypes.getName(item.itemTypeID);
         var creatorTypeIDs  = [Zotero.CreatorTypes.getPrimaryIDForType(item.itemTypeID)];
@@ -19,7 +19,7 @@ var ZotMoovWildcard = class {
         }
         //var max_authors = 1; // Hard coded lol
         if (numauthors <= max_authors) add_etal = false;
-        else numauthors = max_authors;
+        else numauthors = truncate_authors;
         var j = 0;
         for (i = 0; i < creators.length; ++i) {
             if (j < numauthors && creatorTypeIDs.indexOf(creators[i].creatorTypeID) != -1) {
@@ -158,6 +158,7 @@ var ZotMoovWildcard = class {
         const default_options = {
             preferred_collection: null,
             wc_max_authors: 1,
+            wc_truncate_authors: 1,
             wc_etal: false,
             wc_delimitter: '\ ',
         };
@@ -166,7 +167,7 @@ var ZotMoovWildcard = class {
         let item_type = item.itemTypeID;
         let item_type_name = Zotero.ItemTypes.getName(item_type);
         // get formated author strings
-        let authors = this._format_authors(item, options.wc_max_authors, options.wc_etal, options.wc_delimitter);
+        let authors = this._format_authors(item, options.wc_max_authors, options.wc_truncate_authors, options.wc_etal, options.wc_delimitter);
 
         let _item_fields =
             {
@@ -306,6 +307,7 @@ var ZotMoovWildcard = class {
             undefined_str: 'undefined',
             custom_wc: {},
             wc_max_authors: 1,
+            wc_truncate_authors: 1,
             wc_etal: false,
             wc_delimitter: '\ ',
         };
@@ -333,6 +335,7 @@ var ZotMoovWildcard = class {
             {
                 preferred_collection: options.preferred_collection,
                 wc_max_authors: options.wc_max_authors,
+                wc_truncate_authors: options.wc_truncate_authors,
                 wc_etal: options.wc_etal,
                 wc_delimitter: options.wc_delimitter,
             }

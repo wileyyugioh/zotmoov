@@ -20,6 +20,7 @@ var ZotMoov = class {
             rename_file: true,
             strip_diacritics: false,
             wc_max_authors: 1,
+            wc_truncate_authors: 1,
             wc_etal: false,
             wc_delimitter: '\ ',
 
@@ -52,6 +53,7 @@ var ZotMoov = class {
                 undefined_str: options.undefined_str,
                 custom_wc: options.custom_wc,
                 wc_max_authors: options.wc_max_authors,
+                wc_truncate_authors: options.wc_truncate_authors,
                 wc_etal: options.wc_etal,
                 wc_delimitter: options.wc_delimitter,
             });
@@ -201,6 +203,7 @@ var ZotMoov = class {
             max_io: 1,
             strip_diacritics: false,
             wc_max_authors: 1,
+            wc_truncate_authors: 1,
             wc_etal: false,
             wc_delimitter: '\ ',
         };
@@ -247,6 +250,7 @@ var ZotMoov = class {
                     rename_file: options.rename_file,
                     strip_diacritics: options.strip_diacritics,
                     wc_max_authors: options.wc_max_authors,
+                    wc_truncate_authors: options.wc_truncate_authors,
                     wc_etal: options.wc_etal,
                     wc_delimitter: options.wc_delimitter,
             });
@@ -369,6 +373,7 @@ var ZotMoov = class {
             strip_diacritics: false,
             copy_overwrite: false,
             wc_max_authors: 1,
+            wc_truncate_authors: 1,
             wc_etal: false,
             wc_delimitter: '\ ',
         };
@@ -408,6 +413,7 @@ var ZotMoov = class {
                     rename_file: options.rename_file,
                     strip_diacritics: options.strip_diacritics,
                     wc_max_authors: options.wc_max_authors,
+                    wc_truncate_authors: options.wc_truncate_authors,
                     wc_etal: options.wc_etal,
                     wc_delimitter: options.wc_delimitter,
             });
@@ -667,6 +673,7 @@ var ZotMoov = class {
             strip_diacritics: Zotero.Prefs.get('extensions.zotmoov.strip_diacritics', true),
             copy_overwrite: Zotero.Prefs.get('extensions.zotmoov.copy_overwrite', true),
             wc_max_authors: Zotero.Prefs.get('extensions.zotmoov.wildcard_max_authors', true),
+            wc_truncate_authors: Zotero.Prefs.get('extensions.zotmoov.wildcard.truncate_authors', true)
             wc_etal: Zotero.Prefs.get('extensions.zotmoov.wildcard_etal', true),
             wc_delimitter: Zotero.Prefs.get('extensions.zotmoov.wildcard_author_delimitter', true),
         };
