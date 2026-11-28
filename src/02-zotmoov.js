@@ -673,7 +673,7 @@ var ZotMoov = class {
             strip_diacritics: Zotero.Prefs.get('extensions.zotmoov.strip_diacritics', true),
             copy_overwrite: Zotero.Prefs.get('extensions.zotmoov.copy_overwrite', true),
             wc_max_authors: Zotero.Prefs.get('extensions.zotmoov.wildcard_max_authors', true),
-            wc_truncate_authors: Zotero.Prefs.get('extensions.zotmoov.wildcard.truncate_authors', true)
+            wc_truncate_authors: Zotero.Prefs.get('extensions.zotmoov.wildcard.truncate_authors', true),
             wc_etal: Zotero.Prefs.get('extensions.zotmoov.wildcard_etal', true),
             wc_delimitter: Zotero.Prefs.get('extensions.zotmoov.wildcard_author_delimitter', true),
         };
